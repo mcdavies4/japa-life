@@ -96,6 +96,14 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
   background:var(--ink);color:var(--sheet);padding:10px 16px;border-radius:12px;font-weight:700;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;max-width:88vw;text-align:center}
 #toast.show{opacity:1}
 #loading{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:8;background:#2D3192;color:#F4C430;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:28px}
+.online{font-size:12px;font-weight:700;border-radius:999px;padding:4px 10px;background:rgba(14,122,75,.14);color:#0E7A4B;white-space:nowrap;display:none}
+.online.off{background:rgba(127,127,150,.18);color:var(--muted)}
+#chatbar{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 84px);z-index:3;display:none;gap:8px;border-radius:16px;padding:8px}
+#chatbar input{flex:1;min-width:0;margin:0}
+#chatbar button{padding:0 16px;border-radius:12px;background:var(--green);color:#fff;font-weight:800}
+#chatlog{position:fixed;left:10px;top:calc(env(safe-area-inset-top,0px) + 170px);z-index:2;display:flex;flex-direction:column;gap:4px;pointer-events:none;max-width:70vw}
+#chatlog div{background:rgba(28,27,58,.72);color:#fff;font-size:13px;padding:5px 10px;border-radius:10px;transition:opacity .6s}
+#chatlog b{color:#F4C430}
 #fade{position:fixed;inset:0;z-index:9;background:#2D3192;color:#F4C430;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;
   font-size:54px;opacity:0;pointer-events:none;transition:opacity .4s}
 #fade.on{opacity:1;pointer-events:auto}
@@ -108,7 +116,7 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 <div id="loading">Loading London…</div>
 
 <div id="hud">
-  <div class="topbar glass"><div class="clock" id="clock">Mon 8:00 AM<small>Week 1</small></div><div class="cash" id="cash">£0</div></div>
+  <div class="topbar glass"><div class="clock" id="clock">Mon 8:00 AM<small>Week 1</small></div><span class="online" id="online"></span><div class="cash" id="cash">£0</div></div>
   <div class="needs glass" id="needs"></div>
   <div class="chips" id="chips"></div>
 </div>
@@ -117,8 +125,11 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 <nav id="nav" class="glass">
   <button id="nHome"><span class="i">🏠</span>Go home</button>
   <button id="nMap"><span class="i">🗺️</span>Map</button>
+  <button id="nChat"><span class="i">💬</span>Chat</button>
   <button id="nPhone"><span class="i">📱</span>Phone<span class="badge" id="badge">0</span></button>
 </nav>
+<form id="chatbar" class="glass" autocomplete="off"><input type="text" id="chatin" maxlength="120" placeholder="Say something to people nearby…" enterkeyhint="send"><button type="submit">Send</button></form>
+<div id="chatlog" aria-live="polite"></div>
 <div id="veil"></div>
 <section class="sheet" id="sheet"><div class="band"></div><div class="in" id="sheetIn"></div></section>
 <div id="start" style="display:none"></div>
@@ -136,6 +147,9 @@ const SKINS=["#5A3420","#7A4A2C","#9B6440","#C08560"];
 const SHIRTS=["#2D3192","#0E7A4B","#E5487A","#F4C430","#1C1B3A","#E8E8EE"];
 const HAIRS=["Low cut","Afro","Braids"];
 const RENT=170, WAGE=11.5, FARE=3.10, KEY="japa3d_v1";
+/* Multiplayer server. Set this to your deployed Worker URL, e.g. "wss://japa-life-realtime.yourname.workers.dev".
+   Leave empty to play solo. */
+const REALTIME_URL="wss://japa-life-realtime.azubuikedavies.workers.dev";
 const JOBS=[[0,"Shelf Stacker"],[5,"Till Operator"],[12,"Supervisor"],[22,"Assistant Manager"],[35,"Store Manager"]];
 
 /* ================= world data: zones ================= */
@@ -277,7 +291,7 @@ function signMat(text,bg,size){return own(new THREE.MeshBasicMaterial({map:textT
 function clearZone(){
   if(!root)return;
   root.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material&&o.material.userData&&o.material.userData.own){if(o.material.map)o.material.map.dispose();o.material.dispose()}});
-  scene.remove(root);root=null;npcs.length=0;cars.length=0;
+  scene.remove(root);root=null;npcs.length=0;cars.length=0;net.players.clear();
 }
 function buildZone(zid){
   clearZone();root=new THREE.Group();scene.add(root);
@@ -410,7 +424,7 @@ function spawnTraffic(zone){
 
 /* ================= input ================= */
 const keys={};let joyV={x:0,y:0};let autoTarget=null;
-addEventListener("keydown",e=>{keys[e.key.toLowerCase()]=true;if((e.key==="e"||e.key==="Enter")&&nearPlace&&!uiOpen)useSpot(nearPlace)});
+addEventListener("keydown",e=>{if(e.target&&e.target.tagName==="INPUT")return;keys[e.key.toLowerCase()]=true;if((e.key==="e"||e.key==="Enter")&&nearPlace&&!uiOpen)useSpot(nearPlace)});
 addEventListener("keyup",e=>{keys[e.key.toLowerCase()]=false});
 const $=id=>document.getElementById(id);
 const joy=$("joy"),knob=$("knob");let joyId=null;
@@ -426,6 +440,8 @@ canvas.addEventListener("pointerdown",e=>{downAt={x:e.clientX,y:e.clientY}});
 canvas.addEventListener("pointerup",e=>{
   if(!downAt||uiOpen||!S)return;if(Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>12)return;
   ray.setFromCamera({x:e.clientX/innerWidth*2-1,y:-(e.clientY/innerHeight)*2+1},camera);
+  const meshes=[...net.players.values()].map(r=>r.mesh);
+  if(meshes.length){const hit=ray.intersectObjects(meshes,true)[0];if(hit){let o=hit.object;while(o&&!o.userData.rid)o=o.parent;if(o){openPlayer(o.userData.rid);return}}}
   const L=Z().L;if(ray.ray.intersectPlane(gplane,tmpV))autoTarget={x:Math.max(-6.6,Math.min(6.6,tmpV.x)),z:Math.max(-L+1,Math.min(L-1,tmpV.z))};
 });
 
@@ -504,7 +520,7 @@ function enterZone(zid,pos,yaw,instant){
   player.parent&&player.parent.remove(player);scene.add(player);
   player.position.set(pos.x,.18,pos.z);player.rotation.y=yaw;camYaw=yaw;autoTarget=null;
   const fx=Math.sin(yaw),fz=Math.cos(yaw);camera.position.set(pos.x-fx*9,6.4,pos.z-fz*9);
-  updateHUD();updateChips();save();
+  updateHUD();updateChips();save();netJoin(zid);
 }
 function travel(to,how,fromId){
   if(busy)return;busy=true;closeSheet();
@@ -681,6 +697,83 @@ function lighting(){
   const night=t<.45;if(night!==lastNight){lastNight=night;winMat.emissive.setHex(night?0x6a5420:0);lampMat.emissive.setHex(night?0xffd27a:0)}
 }
 
+/* ================= multiplayer ================= */
+const net={ws:null,zone:null,shard:1,id:null,players:new Map(),lastSend:0,last:"",retry:0,muted:new Set()};
+try{JSON.parse(localStorage.getItem("japa_muted")||"[]").forEach(n=>net.muted.add(n))}catch(e){}
+function netStatus(){const el=$("online");if(!REALTIME_URL){el.style.display="none";return}
+  el.style.display="inline-block";const open=net.ws&&net.ws.readyState===1&&net.id;
+  el.className="online"+(open?"":" off");el.textContent=open?`👥 ${net.players.size+1} here`:"Connecting…"}
+function netJoin(zone,shard){
+  if(!REALTIME_URL)return;
+  shard=shard||1;
+  if(net.ws){const old=net.ws;net.ws=null;old.onclose=null;try{old.close()}catch(e){}}
+  net.zone=zone;net.shard=shard;net.id=null;
+  let ws;try{ws=new WebSocket(`${REALTIME_URL}/room/${zone}-${shard}`)}catch(e){return}
+  net.ws=ws;netStatus();
+  ws.onopen=()=>{net.retry=0;ws.send(JSON.stringify({t:"join",name:S.name,look:S.look,x:player.position.x,z:player.position.z,ry:player.rotation.y}))};
+  ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}netMsg(m)};
+  ws.onclose=ev=>{if(net.ws!==ws)return;net.ws=null;net.id=null;
+    [...net.players.keys()].forEach(removeRemote);
+    if(ev.code===4001&&shard<20)return netJoin(zone,shard+1);
+    netStatus();const wait=Math.min(30000,2000*Math.pow(2,net.retry++));setTimeout(()=>{if(!net.ws&&S&&S.zone===zone)netJoin(zone,shard)},wait)};
+}
+function netSend(o){if(net.ws&&net.ws.readyState===1)net.ws.send(JSON.stringify(o))}
+function addRemote(p){
+  if(!root||net.players.has(p.id))return;
+  const mesh=makePerson(SKINS[p.look.skin]||SKINS[1],SHIRTS[p.look.shirt]||SHIRTS[0],"#1C1B3A",p.look.hair,root);
+  mesh.position.set(p.x,.18,p.z);mesh.rotation.y=p.ry;mesh.userData.rid=p.id;
+  const tag=new THREE.Sprite(own(new THREE.SpriteMaterial({map:textTex(p.name,"rgba(28,27,58,.8)","#FFFFFF",384,84,44,true),depthTest:false})));
+  tag.scale.set(1.9,.42,1);tag.position.set(0,2.75,0);tag.renderOrder=6;mesh.add(tag);
+  net.players.set(p.id,{mesh,name:p.name,tx:p.x,tz:p.z,ry:p.ry,mv:0,bubble:null,bubbleT:0});
+}
+function removeRemote(id){const r=net.players.get(id);if(!r)return;if(r.mesh.parent)r.mesh.parent.remove(r.mesh);
+  r.mesh.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material&&o.material.userData&&o.material.userData.own){if(o.material.map)o.material.map.dispose();o.material.dispose()}});
+  net.players.delete(id)}
+function bubble(mesh,text,holder){
+  if(holder.bubble){mesh.remove(holder.bubble);holder.bubble.material.map.dispose();holder.bubble.material.dispose()}
+  const short=text.length>34?text.slice(0,33)+"…":text;
+  const b=new THREE.Sprite(new THREE.SpriteMaterial({map:textTex(short,"rgba(255,255,255,.97)","#1C1B3A",768,96,40,true),depthTest:false}));
+  b.scale.set(3.8,.48,1);b.position.set(0,3.3,0);b.renderOrder=7;mesh.add(b);holder.bubble=b;holder.bubbleT=6;
+}
+const selfBubble={bubble:null,bubbleT:0};
+function chatLog(name,text){const el=$("chatlog");const d=document.createElement("div");d.innerHTML=`<b>${esc(name)}</b> ${esc(text)}`;el.appendChild(d);
+  while(el.children.length>4)el.removeChild(el.firstChild);setTimeout(()=>{d.style.opacity="0";setTimeout(()=>d.remove(),700)},9000)}
+function netMsg(m){
+  if(m.t==="welcome"){net.id=m.id;[...net.players.keys()].forEach(removeRemote);m.players.forEach(addRemote);netStatus();if(m.players.length)toast(`${m.players.length} ${m.players.length===1?"person is":"people are"} on ${Z().name} right now`)}
+  else if(m.t==="join"){addRemote(m.p);netStatus();chatLog(m.p.name,"arrived")}
+  else if(m.t==="leave"){const r=net.players.get(m.id);removeRemote(m.id);netStatus();if(r)chatLog(r.name,"left")}
+  else if(m.t==="s"){m.u.forEach(([id,x,z,ry,mv])=>{const r=net.players.get(id);if(r){r.tx=x;r.tz=z;r.ry=ry;r.mv=mv}})}
+  else if(m.t==="chat"){const r=net.players.get(m.id);if(!r||net.muted.has(r.name))return;bubble(r.mesh,m.text,r);chatLog(r.name,m.text)}
+}
+function netTick(dt,moving){
+  net.players.forEach(r=>{const p=r.mesh.position,k=Math.min(1,dt*10);const dx=r.tx-p.x,dz=r.tz-p.z;p.x+=dx*k;p.z+=dz*k;
+    let d=r.ry-r.mesh.rotation.y;d=Math.atan2(Math.sin(d),Math.cos(d));r.mesh.rotation.y+=d*k;
+    animatePerson(r.mesh,r.mv||Math.hypot(dx,dz)>.05?5:0,dt);
+    if(r.bubble&&(r.bubbleT-=dt)<=0){r.mesh.remove(r.bubble);r.bubble.material.map.dispose();r.bubble.material.dispose();r.bubble=null}});
+  if(selfBubble.bubble&&(selfBubble.bubbleT-=dt)<=0){player.remove(selfBubble.bubble);selfBubble.bubble.material.map.dispose();selfBubble.bubble.material.dispose();selfBubble.bubble=null}
+  net.lastSend-=dt;
+  if(net.id&&net.lastSend<=0){net.lastSend=.15;
+    const key=`${player.position.x.toFixed(2)},${player.position.z.toFixed(2)},${player.rotation.y.toFixed(2)},${moving?1:0}`;
+    if(key!==net.last){net.last=key;netSend({t:"m",x:player.position.x,z:player.position.z,ry:player.rotation.y,mv:moving?1:0})}}
+}
+function sendChat(text){
+  text=text.trim().slice(0,120);if(!text)return;
+  if(!REALTIME_URL||!net.id){toast(REALTIME_URL?"Not connected yet. Try again in a moment.":"Chat works once the game is online.");return}
+  netSend({t:"chat",text});bubble(player,text,selfBubble);chatLog(S.name+" (you)",text);
+}
+$("nChat").onclick=()=>{const bar=$("chatbar");const show=bar.style.display!=="flex";bar.style.display=show?"flex":"none";if(show)$("chatin").focus()};
+$("chatbar").addEventListener("submit",e=>{e.preventDefault();const i=$("chatin");sendChat(i.value);i.value="";$("chatbar").style.display="none";i.blur()});
+function openPlayer(id){
+  const r=net.players.get(id);if(!r)return;const muted=net.muted.has(r.name);
+  openSheet(`<h2>${esc(r.name)}</h2><p class="sub">On ${Z().name} with you right now.</p>
+    <div class="list"><button class="opt" id="wave"><span class="e">👋🏾</span><div><b>Wave</b><span>Say hello</span></div></button>
+    <button class="opt" id="mute"><span class="e">${muted?"🔈":"🔇"}</span><div><b>${muted?"Unmute":"Mute"}</b><span>${muted?"See their messages again":"Hide their messages from you"}</span></div></button></div>
+    <button class="close" id="cl">Close</button>`);
+  $("cl").onclick=closeSheet;
+  $("wave").onclick=()=>{closeSheet();sendChat(`👋🏾 Hi ${r.name}!`)};
+  $("mute").onclick=()=>{muted?net.muted.delete(r.name):net.muted.add(r.name);try{localStorage.setItem("japa_muted",JSON.stringify([...net.muted]))}catch(e){}closeSheet();toast(muted?`${r.name} unmuted`:`${r.name} muted`)};
+}
+
 /* ================= loop ================= */
 const clock=new THREE.Clock();let saveT=0,chipT=0;
 const camPos=new THREE.Vector3(),camLook=new THREE.Vector3();let camYaw=Math.PI;
@@ -704,6 +797,7 @@ function tick(){
       let cd=target-camYaw;cd=Math.atan2(Math.sin(cd),Math.cos(cd));if(autoTarget||Math.abs(cd)<2.3)camYaw+=cd*Math.min(1,dt*(autoTarget?2.5:1.6));
     }
     animatePerson(player,speed,dt);
+    netTick(dt,speed>0);
     if(!uiOpen&&!busy){advance(dt*2);if(S.n.e<=0)collapse()}
     let np=null,best=99;spots().forEach(p=>{const d=Math.hypot(p.x-player.position.x,p.z-player.position.z);if(p.label)p.label.visible=d>5;if(d<(p.kind==="exit"?3.2:2.6)&&d<best){best=d;np=p}});
     if(np!==nearPlace){nearPlace=np;const a=$("act");
@@ -712,7 +806,7 @@ function tick(){
     const fx=Math.sin(camYaw),fz=Math.cos(camYaw);
     camPos.set(Math.max(-4.8,Math.min(4.8,player.position.x-fx*9)),6.4,player.position.z-fz*9);camera.position.lerp(camPos,Math.min(1,dt*5));
     camLook.set(player.position.x+fx*4,1.4,player.position.z+fz*4);camera.lookAt(camLook);
-    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips()}
+    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus()}
     saveT-=dt;if(saveT<=0){saveT=5;save()}
   } else if(root){
     const t=performance.now()/9000;camera.position.set(Math.sin(t)*3,8,-30+Math.cos(t)*8+40);camera.lookAt(0,2,-10);
