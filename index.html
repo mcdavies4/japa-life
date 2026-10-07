@@ -263,6 +263,7 @@ const ZONES={
    {id:"work",type:"work",name:"Kwik Cash & Carry",short:"Work",emoji:"💼",side:1,slot:5},
    {id:"suya",type:"suya",name:"Mallam Musa Suya",short:"Suya spot",emoji:"🔥",side:-1,slot:8},
    {id:"church",type:"church",name:"Abundant Grace Ministries",short:"Church",emoji:"⛪",side:1,slot:10},
+   {id:"estate",type:"estate",name:"Peckham Homes",short:"Estate agent",emoji:"🔑",side:1,slot:7},
    {id:"bank",type:"bank",name:"Peckham Bank",short:"Bank",emoji:"🏦",side:1,slot:8},
    {id:"jobcentre",type:"jobcentre",name:"Jobcentre",short:"Jobcentre",emoji:"🏛️",side:1,slot:11},
    {id:"clothes",type:"clothes",name:"Peckham Bargains",short:"Clothes shop",emoji:"🧥",side:1,slot:4}
@@ -396,7 +397,7 @@ const AREAS={ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy,
 function hz(){return S&&S.homeZone&&ZONES[S.homeZone]?S.homeZone:"ryelane"}
 function activePlaces(z){return z.places.filter(p=>p.type!=="home"||z.id===hz())}
 function homePlace(){return ZONES[hz()].places.find(p=>p.type==="home")}
-const HOMES=["Shared room","Studio flat","1-bed flat","2-bed flat","3-bed house"],RENTS=[120,150,210,280,360],CREDIT_REQ=[0,250,400,550,700];
+const HOMES=["Shared room","Studio flat","1-bed flat","2-bed flat","3-bed house","Your own home"],RENTS=[120,150,210,280,360,240],CREDIT_REQ=[0,250,400,550,700];
 function homeIdx(){if(S&&S.homeIdx!==undefined)return S.homeIdx;return {student:0,care:1,tech:2,born:-1}[S&&S.route]??1}
 function homeName(){const i=homeIdx();return i<0?"Mum’s house":HOMES[i]}
 function houseFee(){return homeIdx()<0?50:0}
@@ -447,12 +448,12 @@ const MUSA=[
 
 /* ================= state ================= */
 let S=null;
-function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,zone:home,homeZone:home,groceries:0,
+function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,kids:[],parents:null,preg:null,zone:home,homeZone:home,groceries:0,
   pos:{x:h.x,z:h.z+1.5},msgs:[{t:"Mum",d:0,txt:"Welcome to London, my child. Call me when you land. Don’t talk to strangers."}],unread:1,tx:[]}}
 function migrate(s){if(!s.zone)s.zone="ryelane";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
-  if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;s.v=7;return s}
+  if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;if(!s.kids)s.kids=[];if(s.parents===undefined)s.parents=null;if(s.preg===undefined)s.preg=null;s.v=8;return s}
 function save(){if(!S||!player)return;try{S.pos={x:player.position.x,z:player.position.z};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);return r?migrate(JSON.parse(r)):null}catch(e){return null}}
 const clamp=v=>Math.max(0,Math.min(100,v));
@@ -601,7 +602,7 @@ function buildZone(zid){
           if(bay&&f===0&&k===0){box(.6,2.4,3.2,col,side*6.72,fy,wz);plane(2.6,1.7,winMat,side*6.41,fy,wz,ry);continue}
           plane(1.35,1.95,mat("#F2EEE4"),side*7.03,fy,wz,ry);plane(1.1,1.7,winMat,side*7.045,fy,wz,ry);plane(1.15,.07,mat("#F2EEE4"),side*7.05,fy,wz,ry);
           box(.18,.12,1.5,trim,side*7.08,fy-1.05,wz);box(.12,.22,1.45,trim,side*7.07,fy+1.1,wz)}}
-      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",commission:"#0E7A4B",exams:"#2D3192",security:"#1C1B3A",hospital:"#3BA3D9",cars:"#C2304F",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
+      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",estate:"#0E7A4B",commission:"#0E7A4B",exams:"#2D3192",security:"#1C1B3A",hospital:"#3BA3D9",cars:"#C2304F",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
       if(type==="home"){
         plane(1.4,2.4,mat("#2D3192"),side*7.03,1.2,z,ry);plane(1.4,.5,winMat,side*7.035,2.65,z,ry);
         plane(1.6,.5,own(new THREE.MeshBasicMaterial({map:textTex("3B","#F4C430","#1C1B3A",128,40,30)})),side*7.04,3.15,z+1.2,ry);
@@ -879,7 +880,7 @@ function newDay(d){
   const r=R();
   if(w===0)S.weekShifts=0;
   if(w===5){
-    if(rentNow()){const rn=rentNow();money(-rn,`Rent, ${homeName()}, ${AREAS[hz()].area}`);addMsg("Landlord",S.m<0?`Rent of £${rn} taken. Your account is negative. We need to talk.`:`Rent of £${rn} received. Thanks.`)}
+    if(rentNow()){const rn=rentNow(),own=homeIdx()===5;money(-rn,own?`Mortgage and rent (shared ownership)`:`Rent, ${homeName()}, ${AREAS[hz()].area}`);addMsg(own?"Housing association":"Landlord",S.m<0?`Payment of £${rn} taken. Your account is negative. We need to talk.`:own?`Payment of £${rn} received. Thank you, homeowner.`:`Rent of £${rn} received. Thanks.`)}
     if(houseFee()){money(-houseFee(),"House contribution to Mum");addMsg("Mum",S.m<0?"Your contribution bounced. In MY house?":"Thank you for your contribution. Now wash the plates.")}
     if(S.m<0){S.n.f=clamp(S.n.f-20);S.credit=Math.max(0,(S.credit||0)-40)}else{S.flags.firstRent=true;S.credit=Math.min(999,(S.credit||0)+6+(F().cbCard?3:0))}}
   if(has("pet")&&Math.random()<.25){money(10,"Gift from Mum");addMsg("Mum","I sent you £10. Buy yourself something. Not suya.")}
@@ -893,7 +894,7 @@ function newDay(d){
     if(S.ajo.week>=5){S.ajo=null;addMsg("Sister Funke (Ajo)","This ajo cycle is complete. Everybody collected. God is faithful. New cycle starts soon.")}}
   {const m=dateOf(d).m;if(!F().coat&&["Nov","Dec","Jan","Feb"].includes(m)){S.n.f=clamp(S.n.f-8);if(Math.random()<.3)addMsg("Mum","Are you wearing a coat? I saw on the news that London is cold. Buy a coat!")}}
   {const r=Math.random();S.weather=r<.38?"rain":r<.75?"cloud":"sun";if(S.weather==="rain"){S.n.f=clamp(S.n.f-2);if(Math.random()<.4)addMsg("Mum","They said it’s raining in London again. Carry umbrella!")}}
-  bizNewDay(d);papersNewDay(d);
+  bizNewDay(d);papersNewDay(d);ch4NewDay(d);
   if(homeIdx()>=2)add("f",homeIdx()*2);
   lifeNewDay(d);
 }
@@ -971,6 +972,7 @@ function isOpen(type){const h=hour();
   if(type==="bukka")return h>=11&&h<22;
   if(type==="library")return h>=9&&h<20;
   if(type==="exams")return dow()<6&&h>=8&&h<18;
+  if(type==="estate")return h>=9&&h<18;
   if(type==="commission")return dow()<5&&h>=9&&h<13;
   if(type==="security")return true;
   if(type==="hospital")return h>=7&&h<20;
@@ -987,7 +989,7 @@ function isOpen(type){const h=hour();
   if(type==="riders")return h>=8&&h<23;
   if(type==="care")return h>=7&&h<19;
   return true}
-function hoursText(type){return{exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
+function hoursText(type){return{estate:"Open 9 AM to 6 PM. Shared ownership specialists.",exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
   church:"Open 8 AM to 9 PM. Sunday service 9 AM to 1 PM.",market:"Open 8 AM to 6 PM. Cheapest foodstuff in Peckham.",wmarket:"Open 8 AM to 6 PM.",
   barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]}
 const add=(k,v)=>{if(v>0&&k==="f"&&has("owambe"))v*=1.25;if(v>0&&k==="h"&&has("foodie"))v*=1.25;if(v<0&&k==="e"&&has("iron"))v*=.75;S.n[k]=clamp(S.n[k]+v)};
@@ -1020,6 +1022,10 @@ function actionsFor(type){
     ...(S.biz&&S.biz.type==="cargo"?[{e:"📦",n:"Receive customers’ drop-offs",s:"1 hour, collect fees",ok:h>=8&&h<21,why:"Customers come 8 AM to 9 PM",run:()=>{const n0=1+Math.floor(Math.random()*3);let fee=0,kg=0;for(let i=0;i<n0;i++){const k=15+Math.floor(Math.random()*30);kg+=k;fee+=Math.round(k*2.2)}
       money(fee,"Cargo fees");S.biz.load+=kg;S.biz.earned+=fee;advance(60);jxp(6);return `${n0} customer${n0>1?"s":""} dropped off ${kg}kg: ${pick(["Ghana Must Go bags full of Milo and corned beef","a laptop, three phones and a suspicious amount of Quality Street","baby clothes, a microwave and ‘small’ Ankara for Aunty"])}. +£${fee} in fees. Ship it at Naija Travels.`}}]:[]),
     ...(S.chapter>=3?[{e:"🏡",n:"Look for a better place",s:`Credit score ${S.credit}`,ok:true,run:()=>{openUpgrade();return null}}]:[]),
+    ...(S.chapter>=4&&S.partner&&S.partner.kind==="partner"&&S.partner.where==="uk"?[{e:"💍",n:`Propose to ${S.partner.name}`,s:S.partner.love>=75?"They’re ready. Are you?":`Love needs to be 75+ (now ${S.partner.love})`,ok:S.partner.love>=75,why:"Build your relationship first",run:()=>{openWedding();return null}}]:[]),
+    ...(S.chapter>=4&&S.partner&&S.partner.where==="uk"&&!S.preg&&S.kids.length<3?[{e:"👶🏾",n:"Talk about having a baby",s:"A big conversation",ok:S.partner.love>=60,why:"Love needs to be 60+",run:()=>{advance(60);if(Math.random()<.7){S.preg={due:day()+10};addMsg(S.partner.name,"I’m pregnant!!! Don’t tell your mother yet. (Too late, she knows. She always knows.)");return "Two lines on the test. You both screamed. A new chapter is coming in about ten days. (Game time moves fast.)"}return "You agreed to wait a little. Maybe after the next promotion."}}]:[]),
+    ...(S.parents?[{e:"🎡",n:"Take Mum and Dad sightseeing",s:"£40, 4 hours, +25 Fun, +5 Respect",ok:S.m>=40,why:"Not enough money",run:()=>{money(-40,"Sightseeing with Mum and Dad");advance(240);add("f",25);resp(5);add("e",-10);return pick(["Big Ben, the London Eye, and Dad asked why the Queen’s house has no generator.","Oxford Street. Mum bought nothing and haggled at three shops anyway.","The Thames boat. Dad said Lagos lagoon is bigger. It isn’t."])}},
+      {e:"🍲",n:"Eat Mum’s cooking",s:"Free, +50 Food, +15 Fun",ok:true,run:()=>{advance(45);add("h",50);add("f",15);return pick(["Pepper soup, the way only she makes it.","Ofe onugbu with real bitterleaf. She brought it in her suitcase.","Jollof with that bottom-pot smoke. You almost cried."])}}]:[]),
     {e:"🚿",n:"Shower",s:"20 min, +60 Hygiene",ok:true,run:()=>{advance(20);add("y",60);return "Fresh. The water pressure was disrespectful, but fresh."}},
     {e:"📺",n:"Watch Nollywood",s:"2 hours, +30 Fun",ok:true,run:()=>{advance(120);add("f",30);return pick(["The twin was evil all along. You saw it coming.","Three hours of slaps and one wedding. Perfect.","Someone said ‘you will not kill me’ six times."])}},
     {e:"📞",n:"Call Mum",s:"40 min, +15 Fun",ok:h>=7&&h<23,why:"Too late. She’ll panic.",run:()=>{advance(40);add("f",15);return pick(["She prayed for you for nine minutes straight.","She asked if you’re eating. You lied a little.","She updated you on 14 relatives. You remember 3."])}}
@@ -1047,12 +1053,20 @@ function actionsFor(type){
     {e:"🚗",n:ex("drive").passed?"Full driving licence ✅":"Driving practical test",s:ex("drive").passed?"Peckham Motors is waiting for you":`£62 · needs theory pass and 3 lessons (you’ve had ${S.lessons})`,ok:open&&!ex("drive").passed&&ex("theory").passed&&S.lessons>=3&&S.m>=62,why:ex("drive").passed?"Passed":!ex("theory").passed?"Pass your theory first":S.lessons<3?"Take more lessons (at home)":"Not enough money",
       run:()=>{money(-62,"Driving practical test");advance(90);runQuiz("🚗 Practical test",QB.practical,6,5,(ok,sc)=>{if(ok){ex("drive").passed=true;jxp(80);resp(4);addMsg("Mum","You passed your driving test?! When are you buying Benz?");examResult(true,"Driving test",`${sc}/6 with minor faults. The examiner smiled once. You can buy a car at Peckham Motors.`)}
         else examResult(false,"Driving test",`${sc}/6. The examiner said ‘That was a serious fault.’ Book again.`)});return null}},
+    {e:"🇬🇧",n:ex("lifeuk").passed?"Life in the UK test ✅":"Life in the UK test",s:ex("lifeuk").passed?"Needed for ILR and citizenship":"£50 · 12 questions, pass 9 (the real one is 24, pass 18)",ok:open&&!ex("lifeuk").passed&&S.m>=50,why:ex("lifeuk").passed?"Passed":!open?"Closed":"Not enough money",
+      run:()=>{money(-50,"Life in the UK test");advance(60);runQuiz("🇬🇧 Life in the UK",QB.lifeuk,12,9,(ok,sc)=>{if(ok){ex("lifeuk").passed=true;jxp(60);examResult(true,"Life in the UK test",`${sc}/12. You now know more British history than most British people. Ask your colleague Gary when the Magna Carta was. He doesn’t know.`)}else examResult(false,"Life in the UK test",`${sc}/12 (need 9). Book again. Revise the kings and queens.`)});return null}},
+    {e:"🗣️",n:ex("english").passed?"English B1 ✅":"English language test (B1)",s:ex("english").passed?"Requirement met":"£150 · short speaking and listening test",ok:open&&!ex("english").passed&&S.m>=150,why:ex("english").passed?"Passed":!open?"Closed":"Not enough money",
+      run:()=>{money(-150,"English B1 test");advance(60);runQuiz("🗣️ English B1",QB.english,3,2,(ok,sc)=>{if(ok){ex("english").passed=true;examResult(true,"English B1","The examiner said your English is ‘excellent’. You said ‘I know.’ Then you said ‘Sorry.’ British already.")}else examResult(false,"English B1","Nerves. Book again.")});return null}},
     {e:"🩺",n:ex("cbt").passed?"NMC CBT ✅":"NMC computer-based test (CBT)",s:ex("cbt").passed?"Next: the OSCE practical exam":`£85 · needs 5 study points (you have ${st}) · pass 6/8`,ok:open&&!ex("cbt").passed&&st>=5&&S.m>=85,why:ex("cbt").passed?"Passed":!open?"Closed":st<5?"Study more first":"Not enough money",
       run:()=>{money(-85,"NMC CBT");advance(150);runQuiz("🩺 NMC CBT",QB.nmc,8,6,(ok,sc)=>{if(ok){ex("cbt").passed=true;jxp(50);examResult(true,"NMC CBT",`You scored ${sc}/8. Book your OSCE when you’re ready.`)}else examResult(false,"NMC CBT",`You scored ${sc}/8 (pass mark 6). Keep studying and book again.`)});return null}},
     {e:"🏥",n:ex("nmc").passed?"NMC registration ✅":"NMC OSCE practical exam",s:ex("nmc").passed?"You can work as an NHS nurse":`£800 · needs CBT pass and 7 study points · 2 stations`,ok:open&&!ex("nmc").passed&&ex("cbt").passed&&st>=7&&S.m>=800,why:ex("nmc").passed?"Registered":!ex("cbt").passed?"Pass the CBT first":st<7?"Study more first":"Not enough money",
       run:()=>{money(-800,"NMC OSCE");advance(240);add("e",-15);runOrder(OSCE,ok=>{if(ok){ex("nmc").passed=true;jxp(150);resp(10);addMsg("Mum","NURSE?! A proper UK nurse?! I’ve told the whole church. Pastor is announcing it on Sunday.");examResult(true,"NMC registration","You passed both stations. You’re on the NMC register. Thames General Hospital, Central London, will take you as a Band 5 Staff Nurse.")}
         else examResult(false,"OSCE","Too many mistakes at a station. It happens to many people. Rebook and practise.")});return null}}
   ]}
+  if(type==="estate")return [
+    {e:"🔑",n:F().owner?"You own your home ✅":"Buy your first home (shared ownership)",s:F().owner?"Housing association pays tribute to your Saturday transfers":"Check if you’re ready",ok:!F().owner&&open,why:F().owner?"Done":"Open 9 AM to 6 PM",run:()=>{openHomeBuy();return null}},
+    {e:"📈",n:"Get a mortgage in principle",s:"10 min",ok:open,why:"Closed",run:()=>{advance(10);return S.credit>=600&&isSettled()?"‘You qualify for a shared ownership mortgage.’ The adviser smiled. You almost cried.":`‘Come back when you’re settled and your credit score is 600 or more.’ You have ${S.credit}.`}}
+  ];
   if(type==="commission")return [
     {e:"🛂",n:F().hc?"Passport sorted ✅":S.route==="born"?"Apply for a Nigerian passport":"Renew your Nigerian passport",s:F().hc?"Your new passport is on its way":"£110 · bring patience and a snack",ok:!F().hc&&open&&S.m>=110,why:F().hc?"Done":!open?"Open 9 AM to 1 PM, weekdays":"Not enough money",
       run:()=>{if(!F().hcTry){F().hcTry=true;advance(300);add("f",-10);add("e",-10);return "You queued for five hours. Then: ‘System is down. Come back tomorrow.’ At least the aunty behind you shared her chin chin."}
@@ -1386,7 +1400,7 @@ function bizBind(){
 
 /* ================= Chapter 3: homes, credit, papers ================= */
 function openUpgrade(){
-  const cur=homeIdx(),opts=[];for(let i=Math.max(1,cur+1);i<HOMES.length;i++)opts.push(i);
+  const cur=homeIdx(),opts=[];for(let i=Math.max(1,cur+1);i<5;i++)opts.push(i);
   const cost=i=>Math.round(RENTS[i]*((AREAS[hz()]||{}).mult||1)*2+100);
   openSheet(`<h2>🏡 A better place</h2><p class="sub">You live in: ${homeName()}, ${AREAS[hz()].area}. Credit score: ${S.credit}. Landlords check it.</p>
     <div class="list">${opts.map(i=>{const ok=S.credit>=CREDIT_REQ[i]&&S.m>=cost(i);return `<button class="opt" data-up="${i}" ${ok?"":"disabled"}><span class="e">${["🛏️","🏠","🏡","🏘️","🏰"][i]}</span><div><b>${HOMES[i]}</b><span>Rent £${Math.round(RENTS[i]*((AREAS[hz()]||{}).mult||1))}/week · Move-in £${cost(i)} · ${S.credit<CREDIT_REQ[i]?`Needs credit ${CREDIT_REQ[i]}`:"Credit OK ✅"}</span></div></button>`}).join("")}</div>
@@ -1398,6 +1412,14 @@ function openUpgrade(){
 function papersReq(){const v=S.visa||{},xpTot=Object.values(S.xp).reduce((a,b)=>a+b,0);
   const sponsorOK=S.route==="tech"?true:S.route==="care"?(!v.revoked):(unlocked("security")||unlocked("nurse")||lvl("care")>=1||v.type==="Health & Care Worker visa");
   return [["🏦 Bank statements",!!F().bank],["🧾 Payslips (5+ shifts)",xpTot>=5],["📄 "+(S.route==="tech"?"Employer letter":"Sponsored job (care, security or nursing)"),sponsorOK],["💷 Fees and health surcharge £1,250",S.m>=1250]]}
+function ilrBox(){
+  if(S.chapter<4||S.route==="born")return "";
+  if(F().ilr)return `<div class="msg"><small>Settlement</small><b>✅ Indefinite Leave to Remain</b><br>No more visa renewals. Citizenship comes next.</div>`;
+  if(F().ilrDue)return `<div class="msg"><small>Settlement</small><b>⏳ ILR application submitted</b><br>Decision by ${dateStr(F().ilrDue)}. You’ve checked your email 40 times today.</div>`;
+  const r=[["⏳ Time in the UK (10-year route)",inUK()>=settleDays()],["🇬🇧 Life in the UK test",!!(S.exams.lifeuk&&S.exams.lifeuk.passed)],["🗣️ English B1",!!(S.exams.english&&S.exams.english.passed)],["💷 Application fee £3,000",S.m>=3000]];
+  const ok=r.every(x=>x[1]);
+  return `<div class="msg"><small>Settlement · day ${inUK().toLocaleString()} of ${settleDays().toLocaleString()}</small><b>Apply for ILR</b><br>${r.map(([n,v])=>`${v?"✅":"⬜"} ${n}`).join("<br>")}<button class="close" id="ilr" ${ok?"":"disabled"} style="margin-top:8px">Submit ILR application</button></div>`;
+}
 function papersBox(){
   if(S.route==="born")return F().papersDone?`<div class="msg"><small>Passport</small><b>✅ British passport renewed</b></div>`:S.papers?`<div class="msg"><small>Passport</small><b>⏳ Renewal in progress</b><br>Arrives ${dateStr(S.papers.due)}</div>`:
     (S.chapter>=3?`<div class="msg"><small>Passport</small><b>Your British passport expires soon</b><br><button class="close" id="pp" ${S.m>=95?"":"disabled"} style="margin-top:6px">Renew online (£95)</button></div>`:"");
@@ -1421,6 +1443,92 @@ function papersNewDay(d){
   if(S.visa&&S.visa.until&&S.route!=="born"&&!S.papers&&d>S.visa.until&&!S.seen.overstay)S.evq.push("overstay");
   if(S.car&&d%7===0){money(-45,"Car insurance");}
 }
+
+/* ================= Chapter 4: Making It ================= */
+QB.lifeuk=[
+ ["What is the capital city of Scotland?",["Edinburgh","Glasgow","Aberdeen","Dundee"]],
+ ["Who is the patron saint of Wales?",["St David","St Andrew","St George","St Patrick"]],
+ ["Who wrote Romeo and Juliet?",["William Shakespeare","Charles Dickens","Jane Austen","Robert Burns"]],
+ ["When is Remembrance Day?",["11 November","5 November","1 March","25 December"]],
+ ["In which year was the Battle of Hastings?",["1066","1215","1415","1666"]],
+ ["Which two Houses make up the UK Parliament (with the monarch)?",["The House of Commons and the House of Lords","The House of Commons and the Senate","The Cabinet and the Supreme Court","The Assembly and the Council"]],
+ ["Bonfire Night, remembering the Gunpowder Plot, is on…",["5 November","31 October","1 January","14 February"]],
+ ["Who is generally seen as the first Prime Minister of Great Britain?",["Sir Robert Walpole","Winston Churchill","Oliver Cromwell","William Pitt"]],
+ ["The Magna Carta was agreed in…",["1215","1066","1588","1707"]],
+ ["What is the national flower of Scotland?",["The thistle","The rose","The daffodil","The shamrock"]],
+ ["Which of these is NOT part of the United Kingdom?",["The Republic of Ireland","Wales","Scotland","Northern Ireland"]],
+ ["What is the minimum voting age for UK general elections?",["18","16","21","25"]],
+ ["Who was Prime Minister for most of the Second World War?",["Winston Churchill","Margaret Thatcher","Clement Attlee","Tony Blair"]],
+ ["Florence Nightingale is best known for…",["Laying the foundations of modern nursing","Writing the national anthem","Inventing the telephone","Winning Wimbledon"]],
+ ["Who is the UK’s head of state?",["The monarch","The Prime Minister","The Speaker","The Mayor of London"]],
+ ["Which of these is a fundamental principle of British life?",["The rule of law","Only one religion allowed","No free speech","Voting is only for landowners"]]];
+QB.english=[
+ ["Choose the correct sentence.",["She has lived in London for five years.","She have lived in London for five years.","She living in London five years.","She is live in London since five years."]],
+ ["‘The appointment has been postponed.’ This means the appointment is…",["Moved to a later time","Cancelled forever","Happening now","Earlier than planned"]],
+ ["Which word means ‘very tired’?",["Exhausted","Excited","Expensive","Explained"]]];
+const BABY_NAMES=["Chidinma","Tobiloba","Ifeoluwa","Chukwuemeka","Adaeze","Oluwaseun","Zainab","Ebuka","Temiloluwa","Nnamdi","Fiyinfoluwa","Kamsi"];
+const PRICES={ryelane:450000,woolwich:400000,barking:350000,croydon:375000,edmonton:360000};
+function settleDays(){return 3650}
+function inUK(){return day()+(S.skip||0)}
+function isSettled(){return S.route==="born"||F().ilr}
+function steadyIncome(){return Object.keys(CAREERS).some(c=>lvl(c)>=2)}
+function openWedding(){
+  const n=S.partner.name;
+  openSheet(`<h2>💍 ${n} said YES!</h2><p class="sub">Now the real question: what kind of wedding?</p><div class="list">
+    <button class="opt" data-w="court" ${S.m>=300?"":"disabled"}><span class="e">🏛️</span><div><b>Register office, small and sweet</b><span>£300 · Aunties will never forgive you</span></div></button>
+    <button class="opt" data-w="full" ${S.m>=4000?"":"disabled"}><span class="e">🎉</span><div><b>Traditional wedding + white wedding + owambe</b><span>£4,000 · 300 guests, 200 uninvited · +30 Respect</span></div></button></div><button class="close" id="cl">Not yet</button>`);
+  $("cl").onclick=closeSheet;
+  $("sheetIn").querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const full=b.dataset.w==="full";money(full?-4000:-300,full?"Wedding (the full thing)":"Register office wedding");F().wed=true;S.partner.kind="spouse";S.partner.love=100;advance(full?600:180);add("f",full?50:25);resp(full?30:5);jxp(120);
+    addMsg("Mum",full?"The wedding was the talk of the whole of London! Aunty Bisi cried. Then complained about the food.":"Register office?! Without inviting your people?! We will do a proper traditional one in December. Non-negotiable.");
+    openSheet(`<div style="text-align:center"><div class="lot-e">💒</div><h2 style="margin-top:8px">You’re married!</h2></div><div class="result">${full?`Aso ebi in gold and wine, a 4-hour reception, money sprayed like rain, and the DJ played ‘Ada Ada’ three times. ${n} looked at you like you were the only person there.`:`Ten minutes, two witnesses, and a celebratory meal at Jollof House. ${n} said it was perfect. It was.`}</div><button class="primary" id="ok">❤️</button>`);$("ok").onclick=closeSheet});
+}
+function openHomeBuy(){
+  const ok0=isSettled(),c0=S.credit>=600,inc=steadyIncome();
+  const share=k=>PRICES[k]*.25,dep=k=>Math.round(share(k)*.05+1500),wk=k=>Math.round(240*AREAS[k].mult);
+  openSheet(`<h2>🏠 Buy your first home</h2><p class="sub">Shared ownership: buy a 25% share with a 5% deposit, pay a mortgage on your share and rent on the rest. How many Londoners get on the ladder.</p>
+    <div class="msg">${ok0?"✅":"⬜"} Settled status (ILR or British)<br>${c0?"✅":"⬜"} Credit score 600+ (you have ${S.credit})<br>${inc?"✅":"⬜"} Steady income (any career at level 3+)</div>
+    <div class="list">${Object.keys(PRICES).map(k=>`<button class="opt" data-buy="${k}" ${ok0&&c0&&inc&&S.m>=dep(k)&&!F().owner?"":"disabled"}><span class="e">🏡</span><div><b>2-bed in ${AREAS[k].area}</b><span>Full price £${PRICES[k].toLocaleString()} · deposit + fees £${dep(k).toLocaleString()} · £${wk(k)}/week mortgage + rent</span></div></button>`).join("")}</div>
+    <button class="close" id="cl">Not yet</button>`);
+  $("cl").onclick=closeSheet;
+  $("sheetIn").querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{const k=b.dataset.buy;money(-dep(k),`Home deposit and fees, ${AREAS[k].area}`);S.homeZone=k;S.homeIdx=5;F().owner=true;resp(20);jxp(150);advance(300);
+    addMsg("Mum","YOU BOUGHT A HOUSE IN LONDON?! I’m crying. I’m telling everybody. When I come, I’m staying three months.");addMsg("Dad","Well done. Is the roof strong?");
+    closeSheet();const hp=homePlace();enterZone(k,{x:hp.x,z:hp.z+1.5},Math.PI);
+    openSheet(`<div style="text-align:center"><div class="lot-e">🔑</div><h2 style="margin-top:8px">You’re a homeowner!</h2><p class="sub">Your own 2-bed in ${AREAS[k].area}</p></div><div class="result">The keys are in your hand. You touched every wall. You’ve already planned the housewarming owambe.</div>
+      <button class="close" id="shh">Share it</button><button class="primary" id="ok" style="margin-top:8px">Home sweet home</button>`);$("ok").onclick=closeSheet;$("shh").onclick=()=>showCard(makeCard("home",{player:S.name,area:AREAS[k].area}),`I just bought my first home in ${AREAS[k].area} 🔑🏡 Japa Life`)});
+}
+function familyBox(){
+  let o="";
+  if(S.chapter>=4&&S.partner&&S.partner.where==="home")o+=F().spouseVisaDue?`<div class="msg"><small>Family visa</small><b>⏳ ${S.partner.name}’s visa is being processed</b><br>Decision by ${dateStr(F().spouseVisaDue)}</div>`:
+    `<div class="msg"><small>Family visa</small><b>Bring ${S.partner.name} to London</b><br>${isSettled()?"✅":"⬜"} You’re settled (ILR or British)<br>${steadyIncome()?"✅":"⬜"} Income above the minimum threshold (career level 3+)<br>${S.m>=3000?"✅":"⬜"} £3,000 for fees and the health surcharge
+      <button class="close" id="spv" ${isSettled()&&steadyIncome()&&S.m>=3000?"":"disabled"} style="margin-top:6px">Apply for a family visa</button></div>`;
+  if(S.chapter>=4)o+=F().parentsDue?`<div class="msg"><small>Visitor visas</small><b>⏳ Mum and Dad’s visas are being processed</b><br>Decision by ${dateStr(F().parentsDue)}</div>`:S.parents?`<div class="msg"><small>Mum and Dad are visiting</small><b>👵🏾👴🏾 Until ${dateStr(S.parents.until)}</b></div>`:
+    `<div class="msg"><small>Visitor visas</small><b>Invite Mum and Dad to London</b><br>${homeIdx()>=1?"✅":"⬜"} Space for them (studio or bigger)<br>${S.m>=400?"✅":"⬜"} £400 for two visitor visas and a sponsorship letter
+      <button class="close" id="par" ${homeIdx()>=1&&S.m>=400?"":"disabled"} style="margin-top:6px">Apply for their visitor visas</button></div>`;
+  return o;
+}
+function familyBind(){
+  const sp=$("spv");if(sp)sp.onclick=()=>{money(-3000,`Family visa for ${S.partner.name}`);F().spouseVisaDue=day()+12;addMsg(S.partner.name,"You applied?! I’m packing already. Don’t tell your mother I cried.");loveAdd(25);openPhone()};
+  const pa=$("par");if(pa)pa.onclick=()=>{money(-400,"Visitor visas for Mum and Dad");F().parentsDue=day()+7;addMsg("Mum","The visa people asked Dad why he wants to visit. He said ‘to see my grandchildren that don’t exist yet.’ Pray for us.");openPhone()};
+}
+function ch4NewDay(d){
+  if(F().ilrDue&&d>=F().ilrDue){F().ilrDue=null;F().ilr=true;S.visa={type:"Indefinite Leave to Remain",until:null,sponsor:null};S.evq.push("ilr_granted")}
+  if(F().spouseVisaDue&&d>=F().spouseVisaDue){F().spouseVisaDue=null;F().spouseVisa=true;if(S.partner){S.partner.where="uk";S.partner.love=100}S.evq.push("spouse_arrives")}
+  if(F().parentsDue&&d>=F().parentsDue){F().parentsDue=null;if(Math.random()<.8){S.parents={until:d+14};F().parentsVisited=true;S.evq.push("parents_arrive")}else addMsg("UK Visas","Your parents’ visitor visa applications were refused: ‘insufficient evidence of ties to Nigeria’. Dad is very offended. You can reapply from Phone → Papers.")}
+  if(S.parents){S.groceries+=1;if(d>=S.parents.until){S.parents=null;add("f",-12);addMsg("Mum","We’re back in Lagos. The house is too quiet. Your freezer is full of soup. Eat it.")}else if(Math.random()<.5)addMsg("Mum (in London)",pick(["I rearranged your kitchen. You’ll thank me.","Your neighbours are nice. I gave them jollof. They asked for the recipe. I said no.","Your father has been watching the same news channel for six hours.","Why is it dark at 4 PM? This country is not serious.","I went to your church. The pastor is too short-sermon. I like ours better."]))}
+  if(S.preg&&d>=S.preg.due){S.preg=null;S.evq.push("baby")}
+  if(S.kids&&S.kids.length&&d%7===0&&!S.parents){money(-110*S.kids.length,"Nursery fees");if(Math.random()<.4)addMsg("Nursery",pick(["Your child bit someone today. They were provoked.","Your child said ‘innit’ today. We thought you should know.","Your child refused the fish fingers and asked for ‘rice and stew’."]))}
+}
+function ch4Events(){LE.push(
+ {id:"ilr_granted",forced:1,from:"UK Visas and Immigration",av:"🇬🇧",t:()=>"Congratulations. You have been granted Indefinite Leave to Remain in the United Kingdom.",c:[
+  ["😭🙌🏾 Thank God!",{f:40},"",()=>{jxp(200);resp(15);addMsg("Mum","ILR?! No more visa wahala?! I’m doing thanksgiving in church on Sunday. Send money for the cake. A big cake.");return "No more visa renewals. No more health surcharge. No more checking the expiry date at 3 AM. You read the email eleven times. You screenshotted it. You’re settled."}]]},
+ {id:"spouse_arrives",forced:1,from:()=>nm(),av:"✈️",t:()=>"I’ve landed at Heathrow!!! Come and get me. I brought three Ghana Must Go bags and your mother’s soup.",c:[
+  ["Rush to the airport",{f:40,love:30},"After all those months of video calls that kept dropping, you’re finally in the same city. You both cried at Arrivals. A stranger clapped. Long distance: over. ❤️"]]},
+ {id:"parents_arrive",forced:1,from:"Mum",av:"👵🏾",t:()=>"We have landed! Your father is asking why the airport is so big. Come and carry us.",c:[
+  ["Pick them up from Heathrow",{f:35,h:20},"Mum hugged you for a full minute, then said you’ve lost weight. Dad shook your hand like a business partner. They’re staying two weeks. Your freezer will never be empty again.",()=>{resp(8)}]]},
+ {id:"baby",forced:1,from:"The midwife",av:"👶🏾",t:()=>"Congratulations! You have a healthy baby. What will you call them?",c:shuffle(BABY_NAMES.slice()).slice(0,4).map(n=>[n,{f:40},"",()=>{S.kids=S.kids||[];S.kids.push({name:n,born:day()});jxp(150);resp(10);
+   addMsg("Mum",`${n}! My grandchild! I’m coming for omugwo. Prepare the spare room. Don’t argue.`);if(!S.parents&&!F().parentsDue){F().parentsDue=day()+5}
+   return `Welcome to the world, ${n}. Seven names were suggested by relatives. You picked ${n}. Grandma has already given them three more. Omugwo is coming: Mum is applying for her visa.`}])}
+);}
 
 /* ================= dreams ================= */
 function checkDream(){
@@ -1542,6 +1650,8 @@ function makeCard(kind,d){
     x.font='600 40px Figtree, sans-serif';x.fillText("This certifies that",540,400);x.fillStyle="#F4C430";x.font='800 90px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(d.player,540,510);
     x.fillStyle="#FFFFFF";x.font='600 40px Figtree, sans-serif';x.fillText(`has completed Chapter ${d.n}`,540,590);x.font='800 64px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(`“${d.name}”`,540,680);
     x.textAlign="left";x.font='600 34px Figtree, sans-serif';let y=780;d.goals.slice(0,8).forEach(g=>{x.fillText("✅ "+g,140,y);y+=46});x.textAlign="left";return c}
+  if(kind==="ilr"||kind==="home"){const{c,x}=cardBase(kind==="ilr"?"SETTLED":"NEW HOMEOWNER",kind==="ilr"?"Indefinite Leave to Remain":`${d.area}, London`);
+    x.font="200px sans-serif";x.textAlign="center";x.fillText(kind==="ilr"?"🇬🇧":"🏡",540,500);stamp(x,540,850,260,kind==="ilr"?"UK VISAS":"KEYS COLLECTED",kind==="ilr"?"SETTLED":"HOME",d.player.toUpperCase().slice(0,16),kind==="ilr"?"#0E7A4B":"#E5487A");x.textAlign="left";return c}
   if(kind==="ijgb"){const{c,x}=cardBase("BOARDING PASS","Detty December");
     x.fillStyle="#FFFFFF";x.fillRect(70,280,940,700);x.fillStyle="#1C1B3A";x.font='800 130px "Bricolage Grotesque", Figtree, sans-serif';x.fillText("LHR",110,470);x.fillText("LOS",720,470);
     x.font="90px sans-serif";x.fillText("✈️",470,450);x.font='700 38px Figtree, sans-serif';x.fillText(`Passenger: ${d.player}`,110,580);x.fillText(`Trip: ${d.kind}`,110,640);x.fillText("Luggage: 2 x Ghana Must Go",110,700);x.fillText("Seat: wherever Aunty hasn’t sat",110,760);
@@ -1599,7 +1709,15 @@ const CHAPTERS=[
   {id:"hc",n:"Visit the Nigeria High Commission",hint:"Central London, weekday mornings. Passport business. Bring patience.",place:"commission",done:()=>F().hc},
   {id:"credit",n:"Reach a credit score of 400",hint:"Pay rent on time, register to vote, get a credit builder card.",place:"bank",done:()=>S.credit>=400},
   {id:"upgrade",n:"Move to a better home",hint:"At home: ‘Look for a better place’. Landlords check your credit.",place:"home",done:()=>F().upgraded}]},
- {n:"Making It",d:"Coming soon: ILR, the Life in the UK test, a mortgage, kids, omugwo, and bringing your parents over.",soon:true,goals:[]}
+ {n:"Making It",d:"Years have passed. Now it’s time to settle: papers, a home of your own, and family.",unlock:"⏩ Years pass… You’ve renewed your visa twice, moved twice, and Mum now calls you ‘London’. 🇬🇧 ILR applications open (Phone → Papers). 🔑 Peckham Homes estate agent on Rye Lane. 👨🏾‍👩🏾‍👧🏾 Family: marriage, bringing your spouse over, babies, and inviting Mum and Dad.",goals:[
+  {id:"lifeuk",n:"Pass the Life in the UK test",hint:"Westminster Test Centre, Central London. Revise your kings and queens.",place:"exams",done:()=>S.route==="born"||!!(S.exams.lifeuk&&S.exams.lifeuk.passed)},
+  {id:"ilr",n:"Get Indefinite Leave to Remain",hint:"Phone → Papers. Needs Life in the UK, English B1 and £3,000.",place:"home",done:()=>isSettled()},
+  {id:"credit600",n:"Reach a credit score of 600",hint:"Keep paying rent on time. Credit builder card. Electoral roll.",place:"bank",done:()=>S.credit>=600},
+  {id:"buyhome",n:"Buy your first home",hint:"Peckham Homes estate agent, Rye Lane. Shared ownership.",place:"estate",done:()=>F().owner},
+  {id:"family",n:"Grow your family",hint:"Get married, bring your spouse over, or have a baby.",place:"home",done:()=>(S.kids&&S.kids.length>0)||F().wed||F().spouseVisa},
+  {id:"parents",n:"Bring Mum and Dad to visit London",hint:"Phone → Papers. Needs a studio or bigger and £400 for visas.",place:"home",done:()=>F().parentsVisited},
+  {id:"respect80",n:"Become a respected Aunty/Uncle (80 Respect)",hint:"Church, owambes, helping people, family milestones.",place:"church",done:()=>S.respect>=80}]},
+ {n:"Legacy",d:"Coming soon: citizenship, your house in Lagos, a chieftaincy title, your own shop on Rye Lane, and mentoring new arrivals.",soon:true,goals:[]}
 ];
 function curChapter(){return CHAPTERS[Math.min(S.chapter,CHAPTERS.length)-1]}
 let goalT=0;
@@ -1612,9 +1730,10 @@ function goalTick(dt){
 function chapterDone(){
   const ch=curChapter();S.chapter++;jxp(150);resp(10);money(100,"Chapter reward: Mum’s blessing");S.skip+=120;
   if(S.chapter===3&&S.visa&&S.visa.until&&S.route!=="born"){S.visa.until=Math.min(S.visa.until,day()+28);addMsg("UKVI",`Your permission to stay ends on ${dateStr(S.visa.until)}. Apply to extend before then. (Phone → Papers.)`)}
+  if(S.chapter===4){S.skip=Math.max(S.skip||0,settleDays()-day()-5);if(S.visa&&S.visa.until)S.visa.until=Math.max(S.visa.until,day()+400);S.credit=Math.min(999,(S.credit||0)+120)}
   const nx=curChapter();save();updateHUD();
   openSheet(`<div style="text-align:center"><div class="lot-e">🎉</div><h2 style="margin-top:8px">Chapter ${S.chapter-1} complete</h2><p class="sub">${ch.n}</p></div>
-    <div class="result"><b>A few months later…</b><br>You know your sort code by heart, the bus drivers nod at you, and you’ve stopped converting every price to naira. Mostly.<br><br>+150 XP · +10 Respect · +£100 from Mum</div>
+    <div class="result">${S.chapter===4?"<b>Years later…</b><br>Two visa renewals, three landlords, one Corolla, and countless Saturday rents. Your accent is now 60% London. Mum introduces you as ‘my child in London’ to strangers.":"<b>A few months later…</b><br>You know your sort code by heart, the bus drivers nod at you, and you’ve stopped converting every price to naira. Mostly."}<br><br>+150 XP · +10 Respect · +£100 from Mum</div>
     <h2 style="font-size:20px;margin:10px 0 4px">Chapter ${S.chapter}: ${nx.n}</h2><p class="sub">${nx.d}</p>${nx.unlock?`<div class="result">${nx.unlock}</div>`:""}
     <button class="close" id="shc">Share it</button><button class="primary" id="ok" style="margin-top:8px">Let’s go</button>`);
   $("ok").onclick=closeSheet;$("shc").onclick=()=>showCard(makeCard("chapter",{player:S.name,n:S.chapter-1,name:ch.n,goals:ch.goals.map(g=>g.n)}),`I just finished Chapter ${S.chapter-1}: “${ch.n}” in Japa Life 🇳🇬🇬🇧 Come and japa with me!`);
@@ -1717,6 +1836,7 @@ const LE=[
  {id:"heating",from:"British Gas",av:"🔥",t:()=>"Your energy bill is ready. It’s more than your rent in Lagos was for a year.",c:[
   ["Pay it and wear three jumpers",{m:-40,f:-5},"You can see your breath indoors. Very British experience."],["Pay it and keep the heating on",{m:-70,f:5},"Warm. Poor. Warm."]]}
 ];
+ch4Events();
 function evById(id){return LE.find(e=>e.id===id)}
 function pickAuto(){const ok=LE.filter(e=>!e.forced&&(!e.once||!S.seen[e.id])&&(!e.cond||e.cond()));return ok.length?pick(ok):null}
 function fxChips(fx){return Object.entries(fx).filter(([k,v])=>k!=="sent"&&v).map(([k,v])=>{const L={m:"",f:"Fun",e:"Energy",h:"Hunger",love:"Love",rep:"Rating",rs:"Respect"}[k];
@@ -1731,8 +1851,8 @@ function showEvent(ev){
     if(fx.sent&&fx.m){S.sent+=-fx.m;S.sendCount++;resp(2)}if(fx.rs)resp(fx.rs);jxp(3);
     let txt=out;if(fn){const r=fn();if(typeof r==="string")txt=r}
     openSheet(`<div class="evhead"><div class="av">${ev.av}</div><div><b>${esc(from)}</b><small>You: ${label}</small></div></div>
-      <div class="result">${txt}</div><div style="margin-bottom:12px">${fxChips(fx)}</div>${ev.id==="detty"?`<button class="close" id="bp">🎫 Share my IJGB boarding pass</button>`:""}<button class="primary" id="ok" style="margin-top:8px">OK</button>`);
-    $("ok").onclick=closeSheet;const bp=$("bp");if(bp)bp.onclick=()=>showCard(makeCard("ijgb",{player:S.name,kind:S.lastTrip==="detty"?"Full Detty December":"Village Christmas"}),"Officially IJGB 🛬 Japa Life");updateHUD();save();
+      <div class="result">${txt}</div><div style="margin-bottom:12px">${fxChips(fx)}</div>${ev.id==="detty"?`<button class="close" id="bp">🎫 Share my IJGB boarding pass</button>`:""}${ev.id==="ilr_granted"?`<button class="close" id="ilrc">🇬🇧 Share my ILR</button>`:""}<button class="primary" id="ok" style="margin-top:8px">OK</button>`);
+    $("ok").onclick=closeSheet;const ic=$("ilrc");if(ic)ic.onclick=()=>showCard(makeCard("ilr",{player:S.name}),"SETTLED 🇬🇧 After years of visas, I finally got my ILR in Japa Life.");const bp=$("bp");if(bp)bp.onclick=()=>showCard(makeCard("ijgb",{player:S.name,kind:S.lastTrip==="detty"?"Full Detty December":"Village Christmas"}),"Officially IJGB 🛬 Japa Life");updateHUD();save();
   });
 }
 function lifeNewDay(d){
@@ -1818,7 +1938,7 @@ function openPhone(){
     ${settle?`<div class="msg"><small>Settlement (ILR)</small><b>Day ${inUK} of ${settle.toLocaleString()} 😭</b><div style="height:8px;border-radius:4px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(1,inUK/settle*100)}%;background:#0E7A4B"></i></div><small style="margin-top:4px">The new 10-year route. Only ${settle-inUK} days to go.</small></div>`:`<div class="msg"><small>Status</small><b>British 🇬🇧</b><br>Your cousins keep asking you to ‘sponsor’ them.</div>`}
     <div class="msg"><small>Family</small><b>${S.partner?`${S.partner.name} (${S.partner.kind})`:"Single"}</b>${S.partner?`<br>${S.partner.where==="home"?"In Nigeria. Dependants rules mean they stayed behind for now.":"Here in London with you."}`:""}</div>
     <div class="msg"><small>ShiftNow agency rating</small><b>⭐ ${S.rep.toFixed(1)}</b>${S.booked?`<br>📌 Booked: ${CAREERS[S.booked.c].name}, ${timeStr(S.booked.start*60)} today (+${Math.round((S.booked.mult-1)*100)}%)`:"<br>Watch for shift alerts. Grab them fast."}</div>
-    ${papersBox()}<div class="msg"><small>Credit score</small><b>${S.credit} / 999</b><br>${F().roll?"✅ On the electoral roll":`<button class="close" id="vote" style="margin-top:6px">🗳️ Register to vote (electoral roll)</button><small style="margin-top:4px">Commonwealth citizens with permission to stay can register in the UK. It helps your credit score.</small>`}</div>
+    ${ilrBox()}${familyBox()}${papersBox()}<div class="msg"><small>Credit score</small><b>${S.credit} / 999</b><br>${F().roll?"✅ On the electoral roll":`<button class="close" id="vote" style="margin-top:6px">🗳️ Register to vote (electoral roll)</button><small style="margin-top:4px">Commonwealth citizens with permission to stay can register in the UK. It helps your credit score.</small>`}</div>
     <p class="sub">⚠️ A real sponsor never charges for a Certificate of Sponsorship.</p>`}
   if(phoneTab==="dream"){const Dd=DREAMS[S.dream],pr=progress();
     body=`<div style="text-align:center"><div class="lot-e">${Dd.em}</div><h2 style="margin-top:8px">${Dd.name}</h2><p class="sub">${Dd.d}</p></div>
@@ -1844,7 +1964,8 @@ function openPhone(){
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
   const st=$("st");if(st)st.onclick=()=>{phoneTab="set";openPhone()};
-  bizBind();papersBind();
+  bizBind();papersBind();familyBind();
+  const il=$("ilr");if(il)il.onclick=()=>{money(-3000,"ILR application");F().ilrDue=day()+10;advance(60);addMsg("UKVI","We have received your application for Indefinite Leave to Remain.");openPhone()};
   const sh=$("shd");if(sh)sh.onclick=()=>shareText(`I’m ${Math.floor(progress()*100)}% of the way to “${DREAMS[S.dream].name}” ${DREAMS[S.dream].em} in Japa Life as a ${R().name}. Join me on Rye Lane!`);
   const ub=$("uber");if(ub)ub.onclick=()=>openTravel(null,"uber");
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
