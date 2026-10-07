@@ -218,8 +218,11 @@ const CAREERS={
  retail:{name:"Kwik Cash & Carry",where:"Rye Lane",wage:11.5,titles:["Shelf Stacker","Till Operator","Supervisor","Assistant Manager","Store Manager"]},
  delivery:{name:"Chop Express rider",where:"Rye Lane",wage:0,titles:["New Rider","Rider","Top Rider","Rider Captain","Fleet Boss"]},
  care:{name:"Sunrise Care Home",where:"Woolwich",wage:12.6,titles:["Care Assistant","Senior Carer","Team Lead","Deputy Manager","Home Manager"]},
- tech:{name:"Remote tech job",where:"from home",wage:30,titles:["Junior Dev","Developer","Senior Dev","Staff Engineer","CTO"]}
+ tech:{name:"Remote tech job",where:"from home",wage:30,titles:["Junior Dev","Developer","Senior Dev","Staff Engineer","CTO"]},
+ security:{name:"Night security, Westminster House",where:"Central London",wage:13.5,req:"sia",titles:["Security Officer","Senior Officer","Supervisor","Site Manager","Security Director"]},
+ nurse:{name:"Thames General Hospital (NHS)",where:"Central London",wage:19.5,req:"nmc",titles:["Staff Nurse (Band 5)","Senior Staff Nurse","Charge Nurse (Band 6)","Ward Manager (Band 7)","Matron"]}
 };
+function unlocked(c){const r=CAREERS[c].req;return !r||(S.exams&&S.exams[r]&&S.exams[r].passed)}
 const ROUTES={
  student:{name:"Student Visa",em:"🎓",cash:900,rent:120,home:"Shared room, Flat 3B",cap:5,w:30,blurb:"You came for a master’s. You stayed for the 20-hour work limit.",perk:"Max 5 paid shifts a week. Cheapest rent."},
  care:{name:"Care Worker",em:"🩺",cash:500,rent:150,home:"Studio, Flat 3B",cap:99,w:35,blurb:"Night shifts, double shifts, and a WhatsApp group of 200 carers.",perk:"+20% pay and a head start at Sunrise Care Home, Woolwich."},
@@ -280,6 +283,20 @@ const ZONES={
   ends:[null,"Bellenden Road (coming soon)"],
   exits:[{id:"exit-ryelane",to:"ryelane",name:"Rye Lane",end:-1}]
  },
+ central:{name:"Northumberland Ave",area:"Central London",L:46,traffic:true,road:"#3B3F46",npcs:22,code:"WC2",crossing:12,towers:[],skyline:[{k:"bigben",x:-70,z:-250},{k:"eye",x:80,z:-240},{k:"shard",x:150,z:-330}],
+  furniture:[["post",-1,-26],["phone",1,-20],["phone",-1,30],["bin",1,30],["bin",-1,6]],ends:["Trafalgar Square (coming soon)","Embankment (coming soon)"],
+  left:["Coffee Shop","Souvenirs",null,"Theatre Tickets",null,"Bureau de Change","Sandwich Bar","Pharmacy","Coffee Shop"],
+  right:[null,"Pub",null,null,"Bookshop",null,"Restaurant","Gift Shop","Hotel"],
+  places:[
+   {id:"station-central",type:"station",name:"Charing Cross Station",short:"Station",emoji:"🚉",side:1,slot:0},
+   {id:"commission",type:"commission",name:"Nigeria High Commission",short:"High Commission",emoji:"🇳🇬",side:-1,slot:2},
+   {id:"exams",type:"exams",name:"Westminster Test Centre",short:"Test centre",emoji:"📝",side:-1,slot:4},
+   {id:"securityjob",type:"security",name:"Westminster House",short:"Night security",emoji:"🛡️",side:1,slot:3},
+   {id:"hospital",type:"hospital",name:"Thames General Hospital",short:"Hospital",emoji:"🏥",side:1,slot:5},
+   {id:"bus-central",type:"busstop",name:"Bus stop, Northumberland Ave",short:"Bus stop",emoji:"🚌",x:4.9,z:24}
+  ],
+  stalls:[],exits:[]
+ },
  highst:{name:"Peckham High Street",area:"Peckham",L:46,traffic:true,road:"#3B3F46",npcs:18,code:"SE15",crossing:-6,arch:6,towers:[[44,-20,38],[-46,10,32]],skyline:[{k:"shard",x:-40,z:-260},{k:"blocks",x:-160,z:-300,n:7}],
   furniture:[["post",1,-30],["phone",-1,-24],["bus",1,22],["bin",-1,30],["bin",1,-12]],ends:["Old Kent Road (coming soon)",null],
   left:["Pharmacy","Chicken & Chips","Hair & Beauty","Money Transfer",null,"Bakery","Phone Repairs",null,"Cafe"],
@@ -289,6 +306,7 @@ const ZONES={
    {id:"leisure",type:"gym",name:"Peckham Leisure Centre",short:"Leisure centre",emoji:"🏊🏾",side:-1,slot:4},
    {id:"fabrics",type:"fabrics",name:"Aso Ebi Palace",short:"Aso ebi",emoji:"👗",side:1,slot:5},
    {id:"jollofhouse",type:"bukka",name:"Jollof House",short:"Jollof House",emoji:"🍛",side:-1,slot:7},
+   {id:"motors",type:"cars",name:"Peckham Motors",short:"Car dealer",emoji:"🚗",side:1,slot:8},
    {id:"bus-highst",type:"busstop",name:"Bus stop, Peckham High Street",short:"Bus stop",emoji:"🚌",x:4.9,z:20}
   ],
   stalls:[],exits:[{id:"exit-ryelane-h",to:"ryelane",name:"Rye Lane",end:1}]
@@ -371,16 +389,21 @@ const ZONES={
   stalls:[[-6.2,-26],[-6.2,-34]],exits:[]
  }
 };
-const COMING=[["Central London","The City and Shoreditch"],["Manchester","Up north. Cheaper rent, more rain."],["Birmingham","The Midlands. Jollof is still jollof."]];
+const COMING=[["Manchester","Up north. Cheaper rent, more rain."],["Birmingham","The Midlands. Jollof is still jollof."]];
 const AREAS={ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy, loud, everything Naija on one street."},woolwich:{area:"Woolwich",mult:.9,pos:[6,.5],blurb:"Big Nigerian community, market days, Elizabeth line."},
   barking:{area:"Barking",mult:.85,pos:[8,5],blurb:"East London. More space for your money, East Street Market."},croydon:{area:"Croydon",mult:.92,pos:[-1,-7],blurb:"South London. Trams, big churches, the Container Yard."},
-  edmonton:{area:"Edmonton",mult:.88,pos:[0,10],blurb:"North London. Edmonton Green market and strong church life."},choumert:{area:"Peckham",pos:[0,-.5]},highst:{area:"Peckham",pos:[0,.6]}};
+  edmonton:{area:"Edmonton",mult:.88,pos:[0,10],blurb:"North London. Edmonton Green market and strong church life."},choumert:{area:"Peckham",pos:[0,-.5]},highst:{area:"Peckham",pos:[0,.6]},central:{area:"Central London",pos:[-1,3.5]}};
 function hz(){return S&&S.homeZone&&ZONES[S.homeZone]?S.homeZone:"ryelane"}
 function activePlaces(z){return z.places.filter(p=>p.type!=="home"||z.id===hz())}
 function homePlace(){return ZONES[hz()].places.find(p=>p.type==="home")}
-function rentNow(){return Math.round(R().rent*((AREAS[hz()]||{}).mult||1))}
+const HOMES=["Shared room","Studio flat","1-bed flat","2-bed flat","3-bed house"],RENTS=[120,150,210,280,360],CREDIT_REQ=[0,250,400,550,700];
+function homeIdx(){if(S&&S.homeIdx!==undefined)return S.homeIdx;return {student:0,care:1,tech:2,born:-1}[S&&S.route]??1}
+function homeName(){const i=homeIdx();return i<0?"Mum’s house":HOMES[i]}
+function houseFee(){return homeIdx()<0?50:0}
+function rentNow(){const i=homeIdx();return i<0?0:Math.round(RENTS[i]*((AREAS[hz()]||{}).mult||1))}
 function trip2(a,b,mode){const A=(AREAS[a]||AREAS.ryelane).pos,B=(AREAS[b]||AREAS.ryelane).pos;const d=Math.hypot(A[0]-B[0],A[1]-B[1]);
   if(mode==="bus")return{mins:Math.round(20+d*7.5),fare:1.75,d};
+  if(mode==="drive")return{mins:Math.round(10+d*3),fare:5+(b==="central"?15:0),d};
   if(mode==="uber"){const hr=S?hour():12,surge=(hr>=22||hr<5)?1.6:(hr>=17&&hr<19)?1.3:1;return{mins:Math.round(10+d*2.6),fare:Math.round((6+d*3.2)*surge*100)/100,d,surge}}
   return{mins:Math.round(15+d*4),fare:Math.round((2.8+d*.12)*100)/100,d}}
 function slotZ(zone,i){return -zone.L+6+i*10}
@@ -424,12 +447,12 @@ const MUSA=[
 
 /* ================= state ================= */
 let S=null;
-function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,zone:home,homeZone:home,groceries:0,
+function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,zone:home,homeZone:home,groceries:0,
   pos:{x:h.x,z:h.z+1.5},msgs:[{t:"Mum",d:0,txt:"Welcome to London, my child. Call me when you land. Don’t talk to strangers."}],unread:1,tx:[]}}
 function migrate(s){if(!s.zone)s.zone="ryelane";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
-  if(!s.homeZone)s.homeZone="ryelane";s.v=6;return s}
+  if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;s.v=7;return s}
 function save(){if(!S||!player)return;try{S.pos={x:player.position.x,z:player.position.z};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);return r?migrate(JSON.parse(r)):null}catch(e){return null}}
 const clamp=v=>Math.max(0,Math.min(100,v));
@@ -578,7 +601,7 @@ function buildZone(zid){
           if(bay&&f===0&&k===0){box(.6,2.4,3.2,col,side*6.72,fy,wz);plane(2.6,1.7,winMat,side*6.41,fy,wz,ry);continue}
           plane(1.35,1.95,mat("#F2EEE4"),side*7.03,fy,wz,ry);plane(1.1,1.7,winMat,side*7.045,fy,wz,ry);plane(1.15,.07,mat("#F2EEE4"),side*7.05,fy,wz,ry);
           box(.18,.12,1.5,trim,side*7.08,fy-1.05,wz);box(.12,.22,1.45,trim,side*7.07,fy+1.1,wz)}}
-      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
+      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",commission:"#0E7A4B",exams:"#2D3192",security:"#1C1B3A",hospital:"#3BA3D9",cars:"#C2304F",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
       if(type==="home"){
         plane(1.4,2.4,mat("#2D3192"),side*7.03,1.2,z,ry);plane(1.4,.5,winMat,side*7.035,2.65,z,ry);
         plane(1.6,.5,own(new THREE.MeshBasicMaterial({map:textTex("3B","#F4C430","#1C1B3A",128,40,30)})),side*7.04,3.15,z+1.2,ry);
@@ -642,6 +665,14 @@ function buildZone(zid){
       for(const q of[-26,22]){const b=new THREE.Mesh(new THREE.BoxGeometry(16,70+q,14),skyMat("#9AA5B5"));b.position.set(s.x+q,(70+q)/2,s.z+10);root.add(b)}}
     if(s.k==="o2"){const d=new THREE.Mesh(new THREE.SphereGeometry(40,24,12,0,Math.PI*2,0,Math.PI/2),skyMat("#C9CED6"));d.scale.y=.35;d.position.set(s.x,0,s.z);root.add(d);
       for(let a=0;a<12;a++){const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,40,1.2),skyMat("#E6C35A"));m.position.set(s.x+Math.cos(a/12*Math.PI*2)*30,18,s.z+Math.sin(a/12*Math.PI*2)*30);root.add(m)}}
+    if(s.k==="bigben"){const t=new THREE.Mesh(new THREE.BoxGeometry(12,90,12),skyMat("#A6957A"));t.position.set(s.x,45,s.z);root.add(t);
+      const c=new THREE.Mesh(new THREE.BoxGeometry(14,14,14),skyMat("#9C8A6E"));c.position.set(s.x,97,s.z);root.add(c);
+      const f=new THREE.Mesh(new THREE.CircleGeometry(5,20),skyMat("#E8E2C8"));f.position.set(s.x,97,s.z+7.1);root.add(f);
+      const sp=new THREE.Mesh(new THREE.ConeGeometry(8,26,4),skyMat("#6E6A60"));sp.rotation.y=Math.PI/4;sp.position.set(s.x,117,s.z);root.add(sp);
+      const pal=new THREE.Mesh(new THREE.BoxGeometry(140,30,20),skyMat("#A6957A"));pal.position.set(s.x+75,15,s.z+5);root.add(pal)}
+    if(s.k==="eye"){const r=new THREE.Mesh(new THREE.TorusGeometry(55,1.4,6,48),skyMat("#C9CED6"));r.position.set(s.x,62,s.z);r.rotation.y=.5;root.add(r);
+      for(let a=0;a<8;a++){const sp=new THREE.Mesh(new THREE.BoxGeometry(.6,110,.6),skyMat("#C9CED6"));sp.position.set(s.x,62,s.z);sp.rotation.y=.5;sp.rotateZ(a*Math.PI/8);root.add(sp)}
+      for(let a=0;a<16;a++){const pod=new THREE.Mesh(new THREE.SphereGeometry(2,8,6),skyMat("#E6EBF0"));const ang=a/16*Math.PI*2;pod.position.set(s.x+Math.cos(ang)*55*Math.cos(.5),62+Math.sin(ang)*55,s.z-Math.cos(ang)*55*Math.sin(.5));root.add(pod)}}
     if(s.k==="stack"){for(let k=0;k<9;k++){const b=new THREE.Mesh(new THREE.CylinderGeometry(9-k*.6,9-k*.6,8,8),skyMat(k%2?"#8F99A8":"#A3ADBB"));b.position.set(s.x+(k%2)*1.5,4+k*8,s.z);root.add(b)}}
     if(s.k==="blocks"){for(let k=0;k<s.n;k++){const hh=20+((k*37)%40);const b=new THREE.Mesh(new THREE.BoxGeometry(12,hh,10),skyMat("#A3ADBB"));b.position.set(s.x+k*18,hh/2,s.z+((k*13)%30));root.add(b)}}
   });
@@ -789,7 +820,7 @@ canvas.addEventListener("pointerup",e=>{
 let uiOpen=false,nearPlace=null,phoneTab="msgs",busy=false;
 function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove("show"),2800)}
 function openSheet(html){$("sheetIn").innerHTML=html;$("sheet").style.display="block";$("veil").style.display="block";$("sheet").scrollTop=0;uiOpen=true;joyV={x:0,y:0};knob.style.transform=""}
-function closeSheet(){if(MG.active){mgStop();toast("Shift abandoned. No pay.")}$("sheet").style.display="none";$("veil").style.display="none";uiOpen=false;save()}
+function closeSheet(){if(MG.active){const lb=MG.label;mgStop();toast(lb||"Shift abandoned. No pay.")}$("sheet").style.display="none";$("veil").style.display="none";uiOpen=false;save()}
 $("veil").onclick=()=>{if(!MG.active&&!S.dreamDone)closeSheet()};
 const NEEDS=[["h","🍲 Food","#E85A1A"],["e","⚡ Energy","#F4C430"],["y","🧼 Clean","#3BA3D9"],["f","😄 Fun","#E5487A"],["love","❤️ Love","#C2304F"]];
 $("needs").innerHTML=NEEDS.map(([k,l])=>`<div class="need"><span>${l}</span><div class="b"><i id="nb_${k}"></i></div></div>`).join("");
@@ -848,11 +879,11 @@ function newDay(d){
   const r=R();
   if(w===0)S.weekShifts=0;
   if(w===5){
-    if(r.rent){const rn=rentNow();money(-rn,`Rent, ${r.home}, ${AREAS[hz()].area}`);addMsg("Landlord",S.m<0?`Rent of £${rn} taken. Your account is negative. We need to talk.`:`Rent of £${rn} received. Thanks.`)}
-    if(r.houseFee){money(-r.houseFee,"House contribution to Mum");addMsg("Mum",S.m<0?"Your contribution bounced. In MY house?":"Thank you for your contribution. Now wash the plates.")}
-    if(S.m<0)S.n.f=clamp(S.n.f-20);else S.flags.firstRent=true}
+    if(rentNow()){const rn=rentNow();money(-rn,`Rent, ${homeName()}, ${AREAS[hz()].area}`);addMsg("Landlord",S.m<0?`Rent of £${rn} taken. Your account is negative. We need to talk.`:`Rent of £${rn} received. Thanks.`)}
+    if(houseFee()){money(-houseFee(),"House contribution to Mum");addMsg("Mum",S.m<0?"Your contribution bounced. In MY house?":"Thank you for your contribution. Now wash the plates.")}
+    if(S.m<0){S.n.f=clamp(S.n.f-20);S.credit=Math.max(0,(S.credit||0)-40)}else{S.flags.firstRent=true;S.credit=Math.min(999,(S.credit||0)+6+(F().cbCard?3:0))}}
   if(has("pet")&&Math.random()<.25){money(10,"Gift from Mum");addMsg("Mum","I sent you £10. Buy yourself something. Not suya.")}
-  if(w===4){if(R().rent)addMsg("Landlord",`Reminder: rent of £${rentNow()} is due tomorrow (Saturday).`);addMsg("Aunty Bisi","Owambe at Royal Owambe Hall, Woolwich, tomorrow from 6 PM. Aso ebi optional. Attendance compulsory.")}
+  if(w===4){if(rentNow())addMsg("Landlord",`Reminder: rent of £${rentNow()} is due tomorrow (Saturday).`);addMsg("Aunty Bisi","Owambe at Royal Owambe Hall, Woolwich, tomorrow from 6 PM. Aso ebi optional. Attendance compulsory.")}
   addMsg("Mum",pick(MUM));
   if(w===6)addMsg("Abundant Grace","Sunday service today, 9 AM to 1 PM. Free jollof after. Come with your friends!");
   if(F().niDue&&d>=F().niDue&&!F().ni){F().ni=true;addMsg("HMRC","Your National Insurance number has arrived by post: QQ 12 34 56 C.")}
@@ -862,6 +893,8 @@ function newDay(d){
     if(S.ajo.week>=5){S.ajo=null;addMsg("Sister Funke (Ajo)","This ajo cycle is complete. Everybody collected. God is faithful. New cycle starts soon.")}}
   {const m=dateOf(d).m;if(!F().coat&&["Nov","Dec","Jan","Feb"].includes(m)){S.n.f=clamp(S.n.f-8);if(Math.random()<.3)addMsg("Mum","Are you wearing a coat? I saw on the news that London is cold. Buy a coat!")}}
   {const r=Math.random();S.weather=r<.38?"rain":r<.75?"cloud":"sun";if(S.weather==="rain"){S.n.f=clamp(S.n.f-2);if(Math.random()<.4)addMsg("Mum","They said it’s raining in London again. Carry umbrella!")}}
+  bizNewDay(d);papersNewDay(d);
+  if(homeIdx()>=2)add("f",homeIdx()*2);
   lifeNewDay(d);
 }
 function collapse(){
@@ -887,18 +920,18 @@ function travel(to,how,fromId){
   if(busy)return;busy=true;closeSheet();
   const fade=$("fade");const z=ZONES[to];
   const line=how==="bus"?pick(BUS_LINES):how==="uber"?pick(UBER_LINES):"";
-  fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:how==="bus"?`🚌<b>Bus to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="uber"?`🚖<b>Uber to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
+  fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:how==="bus"?`🚌<b>Bus to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="uber"?`🚖<b>Uber to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="drive"?`🚗<b>Driving to ${z.area}</b><small style="max-width:80vw;text-align:center">${pick(["Someone cut you up on the South Circular. You said nothing. Growth.","Afrobeats on full, windows down, in October. Brave.","You found a parking space first time. Miracle."])}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
   fade.classList.add("on");
   setTimeout(()=>{
-    const tt=trip2(S.zone,to,how);if(how!=="walk"){advance(tt.mins);money(-tt.fare,`${{train:"Train",bus:"Bus",uber:"Uber"}[how]} to ${z.area}`);if(how==="bus")add("f",3)}else advance(4);
+    const tt=trip2(S.zone,to,how);if(how!=="walk"){advance(tt.mins);money(-tt.fare,`${{train:"Train",bus:"Bus",uber:"Uber",drive:"Petrol and charges"}[how]} to ${z.area}`);if(how==="bus")add("f",3)}else advance(4);
     let pos,yaw;
-    if(how==="uber"&&to===hz()){const hp=homePlace();pos={x:hp.x*.7,z:hp.z+1.5};yaw=Math.PI}
+    if((how==="uber"||how==="drive")&&to===hz()){const hp=homePlace();pos={x:hp.x*.7,z:hp.z+1.5};yaw=Math.PI}
     else if(how==="bus"&&activePlaces(z).some(p=>p.type==="busstop")){const bs=activePlaces(z).find(p=>p.type==="busstop");pos={x:bs.x*.8,z:bs.z+1};yaw=bs.z<0?0:Math.PI}
     else if(how!=="walk"){const st=z.station;pos={x:st.side*3.6,z:st.z};yaw=st.z<0?0:Math.PI}
     else{const back=z.exits.find(x=>x.to===fromId)||z.exits[0];const zz=back.z-Math.sign(back.z)*4.5;pos={x:0,z:zz};yaw=zz<0?0:Math.PI}
     enterZone(to,pos,yaw);
     setTimeout(()=>{fade.classList.remove("on");busy=false;if(how!=="walk")toast(`Welcome to ${z.area}. −£${tt.fare.toFixed(2)}`)},250);
-  },how==="bus"||how==="uber"?2200:650);
+  },how==="bus"||how==="uber"||how==="drive"?2200:650);
 }
 function useSpot(p){
   if(p.kind==="exit")return travel(p.to,"walk",S.zone);
@@ -911,14 +944,14 @@ const BUS_LINES=["Someone upstairs is playing Afrobeats on speaker, no headphone
 const UBER_LINES=["Your driver is Nigerian. You talked about jollof the whole way. 5 stars.","The driver said ‘Long time’ even though you’ve never met.","The Prius smelled of air freshener and destiny.","He asked if you’re ‘from Africa’. You said yes. He said ‘which part of Africa is Lagos?’"];
 function openTravel(p,mode){
   const h=hour(),trainOpen=h>=5||h<1;
-  const here=S.zone,dests=Object.values(ZONES).filter(z=>z.station&&z.id!==here&&!(AREAS[z.id]&&AREAS[here]&&AREAS[z.id].area===AREAS[here].area&&mode!=="uber"));
-  const tabs=[["train","🚆 Train"],["bus","🚌 Bus"],["uber","🚖 Uber"]].filter(([m])=>m!=="train"||(p&&p.type==="station"));
+  const here=S.zone,dests=Object.values(ZONES).filter(z=>z.station&&z.id!==here&&(z.id!=="central"||S.chapter>=3)&&!(AREAS[z.id]&&AREAS[here]&&AREAS[z.id].area===AREAS[here].area&&mode!=="uber"&&mode!=="drive"));
+  const tabs=[["train","🚆 Train"],["bus","🚌 Bus"],["uber","🚖 Uber"],...(S.car?[["drive","🚗 Drive"]]:[])].filter(([m])=>m!=="train"||(p&&p.type==="station"));
   const avail=m=>m==="train"?trainOpen:true;
   const title=p?`${p.emoji} ${p.name}`:"🚖 Get around London";
-  const note={train:trainOpen?"Fastest. Trains run 5 AM to 1 AM.":"Closed. First train at 5 AM.",bus:"Slow but cheap: £1.75 for any journey. Night buses run all night.",uber:(trip2(here,here,"uber").surge>1?"⚡ Surge pricing right now. ":"")+"Fastest door to door. Expensive."}[mode];
-  const list=(mode==="uber"&&here!==hz()&&!dests.some(z=>z.id===hz())?[ZONES[hz()]]:[]).concat(dests);
+  const note={train:trainOpen?"Fastest. Trains run 5 AM to 1 AM.":"Closed. First train at 5 AM.",bus:"Slow but cheap: £1.75 for any journey. Night buses run all night.",uber:(trip2(here,here,"uber").surge>1?"⚡ Surge pricing right now. ":"")+"Fastest door to door. Expensive.",drive:"Your Corolla. Petrol about £5. Central London adds the £15 Congestion Charge."}[mode];
+  const list=((mode==="uber"||mode==="drive")&&here!==hz()&&!dests.some(z=>z.id===hz())?[ZONES[hz()]]:[]).concat(dests);
   openSheet(`<h2>${title}</h2><div class="tabs">${tabs.map(([m,l])=>`<button data-m="${m}" class="${m===mode?"on":""}">${l}</button>`).join("")}</div><p class="sub">${note}</p>
-    <div class="list">${list.map(z=>{const t=trip2(here,z.id,mode),ok=avail(mode)&&S.m>=t.fare;return `<button class="opt" data-to="${z.id}" ${ok?"":"disabled"}><span class="e">${mode==="train"?"🚆":mode==="bus"?"🚌":"🚖"}</span><div><b>${z.area}${z.id===hz()?" 🏠":""}</b><span>${!avail(mode)?"Not running now":S.m<t.fare?"Not enough money":`${z.name} · ${t.mins} min · £${t.fare.toFixed(2)}`}</span></div></button>`}).join("")}
+    <div class="list">${list.map(z=>{const t=trip2(here,z.id,mode),ok=avail(mode)&&S.m>=t.fare;return `<button class="opt" data-to="${z.id}" ${ok?"":"disabled"}><span class="e">${mode==="train"?"🚆":mode==="bus"?"🚌":mode==="drive"?"🚗":"🚖"}</span><div><b>${z.area}${z.id===hz()?" 🏠":""}</b><span>${!avail(mode)?"Not running now":S.m<t.fare?"Not enough money":`${z.name} · ${t.mins} min · £${t.fare.toFixed(2)}`}</span></div></button>`}).join("")}
     ${mode==="train"?COMING.map(([a,d])=>`<button class="opt" disabled><span class="e">🚧</span><div><b>${a}</b><span>${d} Coming soon</span></div></button>`).join(""):""}</div>
     <button class="close" id="cl">Close</button>`);
   $("cl").onclick=closeSheet;
@@ -937,6 +970,11 @@ function isOpen(type){const h=hour();
   if(type==="agency")return h>=9&&h<17;
   if(type==="bukka")return h>=11&&h<22;
   if(type==="library")return h>=9&&h<20;
+  if(type==="exams")return dow()<6&&h>=8&&h<18;
+  if(type==="commission")return dow()<5&&h>=9&&h<13;
+  if(type==="security")return true;
+  if(type==="hospital")return h>=7&&h<20;
+  if(type==="cars")return h>=9&&h<18;
   if(type==="gym")return h>=6&&h<22;
   if(type==="fabrics")return h>=10&&h<19;
   if(type==="busstop")return true;
@@ -949,7 +987,7 @@ function isOpen(type){const h=hour();
   if(type==="riders")return h>=8&&h<23;
   if(type==="care")return h>=7&&h<19;
   return true}
-function hoursText(type){return{library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
+function hoursText(type){return{exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
   church:"Open 8 AM to 9 PM. Sunday service 9 AM to 1 PM.",market:"Open 8 AM to 6 PM. Cheapest foodstuff in Peckham.",wmarket:"Open 8 AM to 6 PM.",
   barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]}
 const add=(k,v)=>{if(v>0&&k==="f"&&has("owambe"))v*=1.25;if(v>0&&k==="h"&&has("foodie"))v*=1.25;if(v<0&&k==="e"&&has("iron"))v*=.75;S.n[k]=clamp(S.n[k]+v)};
@@ -976,6 +1014,12 @@ function actionsFor(type){
       {e:"💸",n:`Send £50 to ${S.partner.name}`,s:"+15 Love",ok:S.m>=50,why:"Not enough money",run:()=>{money(-50,`Sent to ${S.partner.name}`);S.sent+=50;loveAdd(15);return "Received. They sent a voice note with seven heart emojis."}}
     ]:[]),
     ...(F().bankTried&&!F().addr&&!F().addrDue?[{e:"✉️",n:"Ask your landlord for a proof-of-address letter",s:"He’ll send it tomorrow (he says)",ok:true,run:()=>{advance(10);F().addrDue=day()+1;return "You texted the landlord. He replied ‘No wahala’. Which can mean anything."}}]:[]),
+    {e:"📖",n:"Study at home",s:"2 hours, −10 Energy. +1 study point",ok:n.e>=15,why:"Too tired",run:()=>{advance(120);add("e",-10);add("f",-3);S.study=(S.study||0)+1;jxp(6);return `Study points: ${S.study}. You studied with Nollywood on mute. It counts.`}},
+    {e:"🚙",n:"Driving lesson with Uncle Sunday",s:`£35, 1 hour (lessons so far: ${S.lessons})`,ok:S.m>=35&&h>=8&&h<20,why:S.m<35?"Not enough money":"Lessons 8 AM to 8 PM",run:()=>{money(-35,"Driving lesson");advance(60);S.lessons++;add("f",4);return pick(["Uncle Sunday: ‘You’re driving like a danfo driver. Relax.’","You stalled at the lights. A bus driver laughed. Uncle Sunday laughed louder.","Parallel parking: attempt 4 was beautiful. Attempts 1 to 3 never happened."])}},
+    ...(S.biz&&S.biz.type==="chops"?[{e:"🥟",n:"Cook a small chops tray",s:`2 hours. Uses 1 ingredient pack (you have ${S.biz.stock})`,ok:S.biz.stock>0&&n.e>=15,why:S.biz.stock<1?"Buy ingredients at a market":"Too tired",run:()=>{S.biz.stock--;S.biz.batches++;advance(120);add("e",-12);add("h",8);return `Puff-puff, samosa, spring rolls and gizdodo. One tray ready (${S.biz.batches} ready). You ate three. Quality control.`}}]:[]),
+    ...(S.biz&&S.biz.type==="cargo"?[{e:"📦",n:"Receive customers’ drop-offs",s:"1 hour, collect fees",ok:h>=8&&h<21,why:"Customers come 8 AM to 9 PM",run:()=>{const n0=1+Math.floor(Math.random()*3);let fee=0,kg=0;for(let i=0;i<n0;i++){const k=15+Math.floor(Math.random()*30);kg+=k;fee+=Math.round(k*2.2)}
+      money(fee,"Cargo fees");S.biz.load+=kg;S.biz.earned+=fee;advance(60);jxp(6);return `${n0} customer${n0>1?"s":""} dropped off ${kg}kg: ${pick(["Ghana Must Go bags full of Milo and corned beef","a laptop, three phones and a suspicious amount of Quality Street","baby clothes, a microwave and ‘small’ Ankara for Aunty"])}. +£${fee} in fees. Ship it at Naija Travels.`}}]:[]),
+    ...(S.chapter>=3?[{e:"🏡",n:"Look for a better place",s:`Credit score ${S.credit}`,ok:true,run:()=>{openUpgrade();return null}}]:[]),
     {e:"🚿",n:"Shower",s:"20 min, +60 Hygiene",ok:true,run:()=>{advance(20);add("y",60);return "Fresh. The water pressure was disrespectful, but fresh."}},
     {e:"📺",n:"Watch Nollywood",s:"2 hours, +30 Fun",ok:true,run:()=>{advance(120);add("f",30);return pick(["The twin was evil all along. You saw it coming.","Three hours of slaps and one wedding. Perfect.","Someone said ‘you will not kill me’ six times."])}},
     {e:"📞",n:"Call Mum",s:"40 min, +15 Fun",ok:h>=7&&h<23,why:"Too late. She’ll panic.",run:()=>{advance(40);add("f",15);return pick(["She prayed for you for nine minutes straight.","She asked if you’re eating. You lied a little.","She updated you on 14 relatives. You remember 3."])}}
@@ -992,6 +1036,42 @@ function actionsFor(type){
       why:noSp?"Your sponsor lost its licence. Find a new one at CareLink Recruitment.":!open||h>=15.5?"Last shift starts at 3:30 PM":capLeft()<=0?"Visa limit: 5 shifts this week":n.e<30?"Too tired for a care shift":"Eat something first",run:()=>{startBells();return null}},
     {e:"☕",n:"Tea with the residents",s:"30 min, +14 Fun",ok:open,why:"Closed",run:()=>{advance(30);add("f",14);return pick(["Mr Okafor told you about Lagos in 1974. Twice.","Mrs Patel beat you at cards. She cheated. You let it go.","Uncle Femi says you look like his son. He says that to everyone."])}}
   ]}
+  if(type==="exams"){const ex=k=>exam(k);const st=S.study||0;return [
+    {e:"🛡️",n:ex("sia").passed?"SIA licence ✅":"SIA security training and test",s:ex("sia").passed?"You can work night security in Central London":`£${ex("sia").tries?60:250} · needs 3 study points (you have ${st}) · pass 6/8`,ok:open&&!ex("sia").passed&&st>=3&&S.m>=(ex("sia").tries?60:250),why:ex("sia").passed?"Passed":!open?"Closed":st<3?"Study more first (library or home)":"Not enough money",
+      run:()=>{const fee=ex("sia").tries?60:250;money(-fee,"SIA training and test");ex("sia").tries=(ex("sia").tries||0)+1;advance(180);add("e",-10);
+        runQuiz("🛡️ SIA test",QB.sia,8,6,(ok,sc)=>{if(ok){ex("sia").passed=true;jxp(80);resp(5);addMsg("Mum","My child is now a licensed security officer! Be careful at night o.");examResult(true,"SIA licence",`You scored ${sc}/8. Your licence card arrives by post. Night security at Westminster House, Central London, is now open to you.`)}
+          else examResult(false,"SIA test",`You scored ${sc}/8 (pass mark 6). Resit fee is £60. Study a bit more and try again.`)});return null}},
+    {e:"🚦",n:ex("theory").passed?"Driving theory ✅":"Driving theory test",s:ex("theory").passed?"Book your practical next":`£23 · needs 2 study points · 9 questions + hazard perception`,ok:open&&!ex("theory").passed&&st>=2&&S.m>=23,why:ex("theory").passed?"Passed":!open?"Closed":st<2?"Study more first":"Not enough money",
+      run:()=>{money(-23,"Driving theory test");advance(90);runQuiz("🚦 Theory test",QB.theory,9,7,(ok,sc)=>{if(!ok)return examResult(false,"Theory test",`You scored ${sc}/9 on the questions (pass mark 7). Book again and revise the Highway Code.`);
+        runHazard((ok2,hz)=>{if(ok2){ex("theory").passed=true;jxp(40);examResult(true,"Theory test",`Questions ${sc}/9, hazard perception ${hz}/5. Now take lessons with Uncle Sunday and book your practical.`)}else examResult(false,"Hazard perception",`Questions passed, but hazard perception was ${hz}/5 (need 3). Book again.`)})});return null}},
+    {e:"🚗",n:ex("drive").passed?"Full driving licence ✅":"Driving practical test",s:ex("drive").passed?"Peckham Motors is waiting for you":`£62 · needs theory pass and 3 lessons (you’ve had ${S.lessons})`,ok:open&&!ex("drive").passed&&ex("theory").passed&&S.lessons>=3&&S.m>=62,why:ex("drive").passed?"Passed":!ex("theory").passed?"Pass your theory first":S.lessons<3?"Take more lessons (at home)":"Not enough money",
+      run:()=>{money(-62,"Driving practical test");advance(90);runQuiz("🚗 Practical test",QB.practical,6,5,(ok,sc)=>{if(ok){ex("drive").passed=true;jxp(80);resp(4);addMsg("Mum","You passed your driving test?! When are you buying Benz?");examResult(true,"Driving test",`${sc}/6 with minor faults. The examiner smiled once. You can buy a car at Peckham Motors.`)}
+        else examResult(false,"Driving test",`${sc}/6. The examiner said ‘That was a serious fault.’ Book again.`)});return null}},
+    {e:"🩺",n:ex("cbt").passed?"NMC CBT ✅":"NMC computer-based test (CBT)",s:ex("cbt").passed?"Next: the OSCE practical exam":`£85 · needs 5 study points (you have ${st}) · pass 6/8`,ok:open&&!ex("cbt").passed&&st>=5&&S.m>=85,why:ex("cbt").passed?"Passed":!open?"Closed":st<5?"Study more first":"Not enough money",
+      run:()=>{money(-85,"NMC CBT");advance(150);runQuiz("🩺 NMC CBT",QB.nmc,8,6,(ok,sc)=>{if(ok){ex("cbt").passed=true;jxp(50);examResult(true,"NMC CBT",`You scored ${sc}/8. Book your OSCE when you’re ready.`)}else examResult(false,"NMC CBT",`You scored ${sc}/8 (pass mark 6). Keep studying and book again.`)});return null}},
+    {e:"🏥",n:ex("nmc").passed?"NMC registration ✅":"NMC OSCE practical exam",s:ex("nmc").passed?"You can work as an NHS nurse":`£800 · needs CBT pass and 7 study points · 2 stations`,ok:open&&!ex("nmc").passed&&ex("cbt").passed&&st>=7&&S.m>=800,why:ex("nmc").passed?"Registered":!ex("cbt").passed?"Pass the CBT first":st<7?"Study more first":"Not enough money",
+      run:()=>{money(-800,"NMC OSCE");advance(240);add("e",-15);runOrder(OSCE,ok=>{if(ok){ex("nmc").passed=true;jxp(150);resp(10);addMsg("Mum","NURSE?! A proper UK nurse?! I’ve told the whole church. Pastor is announcing it on Sunday.");examResult(true,"NMC registration","You passed both stations. You’re on the NMC register. Thames General Hospital, Central London, will take you as a Band 5 Staff Nurse.")}
+        else examResult(false,"OSCE","Too many mistakes at a station. It happens to many people. Rebook and practise.")});return null}}
+  ]}
+  if(type==="commission")return [
+    {e:"🛂",n:F().hc?"Passport sorted ✅":S.route==="born"?"Apply for a Nigerian passport":"Renew your Nigerian passport",s:F().hc?"Your new passport is on its way":"£110 · bring patience and a snack",ok:!F().hc&&open&&S.m>=110,why:F().hc?"Done":!open?"Open 9 AM to 1 PM, weekdays":"Not enough money",
+      run:()=>{if(!F().hcTry){F().hcTry=true;advance(300);add("f",-10);add("e",-10);return "You queued for five hours. Then: ‘System is down. Come back tomorrow.’ At least the aunty behind you shared her chin chin."}
+        money(-110,"Nigerian passport");advance(240);add("e",-10);F().hc=true;resp(3);jxp(20);return "Biometrics captured. The officer said ‘Two weeks.’ In Nigerian time, that’s a range. Mum is relieved you’ll have a valid passport for December."}},
+    {e:"👮🏾",n:"Ask the security man for a shortcut",s:"5 min",ok:true,run:()=>{advance(5);return "‘Oga, no shortcut here. Join the queue.’ Then he asked if you know his cousin in Woolwich. You do."}}
+  ];
+  if(type==="security")return [
+    {e:"🛡️",n:"Start a night security shift",s:unlocked("security")?`CCTV mini-game · about £${(wage("security")*4).toFixed(0)}, −25 Energy`:"Needs an SIA licence",ok:unlocked("security")&&(h>=19||h<2)&&n.e>=25&&capLeft()>0,why:!unlocked("security")?"Get your SIA licence at the Test Centre":capLeft()<=0?"Visa limit: 5 shifts this week":n.e<25?"Too tired for a night shift":"Night shifts start 7 PM to 2 AM",run:()=>{startCCTV();return null}},
+    {e:"☕",n:"Chat with the day guard",s:"15 min",ok:true,run:()=>{advance(15);add("f",5);return "He’s from Kumasi. You argued about jollof for 15 minutes. He says you can have his flask if you take the night shift."}}
+  ];
+  if(type==="hospital")return [
+    {e:"🩺",n:"Work a nursing shift",s:unlocked("nurse")?`Ward round mini-game · about £${(wage("nurse")*4).toFixed(0)}, −30 Energy`:"Needs NMC registration",ok:unlocked("nurse")&&open&&h<16&&n.e>=30&&capLeft()>0,why:!unlocked("nurse")?"Pass the NMC CBT and OSCE at the Test Centre":capLeft()<=0?"Visa limit: 5 shifts this week":n.e<30?"Too tired":"Last shift starts at 4 PM",run:()=>{startBells(true);return null}},
+    {e:"🤝🏾",n:"Volunteer with the patient visitors team",s:"2 hours, +12 Fun, +4 Respect",ok:open,why:"Closed",run:()=>{advance(120);add("f",12);resp(4);return "You pushed a tea trolley and listened to an old man’s war stories. You felt useful."}}
+  ];
+  if(type==="cars")return [
+    {e:"🚗",n:S.car?"Your 2009 Toyota Corolla":"Buy a 2009 Toyota Corolla",s:S.car?"Drive anywhere from the travel menu":"£1,800 · insurance £45 a week",ok:!S.car&&exam("drive").passed&&S.m>=1800,why:S.car?"Yours":!exam("drive").passed?"You need a full driving licence":"Not enough money",
+      run:()=>{money(-1800,"Toyota Corolla");S.car=true;jxp(40);resp(5);addMsg("Mum","A Corolla? Not Benz? Okay. Toyota is a good car. Drive carefully!");return "One owner (allegedly), full service history (a receipt from 2017), and the air freshener is included. It’s yours. Use 🚗 Drive in the travel menu."}},
+    {e:"👀",n:"Look at the Mercedes",s:"5 min",ok:true,run:()=>{advance(5);return "£9,500. The dealer says ‘For you, special price.’ The special price is £9,450."}}
+  ];
   if(type==="library") return [
     {e:"📖",n:"Study for your future exams",s:"2 hours, −10 Energy. Builds study points.",ok:open&&n.e>=15,why:closedWhy(type,"Too tired to focus"),run:()=>{advance(120);add("e",-10);S.study=(S.study||0)+1;jxp(8);
       return `Study points: ${S.study}. SIA, NMC and driving tests are coming in the next chapter. You’ll be ready. `+pick(["The librarian shushed a man on a phone call. Iconic.","You fell asleep for 10 minutes. Nobody judged.","Free WiFi and silence. Luxury."])}},
@@ -1025,7 +1105,8 @@ function actionsFor(type){
     {e:"🏦",n:F().bank?"Your account is open":"Open a current account",s:F().bank?"Sort code memorised. Card in your wallet.":F().addr?"You have your proof-of-address letter":"30 min. Bring proof of address.",ok:!F().bank&&isOpen("bank"),why:F().bank?"Done":"Open 9 AM to 5 PM, weekdays",
       run:()=>{advance(30);if(!F().addr){F().bankTried=true;add("f",-6);return "‘Sorry, we need proof of address.’ You don’t have bills in your name yet. Ask your landlord for a letter (at home)."}
         F().bank=true;add("f",10);return "Account opened! Your card arrives in 5 working days. You now say ‘sort code’ like a proper Londoner."}},
-    {e:"💳",n:"Ask about a credit card",s:"10 min",ok:isOpen("bank"),why:"Closed",run:()=>{advance(10);return "‘You have no UK credit history.’ You: ‘How do I build one?’ Them: ‘With credit.’ Come back in a year."}}
+    {e:"💳",n:F().cbCard?"Credit builder card ✅":"Get a credit builder card",s:F().cbCard?"Pay it off every month. Your score grows weekly.":`Builds your credit score (now ${S.credit})`,ok:isOpen("bank")&&F().bank&&!F().cbCard,why:!F().bank?"Open an account first":F().cbCard?"You have one":"Closed",
+      run:()=>{advance(20);F().cbCard=true;S.credit=Math.min(999,S.credit+40);return "£250 limit. The adviser said ‘Use it small, pay it off in full.’ You will not use it for Detty December. (You might.)"}}
   ];
   if(type==="gp") return [
     {e:"📋",n:F().gp?"You’re registered":"Register with the GP",s:F().gp?"Welcome to the NHS":"30 min of forms",ok:!F().gp&&isOpen("gp"),why:F().gp?"Done":"Open 8 AM to 6 PM, weekdays",
@@ -1045,6 +1126,8 @@ function actionsFor(type){
     {e:"⚠️",n:"Read: how CoS scams work",s:"Free advice, 5 min",ok:true,run:()=>{advance(5);return "A real sponsor never charges you for a Certificate of Sponsorship. Charging candidates for jobs is illegal in the UK. If an ‘agent’ asks for thousands, walk away and report it."}}
   ];
   if(type==="travel"){const p0=ticketPrice();return [
+    ...(S.biz&&S.biz.type==="cargo"?[{e:"🚢",n:"Ship your cargo to Lagos",s:`${S.biz.load}kg · £${Math.round(S.biz.load*1.2)} freight · arrives in 6 days`,ok:S.biz.load>=20&&S.m>=S.biz.load*1.2,why:S.biz.load<20?"Collect at least 20kg first":"Not enough money for freight",
+      run:()=>{const f=Math.round(S.biz.load*1.2);money(-f,"Cargo freight");S.biz.earned-=f;S.biz.ships.push({kg:S.biz.load,arrive:day()+6});const kg=S.biz.load;S.biz.load=0;advance(40);jxp(10);return `${kg}kg sealed in blue barrels and on its way to Apapa. Customers are already asking ‘Has it landed?’`}}]:[]),
     {e:"✈️",n:S.ticket?"You have your December ticket":"Buy a December ticket to Lagos",s:S.ticket?"You fly on 19 Dec. Lagos is waiting.":`£${p0} return. Prices climb as December gets closer.`,ok:!S.ticket&&S.m>=p0&&dateOf(day()).m!=="Jan",why:S.ticket?"Already booked":"Not enough money",
       run:()=>{money(-p0,"Lagos flight (December)");S.ticket=true;advance(20);addMsg("Mum","You’re coming for Christmas?! I’ve already told the whole street. Bring Ribena and Quality Street.");return `Booked! £${p0}. You fly on 19 Dec. Mum is already telling the whole street.`}},
     {e:"📈",n:"Check December prices",s:"5 min",ok:true,run:()=>{advance(5);return `Today: £${p0}. In late November it could be £${Math.round(p0*1.4)}. By mid-December, maybe £${Math.round(p0*2)}. Detty December is not for the weak.`}}
@@ -1077,6 +1160,7 @@ function actionsFor(type){
       run:()=>{S.ajo={week:0,turn:2+Math.floor(Math.random()*3)};advance(20);resp(3);return `Welcome to the ajo! Sister Funke keeps the book. Your turn to collect £125 is week ${S.ajo.turn}. Don’t miss a Sunday.`}}]:[])
   ]}
   if(type==="market") return [
+    ...(S.biz&&S.biz.type==="chops"?[{e:"🧺",n:"Buy small chops ingredients",s:"£35 for 1 tray’s worth",ok:open&&S.m>=35,why:closedWhy(type,"Not enough money"),run:()=>{money(-35,"Small chops ingredients");S.biz.stock++;S.biz.earned-=35;advance(20);return `Flour, mince, plantain, oil. Ingredient packs: ${S.biz.stock}.`}}]:[]),
     {e:"🥬",n:"Buy foodstuff",s:"£8 for 3 home-cooked meals",ok:open&&S.m>=8,why:closedWhy(type,"Not enough money"),run:()=>{money(-8,(curPlace?curPlace.name:"Market")+" foodstuff");S.groceries+=3;advance(25);add("f",5);
       return `Ugu, scotch bonnet, plantain and rice. You now have ${S.groceries} meals’ worth at home.`}},
     {e:"🍩",n:"Puff-puff from the aunty",s:"£2, +12 Hunger, +6 Fun",ok:open&&S.m>=2,why:closedWhy(type,"Not enough money"),run:()=>{money(-2,"Puff-puff");advance(10);add("h",12);add("f",6);return "Still warm. She called you ‘my dear’. You’ll be back."}},
@@ -1091,6 +1175,7 @@ function actionsFor(type){
     {e:"💬",n:"Salon gist",s:"30 min, +12 Fun",ok:open,why:"Closed",run:()=>{advance(30);add("f",12);return "You heard about three weddings, one breakup and an aunty’s new business. You know too much now."}}
   ];
   if(type==="wmarket") return [
+    ...(S.biz&&S.biz.type==="chops"?[{e:"🧺",n:"Buy small chops ingredients",s:"£35 for 1 tray’s worth",ok:open&&S.m>=35,why:closedWhy(type,"Not enough money"),run:()=>{money(-35,"Small chops ingredients");S.biz.stock++;S.biz.earned-=35;advance(20);return `Flour, mince, plantain, oil. Ingredient packs: ${S.biz.stock}.`}}]:[]),
     {e:"🐟",n:"Stock up on stockfish",s:"£15 for 5 home-cooked meals",ok:open&&S.m>=15,why:closedWhy(type,"Not enough money"),run:()=>{money(-15,(curPlace?curPlace.name:"Market")+" foodstuff");S.groceries+=5;advance(30);add("f",5);
       return `Stockfish, crayfish and egusi. The whole train will smell it. ${S.groceries} meals at home.`}},
     {e:"👗",n:"Buy ankara fabric",s:"£20, +15 Fun",ok:open&&S.m>=20,why:closedWhy(type,"Not enough money"),run:()=>{money(-20,"Ankara fabric");advance(30);add("f",15);return "Six yards of wax print. Your tailor will see you soon."}}
@@ -1109,7 +1194,7 @@ function actionsFor(type){
 let curPlace=null;
 function openPlace(p,result){
   const acts=actionsFor(p.type),open=isOpen(p.type);
-  curPlace=p;openSheet(`<h2>${p.emoji} ${p.type==="home"?`${R().home}, ${AREAS[hz()].area}`:p.name}</h2><p class="sub">${open?hoursText(p.type):"Closed right now. "+hoursText(p.type)}</p>
+  curPlace=p;openSheet(`<h2>${p.emoji} ${p.type==="home"?`${homeName()}, ${AREAS[hz()].area}`:p.name}</h2><p class="sub">${open?hoursText(p.type):"Closed right now. "+hoursText(p.type)}</p>
     ${result?`<div class="result">${result}</div>`:""}
     <div class="list">${acts.map((a,i)=>`<button class="opt" data-i="${i}" ${a.ok?"":"disabled"}><span class="e">${a.e}</span><div><b>${a.n}</b><span>${a.ok?a.s:a.why}</span></div></button>`).join("")}</div>
     <button class="close" id="cl">Leave</button>`);
@@ -1124,7 +1209,7 @@ function openPlace(p,result){
 
 /* ================= shift mini-games ================= */
 const MG={timers:[],active:false};
-function mgStop(){MG.timers.forEach(t=>{clearInterval(t);clearTimeout(t)});MG.timers=[];MG.active=false;MG.double=false}
+function mgStop(){MG.timers.forEach(t=>{clearInterval(t);clearTimeout(t)});MG.timers=[];MG.active=false;MG.double=false;MG.label=null}
 const r2=v=>Math.round(v*100)/100;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const ITEMS=[["Plantain",1],["Tin tomatoes",.8],["Rice 5kg",9],["Indomie x5",3],["Palm oil",4.5],["Maggi cubes",1.2],["Malt",1.1],["Crayfish",3.5],["Garri",4],["Chin chin",2],["Bread",1.4],["Eggs x6",2.2],["Ugu",1.5],["Scotch bonnet",.9]];
@@ -1135,14 +1220,14 @@ function finishShift(c,perf,lines,label){
   if(bk){S.booked=null;S.rep=Math.min(5,r2(S.rep+.1));lines+=` Booked agency shift: +${Math.round((bk.mult-1)*100)}% pay. Agency rating ⭐${S.rep.toFixed(1)}.`}
   if(wasDouble)lines+=" Double shift: overtime +10%. Your back has filed a complaint.";
   S.hoursToday+=4;
-  advance(240);add("e",c==="care"?-30:-25);add("h",-15);add("y",-10);S.weekShifts++;money(pay,label);const promo=gainXP(c,1);
+  advance(240);add("e",c==="care"||c==="nurse"?-30:-25);add("h",-15);add("y",-10);S.weekShifts++;money(pay,label);const promo=gainXP(c,1);
   const grade=perf>=.9?"⭐ Excellent shift":perf>=.6?"👍 Good shift":perf>=.3?"😐 Okay shift":"😬 Rough shift";
   openSheet(`<h2>${grade}</h2><p class="sub">${CAREERS[c].name}, 4 hours</p>
     <div class="result">${lines}<br><br><b>You earned £${pay.toFixed(2)}.</b>${smelly?" Pay docked 20%: your manager says you ‘smell like hard work’. Shower.":""}${promo?`<br>🎉 Promoted to <b>${title(c)}</b>!`:""}</div>
     <button class="close" id="psl">🧾 Share my payslip</button>
     ${!wasDouble&&S.chapter>=2&&c!=="tech"&&S.n.e>=25&&capLeft()>0?`<button class="close" id="dbl">💪 Pack another shift (double, +10%)</button>`:""}
     <button class="primary" id="ok" style="margin-top:8px">Done</button>`);$("ok").onclick=closeSheet;updateHUD();save();
-  const db=$("dbl");if(db)db.onclick=()=>{MG.double=true;c==="care"?startBells():startTill()};
+  const db=$("dbl");if(db)db.onclick=()=>{MG.double=true;c==="care"?startBells():c==="nurse"?startBells(true):c==="security"?startCCTV():startTill()};
   $("psl").onclick=()=>showCard(makeCard("payslip",{employer:c==="care"?(S.visa&&S.visa.sponsor&&S.route==="care"?S.visa.sponsor:"Sunrise Care Home"):CAREERS[c].name,player:S.name,title:title(c),lines:[["Hours","4"],["Rate",`£${wage(c).toFixed(2)}/hr`],["Grade",grade.replace(/^\S+\s/,"")]],total:`£${pay.toFixed(2)}`}),`Just finished a shift as ${title(c)} in Japa Life. £${pay.toFixed(2)} 💷`);
   if(S.n.e<=0){closeSheet();collapse()}
   else if(Math.random()<.3)S.evq.push("auto");
@@ -1164,22 +1249,177 @@ function startTill(){
     const perf=(score-wrong*.5)/7;
     finishShift("retail",perf,`Customers served: ${score}. Wrong totals: ${wrong}. `+pick(["An aunty asked for discount ‘because we’re both Nigerians’.","Someone tried to pay in naira. Bold.","You restocked 200 tins of tomato paste after."]),"Shift at Kwik Cash & Carry")}},1000));
 }
-function startBells(){
-  const dbl=MG.double;mgStop();MG.double=dbl;MG.active=true;let t=30,ans=0,miss=0;const lit={};
-  openSheet(`<h2>🔔 Call bells</h2><p class="sub">Residents are calling. Tap a room when its bell rings.</p>
+function startBells(ward){
+  const dbl=MG.double;mgStop();MG.double=dbl;MG.active=true;let t=30,ans=0,miss=0;const lit={};const RM=ward?"Bay":"Room",RING=ward?"🚨 Obs due":"🔔 Help!";
+  openSheet(`<h2>${ward?"🩺 Ward round":"🔔 Call bells"}</h2><p class="sub">${ward?"Patients’ observations are due. Tap a bay when its alarm goes off.":"Residents are calling. Tap a room when its bell rings."}</p>
     <div class="row"><span class="timer" id="mgt">${t}s</span><span id="mgs">✅ 0 &nbsp; ❌ 0</span></div>
-    <div class="grid3" style="margin-top:10px">${[1,2,3,4,5,6].map(i=>`<button class="bell" data-r="${i}">Room ${i}</button>`).join("")}</div>
+    <div class="grid3" style="margin-top:10px">${[1,2,3,4,5,6].map(i=>`<button class="bell" data-r="${i}">${RM} ${i}</button>`).join("")}</div>
     <button class="close" id="cl">Leave shift</button>`);
   $("cl").onclick=closeSheet;
   const upd=()=>{const el=$("mgs");if(el)el.innerHTML=`✅ ${ans} &nbsp; ❌ ${miss}`};
-  $("sheetIn").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const r=b.dataset.r;if(lit[r]){clearTimeout(lit[r]);delete lit[r];b.classList.remove("ring");b.textContent=`Room ${r}`;ans++;upd()}});
-  const ring=()=>{if(!MG.active)return;const free=[1,2,3,4,5,6].filter(i=>!lit[i]);if(free.length){const r=pick(free);const b=$("sheetIn").querySelector(`[data-r="${r}"]`);if(b){b.classList.add("ring");b.textContent="🔔 Help!";
-      lit[r]=setTimeout(()=>{delete lit[r];b.classList.remove("ring");b.textContent=`Room ${r}`;miss++;upd()},2300);MG.timers.push(lit[r])}}
+  $("sheetIn").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const r=b.dataset.r;if(lit[r]){clearTimeout(lit[r]);delete lit[r];b.classList.remove("ring");b.textContent=`${RM} ${r}`;ans++;upd()}});
+  const ring=()=>{if(!MG.active)return;const free=[1,2,3,4,5,6].filter(i=>!lit[i]);if(free.length){const r=pick(free);const b=$("sheetIn").querySelector(`[data-r="${r}"]`);if(b){b.classList.add("ring");b.textContent=RING;
+      lit[r]=setTimeout(()=>{delete lit[r];b.classList.remove("ring");b.textContent=`${RM} ${r}`;miss++;upd()},2300);MG.timers.push(lit[r])}}
     MG.timers.push(setTimeout(ring,600+Math.random()*700))};
   ring();
   MG.timers.push(setInterval(()=>{t--;const el=$("mgt");if(el)el.textContent=t+"s";if(t<=0){
     const perf=ans/Math.max(1,ans+miss)*1.1;
-    finishShift("care",perf,`Bells answered: ${ans}. Missed: ${miss}. `+pick(["Mr Okafor told you about Lagos in 1974. Twice.","Mrs Patel said you’re her favourite. She says that to everyone.","You did a double handover and still smiled."]),"Shift at Sunrise Care Home")}},1000));
+    if(ward)finishShift("nurse",perf,`Obs done on time: ${ans}. Late: ${miss}. `+pick(["A patient called you ‘Sister’ and meant it.","The junior doctor asked YOU what to do. You knew.","Twelve hours, three cups of tea, zero breaks. NHS life."]),"Shift at Thames General Hospital");
+    else finishShift("care",perf,`Bells answered: ${ans}. Missed: ${miss}. `+pick(["Mr Okafor told you about Lagos in 1974. Twice.","Mrs Patel said you’re her favourite. She says that to everyone.","You did a double handover and still smiled."]),"Shift at Sunrise Care Home")}},1000));
+}
+
+/* ================= Chapter 3: exams ================= */
+const QB={
+ sia:[
+  ["A fire alarm goes off while you’re on duty. What do you do first?",["Follow the site’s fire procedure and help people evacuate","Finish your patrol, it’s probably a drill","Go and find the fire with an extinguisher on your own","Switch off the alarm so people don’t panic"]],
+  ["Which extinguisher should you NOT use on a fire involving live electrical equipment?",["Water","CO2","Dry powder","None, they are all safe"]],
+  ["In the UK, a CO2 fire extinguisher has which colour band?",["Black","Red","Cream","Yellow"]],
+  ["The fire triangle needs heat, fuel and…",["Oxygen","Water","Smoke","Electricity"]],
+  ["A customer is getting aggressive. What’s the best first step?",["Stay calm, keep a safe distance and speak calmly","Shout louder so they back down","Grab their arm straight away","Turn your back and ignore them"]],
+  ["Who licenses security officers in the UK?",["The Security Industry Authority (SIA)","The Home Office front desk","The local council","The building owner"]],
+  ["When can a security officer use force?",["Only reasonable, necessary force as a last resort, within the law","Whenever someone is rude","To make people leave faster","Never, even in self-defence"]],
+  ["After an incident, what should you do?",["Write an accurate incident report as soon as possible","Wait a week, then write it from memory","Only tell your friends","Delete any notes so there’s no record"]],
+  ["Fire exits in a building that’s in use must be…",["Kept clear and able to be opened","Locked to stop thieves","Used to store boxes","Blocked at night"]],
+  ["At a late-night venue, who might be vulnerable and need extra care?",["Someone very drunk and alone","Someone queuing calmly with friends","The DJ","A member of bar staff on break"]]],
+ nmc:[
+  ["What is a normal resting heart rate for an adult?",["60 to 100 beats per minute","30 to 50 beats per minute","120 to 150 beats per minute","Exactly 72, always"]],
+  ["What is a normal adult respiratory rate?",["12 to 20 breaths per minute","4 to 8 breaths per minute","30 to 40 breaths per minute","50 breaths per minute"]],
+  ["When should you clean your hands?",["Before and after patient contact","Only at the start of your shift","Only if they look dirty","Only after touching blood"]],
+  ["A patient refuses their medication. What do you do?",["Respect it, find out why, document it and inform the team","Hide it in their food","Force them to take it","Throw it away and say nothing"]],
+  ["What is the NEWS2 score used for?",["Spotting patients who are getting worse","Booking appointments","Measuring hospital waiting times","Rating the food"]],
+  ["A patient’s neighbour phones asking about their diagnosis. You…",["Don’t share anything without the patient’s consent","Tell them, they sound worried","Read out the notes","Give a hint"]],
+  ["What does the ‘duty of candour’ mean?",["Being open and honest with patients when things go wrong","Keeping mistakes quiet","Always agreeing with doctors","Wearing your badge"]],
+  ["How do you help prevent pressure ulcers?",["Reposition the patient regularly and check their skin","Keep them still all day","Only check once a week","Give them more pillows to sit on"]]],
+ theory:[
+  ["What is the national speed limit for cars on a motorway?",["70 mph","60 mph","80 mph","50 mph"]],
+  ["In a built-up area in England with street lights, the speed limit is usually…",["30 mph unless signs say otherwise","40 mph","50 mph","20 mph always"]],
+  ["A flashing amber light at a pelican crossing means…",["Give way to anyone still crossing","Speed up before it turns red","Stop and wait for green no matter what","The lights are broken"]],
+  ["What shape is a STOP sign?",["Octagon","Triangle","Circle","Square"]],
+  ["Before moving off, you should…",["Check your mirrors and blind spot","Hoot your horn","Look only ahead","Flash your lights"]],
+  ["At a zebra crossing, you should give way to…",["People waiting to cross or already crossing","Only people halfway across","Nobody, cars have priority","Only children"]],
+  ["The minimum legal tyre tread depth for a car is…",["1.6 mm","0.5 mm","3 mm","5 mm"]],
+  ["Using a hand-held phone while driving is…",["Illegal, even when stopped in traffic","Fine at red lights","Fine on quiet roads","Fine for quick calls to Mum"]],
+  ["Double white lines with a solid line on your side mean…",["You must not cross or straddle them, apart from a few exceptions","You can overtake if it’s clear","They are just decoration","Park here"]]],
+ practical:[
+  ["Approaching a roundabout, you normally give way to traffic from…",["Your right","Your left","Behind you","Nobody"]],
+  ["The correct routine before changing direction is…",["Mirror, signal, manoeuvre","Signal, brake, hoot","Manoeuvre, then check mirrors","Pray, then go"]],
+  ["An ambulance with sirens is behind you. You…",["Pull over safely when you can, without breaking the law","Brake hard immediately","Speed through the red light","Ignore it"]],
+  ["On a wet road, your stopping distance is…",["At least double","The same","Half","Shorter because the road is cool"]],
+  ["The examiner says ‘pull up on the left when it’s safe’. You…",["Check mirrors, signal and stop safely, not blocking anything","Stop immediately wherever you are","Pull up on the right","Park on the zebra crossing"]],
+  ["A cyclist is ahead and there’s oncoming traffic. You…",["Wait behind until it’s safe to give them plenty of room","Squeeze past quickly","Hoot until they move","Overtake on the left"]]]
+};
+const OSCE=[{t:"Station 1: Hand hygiene",steps:["Wet hands with water","Apply enough soap","Rub palms together","Clean between fingers and backs of hands","Rinse hands with water","Dry with a single-use towel"]},
+ {t:"Station 2: Taking observations",steps:["Introduce yourself and confirm the patient’s identity","Explain the procedure and get consent","Clean your hands","Take the observations","Record the results","Report any concerns"]}];
+function quizSheet(title,inner){openSheet(`<h2>${title}</h2>${inner}<button class="close" id="cl">Leave test</button>`);$("cl").onclick=closeSheet}
+function runQuiz(title,bank,n,pass,done){
+  mgStop();MG.active=true;MG.label="Test abandoned. Fee lost.";const qs=shuffle(bank.slice()).slice(0,n);let i=0,score=0;
+  const show=()=>{const [q,opts]=qs[i];const order=shuffle(opts.map((o,k)=>[o,k]));
+    quizSheet(title,`<p class="sub">Question ${i+1} of ${n} · Pass mark ${pass}/${n}</p><div class="bubble">${q}</div><div class="list">${order.map(([o,k])=>`<button class="opt" data-k="${k}"><div><b style="font-size:15px">${o}</b></div></button>`).join("")}</div>`);
+    $("sheetIn").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const ok=b.dataset.k==="0";if(ok)score++;toast(ok?"✅ Correct":`❌ Answer: ${opts[0]}`);i++;if(i<n)show();else{MG.active=false;done(score>=pass,score)}})};
+  show();
+}
+function runHazard(done){
+  mgStop();MG.active=true;MG.label="Test abandoned. Fee lost.";let round=0,score=0,armed=false,tm=null;
+  const HZ=[["⚽","A ball rolls out between parked cars"],["🚲","A cyclist pulls out without looking"],["🐕","A dog runs off the pavement"],["🚸","Children step out near the school"],["🚗","A car reverses out of a driveway"],["🛵","A delivery rider cuts across"]];
+  const next=()=>{if(round>=5){MG.active=false;return done(score>=3,score)}round++;armed=false;
+    quizSheet("Hazard perception",`<p class="sub">Clip ${round} of 5 · Tap HAZARD the moment a hazard develops. Not too early!</p><div class="bubble" id="hz" style="font-size:20px;text-align:center;min-height:90px">🛣️ Driving along a residential street…</div><button class="primary" id="hzb">⚠️ HAZARD</button>`);
+    $("hzb").onclick=()=>{if(armed){score++;armed=false;clearTimeout(tm);toast("✅ Spotted it");MG.timers.push(setTimeout(next,700))}else{toast("Too early, that clip scores 0");clearTimeout(tm);MG.timers.push(setTimeout(next,700))}};
+    tm=setTimeout(()=>{const [e,t]=pick(HZ);const el=$("hz");if(el)el.innerHTML=`${e}<br>${t}`;armed=true;tm=setTimeout(()=>{if(armed){armed=false;toast("Missed it");next()}},1700);MG.timers.push(tm)},1500+Math.random()*2200);MG.timers.push(tm)};
+  next();
+}
+function runOrder(stations,done){
+  mgStop();MG.active=true;MG.label="Exam abandoned. Fee lost.";let si=0,ok=true;
+  const st=()=>{if(si>=stations.length){MG.active=false;return done(ok)}const S0=stations[si];let pos=0,miss=0;const order=shuffle(S0.steps.map((s,k)=>[s,k]));
+    const draw=()=>{quizSheet(`OSCE · ${S0.t}`,`<p class="sub">Tap the steps in the right order. Mistakes: ${miss} (max 1)</p><div class="list">${order.map(([s,k])=>`<button class="opt" data-k="${k}" ${k<pos?"disabled":""}><div><b style="font-size:15px">${k<pos?"✅ ":""}${s}</b></div></button>`).join("")}</div>`);
+      $("sheetIn").querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{const k=+b.dataset.k;if(k===pos){pos++;if(pos>=S0.steps.length){if(miss>1)ok=false;si++;toast(miss>1?"Too many mistakes at this station":"Station complete");MG.timers.push(setTimeout(st,600));return}}else{miss++;toast("Not that step yet")}draw()})};
+    draw()};
+  st();
+}
+function examResult(passed,title,msg){openSheet(`<div style="text-align:center"><div class="lot-e">${passed?"🎉":"😞"}</div><h2 style="margin-top:8px">${passed?"Passed!":"Not this time"}</h2><p class="sub">${title}</p></div><div class="result">${msg}</div><button class="primary" id="ok">OK</button>`);$("ok").onclick=closeSheet;save();updateHUD()}
+function exam(k){return S.exams[k]||(S.exams[k]={})}
+
+/* ================= Chapter 3: security & ward mini-games ================= */
+function startCCTV(){
+  const dbl=MG.double;mgStop();MG.double=dbl;MG.active=true;let t=30,caught=0,missed=0,falseA=0;const live={};
+  openSheet(`<h2>🛡️ CCTV watch</h2><p class="sub">Night shift, Westminster House. Tap a camera when there’s a person where there shouldn’t be. Foxes don’t count.</p>
+    <div class="row"><span class="timer" id="mgt">${t}s</span><span id="mgs">✅ 0 &nbsp; ❌ 0</span></div>
+    <div class="grid3" style="margin-top:10px">${[1,2,3,4,5,6].map(i=>`<button class="bell" data-r="${i}" style="background:#11131c;color:#9fe0a8">CAM ${i}<br>·</button>`).join("")}</div><button class="close" id="cl">Leave shift</button>`);
+  $("cl").onclick=closeSheet;const upd=()=>{const el=$("mgs");if(el)el.innerHTML=`✅ ${caught} &nbsp; ❌ ${missed+falseA}`};
+  const reset=(b,r)=>{b.innerHTML=`CAM ${r}<br>·`;b.classList.remove("ring")};
+  $("sheetIn").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{const r=b.dataset.r,L0=live[r];if(!L0){return}clearTimeout(L0.t);delete live[r];reset(b,r);if(L0.real){caught++}else{falseA++;toast("That was a fox. False alarm.")}upd()});
+  const spawn=()=>{if(!MG.active)return;const free=[1,2,3,4,5,6].filter(i=>!live[i]);if(free.length){const r=pick(free),real=Math.random()<.68;const b=$("sheetIn").querySelector(`[data-r="${r}"]`);
+      if(b){b.innerHTML=`CAM ${r}<br>${real?"🕵🏾 Person!":"🦊 Fox"}`;if(real)b.classList.add("ring");live[r]={real,t:setTimeout(()=>{delete live[r];reset(b,r);if(real){missed++;upd()}},1600)};MG.timers.push(live[r].t)}}
+    MG.timers.push(setTimeout(spawn,700+Math.random()*700))};
+  spawn();
+  MG.timers.push(setInterval(()=>{t--;const el=$("mgt");if(el)el.textContent=t+"s";if(t<=0){const perf=caught/Math.max(1,caught+missed)*1.1-falseA*.08;
+    finishShift("security",perf,`Intruders spotted: ${caught}. Missed: ${missed}. False alarms: ${falseA}. `+pick(["You ate jollof from a flask at 3 AM. Peak security life.","A cleaner told you her whole life story at 2 AM. You now know her son’s A-level grades.","You watched the city lights and thought about home."]),"Night shift at Westminster House")}},1000));
+}
+
+/* ================= Chapter 3: side business ================= */
+const BIZ_WHO=["Aunty Bisi’s 50th birthday","Pastor’s thanksgiving service","An office party in Canary Wharf","A naming ceremony in Woolwich","A baby shower in Barking","Kemi’s traditional wedding","A church harvest in Croydon"];
+function bizNewDay(d){const b=S.biz;if(!b)return;
+  if(b.type==="chops"){
+    b.orders=b.orders.filter(o=>{if(d>o.due){b.rep=Math.max(1,b.rep-.5);addMsg("Small chops customer",`You didn’t deliver for ${o.who}. They ordered from someone else. Rating ⭐${b.rep.toFixed(1)}.`);return false}return true});
+    if(b.orders.length<3&&Math.random()<.4+b.rep*.08){const trays=1+Math.floor(Math.random()*3);const o={id:Date.now()%1e6+Math.floor(Math.random()*999),who:pick(BIZ_WHO),trays,pay:trays*(75+Math.floor(Math.random()*40)),due:d+2+Math.floor(Math.random()*3)};b.orders.push(o);
+      addMsg("Small chops order",`New order: ${o.trays} tray${o.trays>1?"s":""} of puff-puff, samosa and spring rolls for ${o.who}. £${o.pay}. Due by ${dateStr(o.due)}.`)}}
+  if(b.type==="cargo"){
+    b.ships=b.ships.filter(s=>{if(d>=s.arrive){if(Math.random()<.3){money(-80,"Customs clearing (Lagos)");b.earned-=80;addMsg("Lagos agent","Customs held the container. Paid £80 ‘clearing’. Delivered now. 🙄")}else{b.rep=Math.min(5,b.rep+.2);addMsg("Lagos agent",`${s.kg}kg delivered to customers in Lagos ✅. Rating ⭐${b.rep.toFixed(1)}.`)}return false}return true})}
+}
+function bizTab(){const b=S.biz;
+  if(S.chapter<3)return `<p class="sub">Side businesses unlock in Chapter 3.</p>`;
+  if(!b)return `<p class="sub">Every Nigerian in London has a side hustle. Pick yours.</p><div class="list">
+    <button class="opt" data-biz="chops"><span class="e">🥟</span><div><b>Small chops catering</b><span>Buy ingredients at the market, cook at home, deliver trays to parties and churches.</span></div></button>
+    <button class="opt" data-biz="cargo"><span class="e">📦</span><div><b>Cargo to Lagos</b><span>Collect customers’ items at home, ship barrels via Naija Travels in Woolwich.</span></div></button></div>`;
+  if(b.type==="chops")return `<div class="msg"><small>Small chops catering · ⭐${b.rep.toFixed(1)}</small><b>Profit so far: £${Math.round(b.earned)}</b><br>Ingredient packs: ${b.stock} · Trays ready: ${b.batches}</div>
+    <p class="sub">Buy ingredients at any market. Cook trays at home (2 hours each).</p>
+    ${b.orders.length?b.orders.map(o=>`<div class="msg"><small>Due ${dateStr(o.due)}</small><b>${o.who}</b><br>${o.trays} tray${o.trays>1?"s":""} · £${o.pay}<br><button class="close" data-del="${o.id}" ${b.batches>=o.trays?"":"disabled"} style="margin-top:6px">${b.batches>=o.trays?"🚚 Deliver (1 hour)":`Need ${o.trays-b.batches} more tray${o.trays-b.batches>1?"s":""}`}</button></div>`).join(""):`<p class="sub">No orders right now. They come in on WhatsApp.</p>`}`;
+  return `<div class="msg"><small>Cargo to Lagos · ⭐${b.rep.toFixed(1)}</small><b>Profit so far: £${Math.round(b.earned)}</b><br>Waiting to ship: ${b.load}kg · In transit: ${b.ships.length} shipment${b.ships.length===1?"":"s"}</div>
+    <p class="sub">Collect drop-offs at home. Ship from Naija Travels, Woolwich (£1.20 per kg). Containers take 6 days.</p>`;
+}
+function bizBind(){
+  $("sheetIn").querySelectorAll("[data-biz]").forEach(b=>b.onclick=()=>{S.biz={type:b.dataset.biz,earned:0,rep:3,stock:0,batches:0,orders:[],load:0,ships:[]};jxp(30);
+    addMsg("Mum",b.dataset.biz==="chops"?"Small chops business! Remember my puff-puff recipe. Don’t add too much sugar.":"Cargo business! Ship my things free o. I’m your mother.");toast("📱 Business started!");phoneTab="biz";openPhone()});
+  $("sheetIn").querySelectorAll("[data-del]").forEach(btn=>btn.onclick=()=>{const b=S.biz,o=b.orders.find(x=>String(x.id)===btn.dataset.del);if(!o||b.batches<o.trays)return;
+    b.batches-=o.trays;b.orders=b.orders.filter(x=>x!==o);advance(60);money(o.pay,`Small chops: ${o.who}`);b.earned+=o.pay;b.rep=Math.min(5,b.rep+.15);resp(2);jxp(10);
+    toast(`Delivered! +£${o.pay}`);openPhone()});
+}
+
+/* ================= Chapter 3: homes, credit, papers ================= */
+function openUpgrade(){
+  const cur=homeIdx(),opts=[];for(let i=Math.max(1,cur+1);i<HOMES.length;i++)opts.push(i);
+  const cost=i=>Math.round(RENTS[i]*((AREAS[hz()]||{}).mult||1)*2+100);
+  openSheet(`<h2>🏡 A better place</h2><p class="sub">You live in: ${homeName()}, ${AREAS[hz()].area}. Credit score: ${S.credit}. Landlords check it.</p>
+    <div class="list">${opts.map(i=>{const ok=S.credit>=CREDIT_REQ[i]&&S.m>=cost(i);return `<button class="opt" data-up="${i}" ${ok?"":"disabled"}><span class="e">${["🛏️","🏠","🏡","🏘️","🏰"][i]}</span><div><b>${HOMES[i]}</b><span>Rent £${Math.round(RENTS[i]*((AREAS[hz()]||{}).mult||1))}/week · Move-in £${cost(i)} · ${S.credit<CREDIT_REQ[i]?`Needs credit ${CREDIT_REQ[i]}`:"Credit OK ✅"}</span></div></button>`}).join("")}</div>
+    <button class="close" id="cl">Not now</button>`);
+  $("cl").onclick=closeSheet;
+  $("sheetIn").querySelectorAll("[data-up]").forEach(b=>b.onclick=()=>{const i=+b.dataset.up;money(-cost(i),`Deposit and fees: ${HOMES[i]}`);const was=homeName();S.homeIdx=i;F().upgraded=true;advance(180);add("f",20);resp(5);jxp(40);
+    addMsg("Mum",i>=3?`A ${HOMES[i]}?! You’re now a landlord’s favourite tenant. Send pictures!`:`You moved from ${was} to a ${HOMES[i]}! Send me pictures. Is there space for me when I visit?`);closeSheet();toast(`🏡 Moved into your ${HOMES[i]}!`)});
+}
+function papersReq(){const v=S.visa||{},xpTot=Object.values(S.xp).reduce((a,b)=>a+b,0);
+  const sponsorOK=S.route==="tech"?true:S.route==="care"?(!v.revoked):(unlocked("security")||unlocked("nurse")||lvl("care")>=1||v.type==="Health & Care Worker visa");
+  return [["🏦 Bank statements",!!F().bank],["🧾 Payslips (5+ shifts)",xpTot>=5],["📄 "+(S.route==="tech"?"Employer letter":"Sponsored job (care, security or nursing)"),sponsorOK],["💷 Fees and health surcharge £1,250",S.m>=1250]]}
+function papersBox(){
+  if(S.route==="born")return F().papersDone?`<div class="msg"><small>Passport</small><b>✅ British passport renewed</b></div>`:S.papers?`<div class="msg"><small>Passport</small><b>⏳ Renewal in progress</b><br>Arrives ${dateStr(S.papers.due)}</div>`:
+    (S.chapter>=3?`<div class="msg"><small>Passport</small><b>Your British passport expires soon</b><br><button class="close" id="pp" ${S.m>=95?"":"disabled"} style="margin-top:6px">Renew online (£95)</button></div>`:"");
+  if(S.chapter<3)return "";
+  if(F().papersDone)return `<div class="msg"><small>Visa renewal</small><b>✅ Approved. eVisa updated.</b></div>`;
+  if(S.papers)return `<div class="msg"><small>Visa renewal</small><b>⏳ Application submitted</b><br>Decision expected ${dateStr(S.papers.due)}. Don’t refresh the email 50 times. (You will.)</div>`;
+  const r=papersReq(),ok=r.every(x=>x[1]);
+  return `<div class="msg"><small>Visa renewal · expires ${dateStr(S.visa.until)}</small><b>Get your documents together</b><br>${r.map(([n,v])=>`${v?"✅":"⬜"} ${n}`).join("<br>")}
+    <button class="close" id="renew" ${ok?"":"disabled"} style="margin-top:8px">Submit application</button></div>`;
+}
+function papersBind(){
+  const pp=$("pp");if(pp)pp.onclick=()=>{money(-95,"British passport renewal");S.papers={due:day()+5};toast("Submitted. Passport arrives in 5 days.");openPhone()};
+  const rn=$("renew");if(rn)rn.onclick=()=>{money(-1250,"Visa extension and health surcharge");S.papers={due:day()+7};advance(60);addMsg("UKVI","We have received your application. A decision will be made within 8 weeks. (In this game: about a week.)");openPhone()};
+  const vt=$("vote");if(vt)vt.onclick=()=>{F().roll=true;S.credit=Math.min(999,S.credit+60);toast("Registered to vote. Credit score +60");openPhone()};
+}
+function papersNewDay(d){
+  if(S.papers&&d>=S.papers.due){S.papers=null;F().papersDone=true;
+    if(S.route==="born")addMsg("HM Passport Office","Your new passport has been posted. Smile, you look like your passport photo for once.");
+    else{S.visa.until=d+1095;if(S.visa.type==="Graduate visa"||S.visa.type==="Student visa")S.visa.type="Skilled Worker visa";addMsg("UKVI","✅ Your application has been approved. Your eVisa has been updated. Your visa now runs for 3 more years.");addMsg("Mum","Papers approved?! I’m booking a thanksgiving service. Send money for the cake.")}}
+  if(S.visa&&S.visa.until&&S.route!=="born"&&!S.papers&&d===S.visa.until-7)addMsg("UKVI reminder","Your permission to stay ends in 7 days. Apply to extend before it expires.");
+  if(S.visa&&S.visa.until&&S.route!=="born"&&!S.papers&&d>S.visa.until&&!S.seen.overstay)S.evq.push("overstay");
+  if(S.car&&d%7===0){money(-45,"Car insurance");}
 }
 
 /* ================= dreams ================= */
@@ -1351,7 +1591,15 @@ const CHAPTERS=[
   {id:"promo",n:"Get your first promotion",hint:"Keep working shifts in any career.",place:"work",done:()=>Object.keys(CAREERS).some(c=>lvl(c)>=1)},
   {id:"respect",n:"Earn 25 Respect in the community",hint:"Church, owambes, helping people, sending money home.",place:"church",done:()=>S.respect>=25},
   {id:"sends",n:"Send money home 3 times",hint:"Black tax is a lifestyle.",place:"transfer",done:()=>S.sendCount>=3}]},
- {n:"The Hustle",d:"Coming soon: professional exams, side businesses, a car, visa renewal, and new areas of London.",soon:true,goals:[]}
+ {n:"The Hustle",d:"Exams, a side business, papers, and a better place to live. This is where it gets serious.",unlock:"🏛️ Central London is open by train: the Nigeria High Commission, the Test Centre, Thames General Hospital and night security. 📱 New Biz tab: start a side business. 🏡 At home: look for a better place.",goals:[
+  {id:"exam",n:"Pass a professional exam",hint:"SIA, NMC or driving tests at the Westminster Test Centre, Central London. Study at the library or at home first.",place:"exams",done:()=>["sia","nmc","drive"].some(k=>S.exams[k]&&S.exams[k].passed)},
+  {id:"biz",n:"Start a side business",hint:"Phone → Biz tab. Small chops or cargo to Lagos.",place:"home",done:()=>!!S.biz},
+  {id:"biz500",n:"Make £500 profit from your business",hint:"Deliver small chops orders or ship cargo.",place:"home",done:()=>S.biz&&S.biz.earned>=500},
+  {id:"papers",n:"Sort out your papers",hint:"Phone → Papers. Renew before it expires.",place:"home",done:()=>F().papersDone},
+  {id:"hc",n:"Visit the Nigeria High Commission",hint:"Central London, weekday mornings. Passport business. Bring patience.",place:"commission",done:()=>F().hc},
+  {id:"credit",n:"Reach a credit score of 400",hint:"Pay rent on time, register to vote, get a credit builder card.",place:"bank",done:()=>S.credit>=400},
+  {id:"upgrade",n:"Move to a better home",hint:"At home: ‘Look for a better place’. Landlords check your credit.",place:"home",done:()=>F().upgraded}]},
+ {n:"Making It",d:"Coming soon: ILR, the Life in the UK test, a mortgage, kids, omugwo, and bringing your parents over.",soon:true,goals:[]}
 ];
 function curChapter(){return CHAPTERS[Math.min(S.chapter,CHAPTERS.length)-1]}
 let goalT=0;
@@ -1363,6 +1611,7 @@ function goalTick(dt){
 }
 function chapterDone(){
   const ch=curChapter();S.chapter++;jxp(150);resp(10);money(100,"Chapter reward: Mum’s blessing");S.skip+=120;
+  if(S.chapter===3&&S.visa&&S.visa.until&&S.route!=="born"){S.visa.until=Math.min(S.visa.until,day()+28);addMsg("UKVI",`Your permission to stay ends on ${dateStr(S.visa.until)}. Apply to extend before then. (Phone → Papers.)`)}
   const nx=curChapter();save();updateHUD();
   openSheet(`<div style="text-align:center"><div class="lot-e">🎉</div><h2 style="margin-top:8px">Chapter ${S.chapter-1} complete</h2><p class="sub">${ch.n}</p></div>
     <div class="result"><b>A few months later…</b><br>You know your sort code by heart, the bus drivers nod at you, and you’ve stopped converting every price to naira. Mostly.<br><br>+150 XP · +10 Respect · +£100 from Mum</div>
@@ -1502,6 +1751,9 @@ function lifeNewDay(d){
   if(Math.random()<.65&&S.evq.filter(x=>x==="auto").length<1)S.evq.push("auto");
 }
 LE.push(
+ {id:"overstay",forced:1,from:"Immigration lawyer",av:"⚖️",t:()=>"Your visa has expired and you haven’t applied to extend. This is serious. I can submit a late application today, but it’ll cost my fee plus the Home Office fees.",c:[
+  ["Pay everything now (£1,850)",{m:-1850,f:-20},"Submitted. Your lawyer says you were lucky. Never leave it this late again.",()=>{S.papers={due:day()+10}}],
+  ["Ask for a payment plan",{m:-900,f:-25},"She agreed to instalments. Submitted. You didn’t sleep well for a week.",()=>{S.papers={due:day()+10}}]]},
  {id:"burnout",forced:1,from:"Your body",av:"🤒",t:()=>"You’ve been packing 12-hour days back to back. You woke up with a fever and your legs refuse to cooperate.",c:[
   ["Take two days off",{},"",()=>{advance(2*1440,"sleep");S.n.e=100;S.n.f=clamp(S.n.f+15);S.burn=0;return "You slept, drank pepper soup, and watched nine Nollywood films. You feel human again. Rent didn’t take a break, though."}],
   ["Paracetamol and keep going",{f:-15},"You went to work. Nobody noticed. Your body noticed.",()=>{S.n.e=Math.min(S.n.e,30);S.burn=2}]]},
@@ -1547,23 +1799,26 @@ function eventTick(dt){
 /* ================= phone ================= */
 function openPhone(){
   if(phoneTab==="msgs")S.unread=0;
-  const tabs=[["msgs","Msgs"],["bank","Bank"],["work","Work"],["papers","Papers"],["dream","Dream"],["map","Map"]];
+  const tabs=[["msgs","Msgs"],["bank","Bank"],["work","Work"],...(S.chapter>=3?[["biz","Biz"]]:[]),["papers","Papers"],["dream","Dream"],["map","Map"]];
   let body="";
   if(phoneTab==="msgs")body=S.msgs.map(m=>`<div class="msg"><small>${m.t}, ${DAYS_FULL[m.d%7]} week ${Math.floor(m.d/7)+1}</small>${m.txt}</div>`).join("");
   if(phoneTab==="bank"){const toSat=(5-dow()+7)%7;
-    body=`<div class="big">${gbp(S.m)}</div><p class="sub">${R().rent?`Rent of £${rentNow()}`:`£${R().houseFee} to Mum`} is due ${toSat===0?"today":toSat===1?"tomorrow":"in "+toSat+" days"} (Saturday). Meals at home: ${S.groceries}. Dream fund: £${Math.round(S.fund)}. Sent home (black tax) so far: £${Math.round(S.sent)}.</p>
+    body=`<div class="big">${gbp(S.m)}</div><p class="sub">${rentNow()?`Rent of £${rentNow()}`:`£${houseFee()} to Mum`} is due ${toSat===0?"today":toSat===1?"tomorrow":"in "+toSat+" days"} (Saturday). Meals at home: ${S.groceries}. Dream fund: £${Math.round(S.fund)}. Sent home (black tax) so far: £${Math.round(S.sent)}. Credit score: ${S.credit}.</p>
     ${S.tx.length?S.tx.map(t=>`<div class="row"><span>${t.label}</span><span style="color:${t.amt<0?"var(--bad)":"var(--green)"}">${t.amt<0?"−":"+"}£${Math.abs(t.amt).toFixed(2)}</span></div>`).join(""):`<p class="sub">No transactions yet.</p>`}`}
   if(phoneTab==="work"){const r=R();
     body=`<p class="sub">${r.em} ${r.name}. ${r.perk}${r.cap<99?` Shifts this week: ${S.weekShifts} of ${r.cap}.`:""}</p>`+
     Object.entries(CAREERS).filter(([c])=>c!=="tech"||S.route==="tech").map(([c,k])=>{const i=lvl(c),next=XPL[i+1],x=S.xp[c]||0;
+      if(!unlocked(c))return `<div class="msg" style="opacity:.6"><small>${k.name}, ${k.where}</small><b>🔒 ${k.titles[0]}</b><br><small>${k.req==="sia"?"Needs an SIA licence (Test Centre, Central London)":"Needs NMC registration: CBT and OSCE (Test Centre)"}</small></div>`;
       return `<div class="msg"><small>${k.name}, ${k.where}</small><b>${k.titles[i]}</b>${c==="delivery"?" · paid per delivery":` · £${wage(c).toFixed(2)}/hour`}
       <div style="height:6px;border-radius:3px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${next?Math.min(100,(x-XPL[i])/(next-XPL[i])*100):100}%;background:#0E7A4B"></i></div>
       <small style="margin-top:4px">${next?`Next: ${k.titles[i+1]}`:"Top of the ladder 👑"}</small></div>`}).join("")}
+  if(phoneTab==="biz")body=bizTab();
   if(phoneTab==="papers"){const v=S.visa||{type:"Unknown"};const inUK=day()+(S.skip||0);const settle=S.route==="born"?null:3650;
     body=`<div class="msg"><small>Immigration status</small><b>${v.type}</b>${v.sponsor?`<br>Sponsor: ${v.revoked?"⚠️ none, licence revoked":v.sponsor}`:""}${v.until?`<br>Expires: ${dateStr(v.until)}${Math.floor(v.until/365)?` (year ${Math.floor((START_DOY+v.until)/365)+1})`:""}`:""}${v.revoked?`<br>⏳ Find a new sponsor by ${dateStr(v.deadline)} (CareLink, Woolwich)`:""}</div>
     ${settle?`<div class="msg"><small>Settlement (ILR)</small><b>Day ${inUK} of ${settle.toLocaleString()} 😭</b><div style="height:8px;border-radius:4px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(1,inUK/settle*100)}%;background:#0E7A4B"></i></div><small style="margin-top:4px">The new 10-year route. Only ${settle-inUK} days to go.</small></div>`:`<div class="msg"><small>Status</small><b>British 🇬🇧</b><br>Your cousins keep asking you to ‘sponsor’ them.</div>`}
     <div class="msg"><small>Family</small><b>${S.partner?`${S.partner.name} (${S.partner.kind})`:"Single"}</b>${S.partner?`<br>${S.partner.where==="home"?"In Nigeria. Dependants rules mean they stayed behind for now.":"Here in London with you."}`:""}</div>
     <div class="msg"><small>ShiftNow agency rating</small><b>⭐ ${S.rep.toFixed(1)}</b>${S.booked?`<br>📌 Booked: ${CAREERS[S.booked.c].name}, ${timeStr(S.booked.start*60)} today (+${Math.round((S.booked.mult-1)*100)}%)`:"<br>Watch for shift alerts. Grab them fast."}</div>
+    ${papersBox()}<div class="msg"><small>Credit score</small><b>${S.credit} / 999</b><br>${F().roll?"✅ On the electoral roll":`<button class="close" id="vote" style="margin-top:6px">🗳️ Register to vote (electoral roll)</button><small style="margin-top:4px">Commonwealth citizens with permission to stay can register in the UK. It helps your credit score.</small>`}</div>
     <p class="sub">⚠️ A real sponsor never charges for a Certificate of Sponsorship.</p>`}
   if(phoneTab==="dream"){const Dd=DREAMS[S.dream],pr=progress();
     body=`<div style="text-align:center"><div class="lot-e">${Dd.em}</div><h2 style="margin-top:8px">${Dd.name}</h2><p class="sub">${Dd.d}</p></div>
@@ -1582,13 +1837,14 @@ function openPhone(){
         <text x="${p.x<0||p.kind==="exit"?sx(p.x)+16:sx(p.x)-16}" y="${sz(p.z)+4}" text-anchor="${p.x<0||p.kind==="exit"?"start":"end"}" font-size="11" font-weight="700" fill="#fff" paint-order="stroke" stroke="#1C1B3A" stroke-width="3">${p.kind==="exit"?p.name:p.short}</text></g>`).join("")}
       <circle cx="${sx(px)}" cy="${sz(pz)}" r="7" fill="#E5487A" stroke="#fff" stroke-width="2.5"/></svg></div>
     <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">London</h2>
-    ${[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"]].map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
+    ${[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])].map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
   if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
   const st=$("st");if(st)st.onclick=()=>{phoneTab="set";openPhone()};
+  bizBind();papersBind();
   const sh=$("shd");if(sh)sh.onclick=()=>shareText(`I’m ${Math.floor(progress()*100)}% of the way to “${DREAMS[S.dream].name}” ${DREAMS[S.dream].em} in Japa Life as a ${R().name}. Join me on Rye Lane!`);
   const ub=$("uber");if(ub)ub.onclick=()=>openTravel(null,"uber");
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
@@ -1601,9 +1857,9 @@ function openPhone(){
 
 function openMove(){
   const opts=Object.keys(AREAS).filter(k=>ZONES[k]&&ZONES[k].places.some(p=>p.type==="home")&&k!==hz());
-  const cost=k=>R().rent?Math.round(R().rent*AREAS[k].mult*2+80):60;
-  openSheet(`<h2>🏠 Move house</h2><p class="sub">${R().rent?"Deposit (2 weeks’ rent) plus a £80 agent fee.":"Mum is moving too? Van hire is £60."} You’re in ${AREAS[hz()].area} now.</p>
-    <div class="list">${opts.map(k=>`<button class="opt" data-mv="${k}" ${S.m>=cost(k)?"":"disabled"}><span class="e">🚚</span><div><b>${AREAS[k].area} ${ZONES[k].code}</b><span>${R().rent?`Rent £${Math.round(R().rent*AREAS[k].mult)}/week · `:""}Moving cost £${cost(k)}${S.m<cost(k)?" (not enough money)":""}</span></div></button>`).join("")}</div>
+  const cost=k=>homeIdx()>=0?Math.round(RENTS[homeIdx()]*AREAS[k].mult*2+80):60;
+  openSheet(`<h2>🏠 Move house</h2><p class="sub">${homeIdx()>=0?"Deposit (2 weeks’ rent) plus a £80 agent fee.":"Mum is moving too? Van hire is £60."} You’re in ${AREAS[hz()].area} now.</p>
+    <div class="list">${opts.map(k=>`<button class="opt" data-mv="${k}" ${S.m>=cost(k)?"":"disabled"}><span class="e">🚚</span><div><b>${AREAS[k].area} ${ZONES[k].code}</b><span>${homeIdx()>=0?`Rent £${Math.round(RENTS[homeIdx()]*AREAS[k].mult)}/week · `:""}Moving cost £${cost(k)}${S.m<cost(k)?" (not enough money)":""}</span></div></button>`).join("")}</div>
     <button class="close" id="cl">Cancel</button>`);
   $("cl").onclick=closeSheet;
   $("sheetIn").querySelectorAll("[data-mv]").forEach(b=>b.onclick=()=>{const k=b.dataset.mv;money(-cost(k),`Moving to ${AREAS[k].area}`);S.homeZone=k;advance(240);add("e",-25);
@@ -1850,7 +2106,7 @@ function begin(state,isNew){
   const zid=ZONES[S.zone]?S.zone:"ryelane";
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} 🇬🇧</h2><p class="sub">You just landed. Here’s how life works.</p>
-    <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${R().rent?`Rent is £${rentNow()}`:`You pay Mum £${R().houseFee}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
+    <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);
 }
 
