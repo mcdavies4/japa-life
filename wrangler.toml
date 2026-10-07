@@ -6,9 +6,17 @@ compatibility_date = "2025-01-01"
 name = "ZONE_ROOM"
 class_name = "ZoneRoom"
 
+[[durable_objects.bindings]]
+name = "STATS"
+class_name = "StatsDO"
+
 [[migrations]]
 tag = "v1"
 new_sqlite_classes = ["ZoneRoom"]
+
+[[migrations]]
+tag = "v2"
+new_sqlite_classes = ["StatsDO"]
 
 [vars]
 # Comma-separated list of sites allowed to connect. Add your custom domain here too.

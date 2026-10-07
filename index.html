@@ -213,6 +213,13 @@ const SPONSORS=["Golden Years Care","Bright Hands Care","Riverside Care"];
 /* Multiplayer server. Set this to your deployed Worker URL, e.g. "wss://japa-life-realtime.yourname.workers.dev".
    Leave empty to play solo. */
 const REALTIME_URL="wss://japa-life-realtime.azubuikedavies.workers.dev";
+/* Anonymous usage stats go to the same Worker (no names, no personal data). */
+const STATS_URL=REALTIME_URL?REALTIME_URL.replace(/^ws/,"http"):"";
+function anonId(){try{let u=localStorage.getItem("japa_uid");if(!u){u=Math.random().toString(36).slice(2,12);localStorage.setItem("japa_uid",u)}return u}catch(e){return ""}}
+function statsOn(){try{return localStorage.getItem("japa_nostats")!=="1"}catch(e){return true}}
+function track(name,props){if(!STATS_URL||!statsOn())return;const body=JSON.stringify({uid:anonId(),name,props:props||{}});
+  try{if(navigator.sendBeacon)navigator.sendBeacon(STATS_URL+"/e",new Blob([body],{type:"text/plain"}));else fetch(STATS_URL+"/e",{method:"POST",body,keepalive:true,headers:{"Content-Type":"text/plain"}}).catch(()=>{})}catch(e){}}
+setInterval(()=>{if(typeof S!=="undefined"&&S&&!document.hidden)track("minute")},60000);
 const XPL=[0,5,12,22,35];
 const CAREERS={
  retail:{name:"Kwik Cash & Carry",where:"Rye Lane",wage:11.5,titles:["Shelf Stacker","Till Operator","Supervisor","Assistant Manager","Store Manager"]},
@@ -918,7 +925,7 @@ function enterZone(zid,pos,yaw,instant){
   updateHUD();updateChips();save();netJoin(zid);
 }
 function travel(to,how,fromId){
-  if(busy)return;busy=true;closeSheet();
+  if(busy)return;busy=true;closeSheet();track("travel",{how});
   const fade=$("fade");const z=ZONES[to];
   const line=how==="bus"?pick(BUS_LINES):how==="uber"?pick(UBER_LINES):"";
   fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:how==="bus"?`🚌<b>Bus to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="uber"?`🚖<b>Uber to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="drive"?`🚗<b>Driving to ${z.area}</b><small style="max-width:80vw;text-align:center">${pick(["Someone cut you up on the South Circular. You said nothing. Growth.","Afrobeats on full, windows down, in October. Brave.","You found a parking space first time. Miracle."])}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
@@ -1228,7 +1235,7 @@ const r2=v=>Math.round(v*100)/100;
 function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a}
 const ITEMS=[["Plantain",1],["Tin tomatoes",.8],["Rice 5kg",9],["Indomie x5",3],["Palm oil",4.5],["Maggi cubes",1.2],["Malt",1.1],["Crayfish",3.5],["Garri",4],["Chin chin",2],["Bread",1.4],["Eggs x6",2.2],["Ugu",1.5],["Scotch bonnet",.9]];
 function finishShift(c,perf,lines,label){
-  const wasDouble=MG.double;mgStop();
+  const wasDouble=MG.double;mgStop();track("shift",{c});
   const bk=bookedFor(c),mult=(bk?bk.mult:1)*(wasDouble?1.1:1);
   const smelly=S.n.y<15;const pay=r2(wage(c)*4*(.7+.5*Math.max(0,Math.min(1.2,perf)))*(smelly?.8:1)*mult);
   if(bk){S.booked=null;S.rep=Math.min(5,r2(S.rep+.1));lines+=` Booked agency shift: +${Math.round((bk.mult-1)*100)}% pay. Agency rating ⭐${S.rep.toFixed(1)}.`}
@@ -1349,7 +1356,7 @@ function runOrder(stations,done){
     draw()};
   st();
 }
-function examResult(passed,title,msg){openSheet(`<div style="text-align:center"><div class="lot-e">${passed?"🎉":"😞"}</div><h2 style="margin-top:8px">${passed?"Passed!":"Not this time"}</h2><p class="sub">${title}</p></div><div class="result">${msg}</div><button class="primary" id="ok">OK</button>`);$("ok").onclick=closeSheet;save();updateHUD()}
+function examResult(passed,title,msg){track("exam",{k:title,result:passed?"pass":"fail"});openSheet(`<div style="text-align:center"><div class="lot-e">${passed?"🎉":"😞"}</div><h2 style="margin-top:8px">${passed?"Passed!":"Not this time"}</h2><p class="sub">${title}</p></div><div class="result">${msg}</div><button class="primary" id="ok">OK</button>`);$("ok").onclick=closeSheet;save();updateHUD()}
 function exam(k){return S.exams[k]||(S.exams[k]={})}
 
 /* ================= Chapter 3: security & ward mini-games ================= */
@@ -1391,7 +1398,7 @@ function bizTab(){const b=S.biz;
     <p class="sub">Collect drop-offs at home. Ship from Naija Travels, Woolwich (£1.20 per kg). Containers take 6 days.</p>`;
 }
 function bizBind(){
-  $("sheetIn").querySelectorAll("[data-biz]").forEach(b=>b.onclick=()=>{S.biz={type:b.dataset.biz,earned:0,rep:3,stock:0,batches:0,orders:[],load:0,ships:[]};jxp(30);
+  $("sheetIn").querySelectorAll("[data-biz]").forEach(b=>b.onclick=()=>{track("biz",{type:b.dataset.biz});S.biz={type:b.dataset.biz,earned:0,rep:3,stock:0,batches:0,orders:[],load:0,ships:[]};jxp(30);
     addMsg("Mum",b.dataset.biz==="chops"?"Small chops business! Remember my puff-puff recipe. Don’t add too much sugar.":"Cargo business! Ship my things free o. I’m your mother.");toast("📱 Business started!");phoneTab="biz";openPhone()});
   $("sheetIn").querySelectorAll("[data-del]").forEach(btn=>btn.onclick=()=>{const b=S.biz,o=b.orders.find(x=>String(x.id)===btn.dataset.del);if(!o||b.batches<o.trays)return;
     b.batches-=o.trays;b.orders=b.orders.filter(x=>x!==o);advance(60);money(o.pay,`Small chops: ${o.who}`);b.earned+=o.pay;b.rep=Math.min(5,b.rep+.15);resp(2);jxp(10);
@@ -1478,7 +1485,7 @@ function openWedding(){
     <button class="opt" data-w="court" ${S.m>=300?"":"disabled"}><span class="e">🏛️</span><div><b>Register office, small and sweet</b><span>£300 · Aunties will never forgive you</span></div></button>
     <button class="opt" data-w="full" ${S.m>=4000?"":"disabled"}><span class="e">🎉</span><div><b>Traditional wedding + white wedding + owambe</b><span>£4,000 · 300 guests, 200 uninvited · +30 Respect</span></div></button></div><button class="close" id="cl">Not yet</button>`);
   $("cl").onclick=closeSheet;
-  $("sheetIn").querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const full=b.dataset.w==="full";money(full?-4000:-300,full?"Wedding (the full thing)":"Register office wedding");F().wed=true;S.partner.kind="spouse";S.partner.love=100;advance(full?600:180);add("f",full?50:25);resp(full?30:5);jxp(120);
+  $("sheetIn").querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{const full=b.dataset.w==="full";money(full?-4000:-300,full?"Wedding (the full thing)":"Register office wedding");F().wed=true;track("milestone",{what:"wedding"});S.partner.kind="spouse";S.partner.love=100;advance(full?600:180);add("f",full?50:25);resp(full?30:5);jxp(120);
     addMsg("Mum",full?"The wedding was the talk of the whole of London! Aunty Bisi cried. Then complained about the food.":"Register office?! Without inviting your people?! We will do a proper traditional one in December. Non-negotiable.");
     openSheet(`<div style="text-align:center"><div class="lot-e">💒</div><h2 style="margin-top:8px">You’re married!</h2></div><div class="result">${full?`Aso ebi in gold and wine, a 4-hour reception, money sprayed like rain, and the DJ played ‘Ada Ada’ three times. ${n} looked at you like you were the only person there.`:`Ten minutes, two witnesses, and a celebratory meal at Jollof House. ${n} said it was perfect. It was.`}</div><button class="primary" id="ok">❤️</button>`);$("ok").onclick=closeSheet});
 }
@@ -1490,7 +1497,7 @@ function openHomeBuy(){
     <div class="list">${Object.keys(PRICES).map(k=>`<button class="opt" data-buy="${k}" ${ok0&&c0&&inc&&S.m>=dep(k)&&!F().owner?"":"disabled"}><span class="e">🏡</span><div><b>2-bed in ${AREAS[k].area}</b><span>Full price £${PRICES[k].toLocaleString()} · deposit + fees £${dep(k).toLocaleString()} · £${wk(k)}/week mortgage + rent</span></div></button>`).join("")}</div>
     <button class="close" id="cl">Not yet</button>`);
   $("cl").onclick=closeSheet;
-  $("sheetIn").querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{const k=b.dataset.buy;money(-dep(k),`Home deposit and fees, ${AREAS[k].area}`);S.homeZone=k;S.homeIdx=5;F().owner=true;resp(20);jxp(150);advance(300);
+  $("sheetIn").querySelectorAll("[data-buy]").forEach(b=>b.onclick=()=>{const k=b.dataset.buy;money(-dep(k),`Home deposit and fees, ${AREAS[k].area}`);S.homeZone=k;S.homeIdx=5;F().owner=true;track("milestone",{what:"home_owner"});resp(20);jxp(150);advance(300);
     addMsg("Mum","YOU BOUGHT A HOUSE IN LONDON?! I’m crying. I’m telling everybody. When I come, I’m staying three months.");addMsg("Dad","Well done. Is the roof strong?");
     closeSheet();const hp=homePlace();enterZone(k,{x:hp.x,z:hp.z+1.5},Math.PI);
     openSheet(`<div style="text-align:center"><div class="lot-e">🔑</div><h2 style="margin-top:8px">You’re a homeowner!</h2><p class="sub">Your own 2-bed in ${AREAS[k].area}</p></div><div class="result">The keys are in your hand. You touched every wall. You’ve already planned the housewarming owambe.</div>
@@ -1606,7 +1613,7 @@ function deliveryTick(dt){
   missionUI();
 }
 function endDelivery(reason){
-  if(!D.on)return;D.on=false;if(D.scooter){player.remove(D.scooter);D.scooter=null}
+  if(!D.on)return;D.on=false;track("delivery",{n:Math.min(D.count,10)});if(D.scooter){player.remove(D.scooter);D.scooter=null}
   if(D.arrow){scene.remove(D.arrow);D.arrow.traverse(o=>{if(o.geometry)o.geometry.dispose();if(o.material)o.material.dispose()});D.arrow=null}
   if(D.beacon){D.beacon.parent&&D.beacon.parent.remove(D.beacon);D.beacon=null}
   $("mission").style.display="none";$("chips").style.display="";
@@ -1634,7 +1641,7 @@ function cardBase(title,sub){
 function wrapText(x,text,X,Y,maxW,lh){const words=String(text).split(" ");let line="";for(const w of words){const t=line?line+" "+w:w;if(x.measureText(t).width>maxW&&line){x.fillText(line,X,Y);Y+=lh;line=w}else line=t}if(line)x.fillText(line,X,Y);return Y+lh}
 function stamp(x,cx,cy,r,top,mid,bot,color){x.save();x.translate(cx,cy);x.rotate(-.12);x.strokeStyle=color;x.fillStyle=color;x.lineWidth=10;x.beginPath();x.arc(0,0,r,0,7);x.stroke();x.lineWidth=4;x.beginPath();x.arc(0,0,r-22,0,7);x.stroke();
   x.textAlign="center";x.font='800 40px Figtree, sans-serif';x.fillText(top,0,-r+80);x.font='800 70px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(mid,0,20);x.font='700 34px Figtree, sans-serif';x.fillText(bot,0,r-60);x.restore()}
-function makeCard(kind,d){
+function makeCard(kind,d){track("card",{kind});
   if(kind==="lottery"){const{c,x}=cardBase("THE JAPA LOTTERY","I don’t choose how I land in London.");
     x.font="170px sans-serif";x.textAlign="center";x.fillText(d.em,540,440);
     stamp(x,540,800,270,"UK ENTRY · "+dateStr(0).toUpperCase(),d.name.toUpperCase().slice(0,16),d.home.toUpperCase().slice(0,24),"#E5487A");
@@ -1668,7 +1675,7 @@ function showCard(canvas,text,holder){
 }
 /* ================= install as an app ================= */
 let installEvt=null;addEventListener("beforeinstallprompt",e=>{e.preventDefault();installEvt=e});
-function installApp(){
+function installApp(){track("install");
   if(installEvt){installEvt.prompt();installEvt.userChoice.finally(()=>{installEvt=null});return}
   const ios=/iphone|ipad|ipod/i.test(navigator.userAgent);
   openSheet(`<h2>📲 Install Japa Life</h2><p class="sub">Opens full screen like a real app, straight from your home screen.</p>
@@ -1728,7 +1735,7 @@ function goalTick(dt){
   if(ch.goals.every(g=>S.goals[g.id])&&!S.evq.includes("chapter"))S.evq.push("chapter");
 }
 function chapterDone(){
-  const ch=curChapter();S.chapter++;jxp(150);resp(10);money(100,"Chapter reward: Mum’s blessing");S.skip+=120;
+  const ch=curChapter();S.chapter++;track("chapter_done",{n:S.chapter-1});jxp(150);resp(10);money(100,"Chapter reward: Mum’s blessing");S.skip+=120;
   if(S.chapter===3&&S.visa&&S.visa.until&&S.route!=="born"){S.visa.until=Math.min(S.visa.until,day()+28);addMsg("UKVI",`Your permission to stay ends on ${dateStr(S.visa.until)}. Apply to extend before then. (Phone → Papers.)`)}
   if(S.chapter===4){S.skip=Math.max(S.skip||0,settleDays()-day()-5);if(S.visa&&S.visa.until)S.visa.until=Math.max(S.visa.until,day()+400);S.credit=Math.min(999,(S.credit||0)+120)}
   const nx=curChapter();save();updateHUD();
@@ -1841,7 +1848,7 @@ function evById(id){return LE.find(e=>e.id===id)}
 function pickAuto(){const ok=LE.filter(e=>!e.forced&&(!e.once||!S.seen[e.id])&&(!e.cond||e.cond()));return ok.length?pick(ok):null}
 function fxChips(fx){return Object.entries(fx).filter(([k,v])=>k!=="sent"&&v).map(([k,v])=>{const L={m:"",f:"Fun",e:"Energy",h:"Hunger",love:"Love",rep:"Rating",rs:"Respect"}[k];
   const t=k==="m"?`${v>0?"+":"−"}£${Math.abs(v)}`:`${v>0?"+":"−"}${Math.abs(v)} ${L}`;return `<span class="chipx ${v>0?"up":"down"}">${t}</span>`}).join("")}
-function showEvent(ev){
+function showEvent(ev){if(["ilr_granted","spouse_arrives","parents_arrive","baby","detty"].includes(ev.id))track("milestone",{what:ev.id});
   S.seen[ev.id]=(S.seen[ev.id]||0)+1;const from=typeof ev.from==="function"?ev.from():ev.from;
   openSheet(`<div class="evhead"><div class="av">${ev.av}</div><div><b>${esc(from)}</b><small>📱 New message · ${timeStr(mod())}</small></div></div>
     <div class="bubble">${ev.t()}</div><div class="list">${ev.c.map((c,i)=>`<button class="opt" data-c="${i}"><div><b>${c[0]}</b><span>${fxChips(c[1])||"&nbsp;"}</span></div></button>`).join("")}</div>`);
@@ -1959,7 +1966,7 @@ function openPhone(){
     <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">London</h2>
     ${[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])].map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
-  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
+  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
@@ -1970,6 +1977,7 @@ function openPhone(){
   const ub=$("uber");if(ub)ub.onclick=()=>openTravel(null,"uber");
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
   const mv=$("mv");if(mv)mv.onclick=openMove;
+  const stt=$("stt");if(stt)stt.onclick=()=>{try{localStorage.setItem("japa_nostats",statsOn()?"1":"0")}catch(e){}toast(statsOn()?"Usage stats on. Thank you!":"Usage stats off.");openPhone()};
   const rs=$("reset");if(rs)rs.onclick=()=>{if(confirm("Start over? This life will be gone.")){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}};
   $("sheetIn").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{phoneTab=b.dataset.t;openPhone()});
   $("sheetIn").querySelectorAll("[data-go]").forEach(g=>g.addEventListener("click",()=>{closeSheet();goTo(g.dataset.go)}));
@@ -2226,6 +2234,7 @@ function begin(state,isNew){
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
   const zid=ZONES[S.zone]?S.zone:"ryelane";
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
+  track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} 🇬🇧</h2><p class="sub">You just landed. Here’s how life works.</p>
     <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);

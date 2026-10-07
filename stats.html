@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Japa Life · Live stats</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,700;12..96,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#EEF1F6;--card:#FFFFFF;--ink:#1C1B3A;--muted:#5B5F7A;--line:#DCE1EA;--indigo:#2D3192;--yellow:#F4C430;--pink:#E5487A;--green:#0E7A4B;--bad:#C2304F;
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#14142A;--card:#1F1F3B;--ink:#F1F2F8;--muted:#A3A7C2;--line:#34345A;--bad:#FF6F8E}}
+:root[data-theme="dark"]{--bg:#14142A;--card:#1F1F3B;--ink:#F1F2F8;--muted:#A3A7C2;--line:#34345A;--bad:#FF6F8E}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif}
+.band{height:26px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='26' height='26'%3E%3Crect width='26' height='26' fill='%232D3192'/%3E%3Ccircle cx='13' cy='13' r='8' fill='%23F4C430'/%3E%3Ccircle cx='13' cy='13' r='5' fill='%23E5487A'/%3E%3Ccircle cx='13' cy='13' r='2' fill='%230E7A4B'/%3E%3C/svg%3E")}
+main{max-width:1100px;margin:0 auto;padding:20px 16px 40px}
+h1{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-size:34px;letter-spacing:-.03em;margin:4px 0 2px}
+.sub{color:var(--muted);font-size:14px;margin:0 0 18px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.k{font-size:13px;color:var(--muted);font-weight:600}
+.v{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-size:34px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums}
+.v small{font-size:14px;color:var(--muted);font-weight:600;font-family:Figtree,sans-serif}
+.live{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--green);margin-right:6px;animation:p 1.6s infinite}
+@keyframes p{50%{opacity:.3}}
+@media (prefers-reduced-motion:reduce){.live{animation:none}}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px;margin-bottom:12px}
+h2{font-family:"Bricolage Grotesque",Figtree,sans-serif;font-size:18px;margin:0 0 10px;letter-spacing:-.01em}
+.bar{display:grid;grid-template-columns:130px 1fr 44px;gap:8px;align-items:center;font-size:14px;margin:6px 0}
+.bar .t{height:12px;border-radius:6px;background:var(--line);overflow:hidden}.bar .t i{display:block;height:100%;border-radius:6px;background:var(--indigo)}
+.bar span:last-child{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}
+.chart{overflow-x:auto}.chart svg{display:block;min-width:520px;width:100%;height:auto}
+.empty{color:var(--muted);font-size:14px}
+.login{max-width:380px;margin:12vh auto 0}
+input{width:100%;font:inherit;font-size:16px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin:10px 0}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:12px 16px;font-weight:700;background:var(--green);color:#fff;width:100%}
+button.ghost{background:transparent;color:var(--muted);width:auto;padding:6px 8px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.rooms{display:flex;flex-wrap:wrap;gap:6px}.rooms span{background:var(--bg);border:1px solid var(--line);border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700}
+.err{color:var(--bad);font-weight:600}
+</style>
+</head>
+<body>
+<div class="band"></div>
+<main id="app"></main>
+<script>
+const API=new URLSearchParams(location.search).get("api")||"https://japa-life-realtime.azubuikedavies.workers.dev";
+const $=s=>document.querySelector(s);
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+let key="";try{key=localStorage.getItem("japa_stats_key")||""}catch(e){}
+const NAMES={ryelane:"Rye Lane",choumert:"Choumert Road",highst:"Peckham High St",woolwich:"Woolwich",barking:"Barking",croydon:"Croydon",edmonton:"Edmonton",central:"Central London",
+  care:"Care Worker",student:"Student Visa",tech:"Tech Relocation",born:"British-Born",house:"House in Lagos",mum:"Mum for Christmas",landlord:"London Landlord",oga:"Oga at the Top",
+  single:"Single",wife:"Wife",husband:"Husband",partner:"Partner",spouse:"Spouse",train:"Train",bus:"Bus",uber:"Uber",walk:"Walking",drive:"Drive",
+  retail:"Till (Kwik)",delivery:"Delivery",nurse:"NHS nurse",security:"Security",chops:"Small chops",cargo:"Cargo",ilr_granted:"ILR granted",spouse_arrives:"Spouse arrived",parents_arrive:"Parents visited",baby:"Baby born",detty:"Detty December",home_owner:"Bought a home",wedding:"Wedding",
+  lottery:"Lottery stamp",payslip:"Payslip",chapter:"Certificate",ijgb:"IJGB pass",ilr:"ILR card",home:"Home card"};
+const nice=k=>NAMES[k]||k.replace(/(^|[ _-])\w/g,m=>m.toUpperCase()).replace(/_/g," ");
+function login(msg){
+  $("#app").innerHTML=`<div class="login card"><h1>Live stats</h1><p class="sub">Japa Life dashboard. Enter your stats key.</p>${msg?`<p class="err">${msg}</p>`:""}
+    <input id="k" type="password" placeholder="Stats key" autocomplete="current-password"><button id="go">Open dashboard</button></div>`;
+  $("#go").onclick=()=>{key=$("#k").value.trim();try{localStorage.setItem("japa_stats_key",key)}catch(e){}load()};
+  $("#k").addEventListener("keydown",e=>{if(e.key==="Enter")$("#go").click()});
+}
+function bars(rows,title){
+  const list=Object.entries(rows).sort((a,b)=>b[1]-a[1]);const max=Math.max(1,...list.map(x=>x[1]));
+  return `<div class="card"><h2>${title}</h2>${list.length?list.map(([k,v])=>`<div class="bar"><span>${esc(nice(k))}</span><span class="t"><i style="width:${v/max*100}%"></i></span><span>${v}</span></div>`).join(""):`<p class="empty">No data yet.</p>`}</div>`;
+}
+function chart(days,series){
+  const W=760,H=220,pad=30,bw=(W-pad*2)/days.length;const max=Math.max(1,...days.map(d=>series[d]||0));
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Players per day">${[0,.5,1].map(f=>`<line x1="${pad}" x2="${W-pad}" y1="${H-pad-(H-pad*2)*f}" y2="${H-pad-(H-pad*2)*f}" stroke="currentColor" stroke-opacity=".12"/><text x="4" y="${H-pad-(H-pad*2)*f+4}" font-size="11" fill="currentColor" opacity=".6">${Math.round(max*f)}</text>`).join("")}
+    ${days.map((d,i)=>{const v=series[d]||0,h=(H-pad*2)*v/max;return `<rect x="${pad+i*bw+3}" y="${H-pad-h}" width="${bw-6}" height="${h}" rx="4" fill="#2D3192"><title>${d}: ${v} players</title></rect>${i%2===0||days.length<10?`<text x="${pad+i*bw+bw/2}" y="${H-10}" font-size="10" text-anchor="middle" fill="currentColor" opacity=".6">${d.slice(5)}</text>`:""}`}).join("")}</svg>`;
+}
+async function load(){
+  if(!key)return login();
+  let data;try{const r=await fetch(`${API}/stats?key=${encodeURIComponent(key)}&days=14`,{cache:"no-store"});if(r.status===401)return login("That key didn’t work.");data=await r.json()}catch(e){$("#app").innerHTML=`<p class="err">Couldn’t reach the stats server. Retrying…</p>`;return}
+  const today=new Date().toISOString().slice(0,10);const days=[];for(let i=13;i>=0;i--)days.push(new Date(Date.now()-i*864e5).toISOString().slice(0,10));
+  const by={};data.rows.forEach(r=>{(by[r.metric]=by[r.metric]||{})[r.day]=r.value});
+  const sum=(m,d)=>d?((by[m]||{})[d]||0):Object.values(by[m]||{}).reduce((a,b)=>a+b,0);
+  const group=pre=>{const o={};Object.keys(by).forEach(m=>{if(m.startsWith(pre))o[m.slice(pre.length)]=sum(m)});return o};
+  const pT=sum("players",today),mins=sum("ev:minute",today);
+  const exams={};Object.keys(by).filter(m=>m.startsWith("exam:k:")).forEach(m=>exams[m.slice(7)]=sum(m));
+  $("#app").innerHTML=`<div class="top"><div><h1>Japa Life · Live stats</h1><p class="sub">Updated ${new Date(data.generated).toLocaleTimeString()} · refreshes every 30 seconds · last 14 days</p></div><button class="ghost" id="out">Log out</button></div>
+    <div class="grid">
+      <div class="card"><div class="k"><span class="live"></span>Online now</div><div class="v">${data.online}</div><div class="rooms">${data.rooms.map(r=>`<span>${esc(nice(r.room.replace(/-\d+$/,"")))} · ${r.count}</span>`).join("")||`<span>Nobody right now</span>`}</div></div>
+      <div class="card"><div class="k">Players today</div><div class="v">${pT}</div></div>
+      <div class="card"><div class="k">New players today</div><div class="v">${sum("first_visit",today)}</div></div>
+      <div class="card"><div class="k">Sessions today</div><div class="v">${sum("ev:session_start",today)}</div></div>
+      <div class="card"><div class="k">Minutes played today</div><div class="v">${mins}<small> ${pT?`· ${Math.round(mins/pT)} per player`:""}</small></div></div>
+      <div class="card"><div class="k">All-time players</div><div class="v">${data.allTimePlayers}</div></div>
+    </div>
+    <div class="card" style="margin-bottom:12px"><h2>Players per day</h2><div class="chart">${chart(days,by.players||{})}</div></div>
+    <div class="two">
+      ${bars({"Started a life":sum("ev:new_player"),"Finished Chapter 1":sum("chapter_done:n:1"),"Finished Chapter 2":sum("chapter_done:n:2"),"Finished Chapter 3":sum("chapter_done:n:3"),"Finished Chapter 4":sum("chapter_done:n:4")},"Progress funnel (14 days)")}
+      ${bars(group("new_player:route:"),"Japa lottery results")}
+      ${bars(group("new_player:home:"),"Home areas chosen")}
+      ${bars(group("new_player:dream:"),"Dreams chosen")}
+      ${bars(group("shift:c:"),"Shifts worked by career")}
+      ${bars(exams,"Exams taken")}
+      ${bars({"Passed":sum("exam:result:pass"),"Failed":sum("exam:result:fail")},"Exam results")}
+      ${bars(group("card:kind:"),"Share cards created")}
+      ${bars(group("travel:how:"),"How people travel")}
+      ${bars(group("milestone:what:"),"Life milestones")}
+      ${bars(group("biz:type:"),"Side businesses started")}
+      ${bars({"Installed as app":sum("ev:install"),"Delivery shifts":sum("ev:delivery")},"Other")}
+    </div>`;
+  $("#out").onclick=()=>{try{localStorage.removeItem("japa_stats_key")}catch(e){}key="";login()};
+}
+load();setInterval(()=>{if(key)load()},30000);
+</script>
+</body>
+</html>
