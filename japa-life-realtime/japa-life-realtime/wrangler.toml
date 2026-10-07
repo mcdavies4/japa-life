@@ -1,0 +1,16 @@
+name = "japa-life-realtime"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+
+[[durable_objects.bindings]]
+name = "ZONE_ROOM"
+class_name = "ZoneRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ZoneRoom"]
+
+[vars]
+# Comma-separated list of sites allowed to connect. Add your custom domain here too.
+ALLOWED_ORIGINS = "https://japa-life.pages.dev,http://localhost:8788"
+MAX_PER_ROOM = "80"
