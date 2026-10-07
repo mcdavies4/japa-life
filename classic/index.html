@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Japa Life</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,800&family=Figtree:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --sky:#E6EBF2; --sky2:#D5DDEA; --ink:#1C1B3A; --card:#FFFFFF; --muted:#5B5F7A;
+  --green:#0E7A4B; --yellow:#F4C430; --pink:#E5487A; --indigo:#2D3192;
+  --line:#CDD4E0; --good:#0E7A4B; --bad:#C2304F;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --sky:#14142A; --sky2:#2A2A4C; --ink:#F1F2F8; --card:#20203D; --muted:#A3A7C2; --line:#34345A;
+    --good:#3DCB8A; --bad:#FF6F8E;
+  }
+}
+:root[data-theme="dark"]{
+  --sky:#14142A; --sky2:#2A2A4C; --ink:#F1F2F8; --card:#20203D; --muted:#A3A7C2; --line:#34345A;
+  --good:#3DCB8A; --bad:#FF6F8E;
+}
+*,*::before,*::after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px);height:100%}
+body{margin:0;min-height:100%;background:var(--sky);color:var(--ink);
+  font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;font-size:17px;line-height:1.5;
+  -webkit-tap-highlight-color:transparent}
+.wrap{max-width:460px;margin:0 auto;padding:14px 14px 32px}
+h1,h2,h3,.display{font-family:"Bricolage Grotesque","Figtree",system-ui,sans-serif;letter-spacing:-.02em}
+h2{font-size:28px;line-height:1.1;margin:0 0 6px}
+h3{font-size:20px;margin:0 0 10px}
+p{margin:0 0 12px}
+.muted{color:var(--muted)}
+.small{font-size:15px}
+button{font:inherit;cursor:pointer;color:inherit}
+button:focus-visible,input:focus-visible{outline:3px solid var(--pink);outline-offset:3px}
+button:disabled{opacity:.45;cursor:not-allowed}
+
+.card{background:var(--card);border-radius:16px;border:1.5px solid var(--line);overflow:hidden;margin-bottom:12px}
+.pad{padding:18px 18px 20px}
+.ankara{height:40px;display:block;width:100%}
+.btn{display:block;width:100%;padding:15px 18px;border:0;border-radius:12px;background:var(--green);color:#fff;font-weight:700;font-size:18px;text-align:center}
+.btn.alt{background:transparent;color:var(--ink);border:2px solid var(--ink);margin-top:10px}
+.btn+.btn{margin-top:10px}
+.row{display:flex;gap:8px;align-items:center}
+.grow{flex:1}
+
+/* title */
+.title{font-size:58px;line-height:.9;font-weight:800;letter-spacing:-.04em;margin:4px 0 12px}
+.hero{margin-top:5vh}
+
+/* pickers */
+.opts{display:flex;flex-wrap:wrap;gap:8px;margin:6px 0 16px}
+.opt{border:2px solid var(--line);background:transparent;border-radius:12px;padding:8px 12px;font-weight:600;font-size:15px}
+.opt.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
+.swatch{width:42px;height:42px;border-radius:50%;padding:0;border:3px solid transparent}
+.swatch.on{border-color:var(--ink);background:none}
+.label{font-weight:700;font-size:15px;margin-bottom:2px}
+input[type=text]{width:100%;font:inherit;font-size:18px;padding:12px 14px;border-radius:12px;border:2px solid var(--line);background:var(--card);color:var(--ink);margin:4px 0 16px}
+.pick{display:block;width:100%;text-align:left;border:2px solid var(--line);background:transparent;border-radius:14px;padding:12px 14px;margin-bottom:8px}
+.pick.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
+.pick b{display:block;font-size:17px}
+.pick span{font-size:14px;opacity:.8}
+.avatar-big{display:flex;justify-content:center;margin:4px 0 14px}
+
+/* hud */
+.hud{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+.hud svg{border-radius:50%;flex:none}
+.who b{display:block;font-size:18px;line-height:1.2}
+.who span{font-size:14px;color:var(--muted)}
+.money{margin-left:auto;text-align:right}
+.money b{display:block;font-size:22px;font-variant-numeric:tabular-nums;line-height:1.1}
+.money span{font-size:13px;color:var(--muted)}
+.bars{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:10px}
+.bar-k{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+.bar{height:7px;border-radius:4px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;border-radius:4px;transition:width .35s ease}
+.dream{display:flex;align-items:center;gap:10px;background:var(--card);border:1.5px solid var(--line);border-radius:12px;padding:8px 12px;margin-bottom:12px}
+.dream .em{font-size:24px}
+.dream .bar{margin-top:4px}
+.dream .t{font-size:14px;font-weight:600;display:flex;justify-content:space-between}
+
+.when{display:flex;justify-content:space-between;align-items:baseline;margin:2px 2px 8px}
+.when .day{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:26px;letter-spacing:-.02em}
+.week{display:flex;gap:4px;margin:0 2px 12px}
+.week span{flex:1;height:4px;border-radius:2px;background:var(--line)}
+.week span.done{background:var(--green)} .week span.now{background:var(--yellow)}
+
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.act{text-align:left;border:2px solid var(--ink);background:transparent;border-radius:14px;padding:12px;min-height:92px;display:flex;flex-direction:column}
+.act .e{font-size:24px;line-height:1}
+.act b{font-size:16px;margin-top:6px;line-height:1.2}
+.act span{font-size:13px;color:var(--muted);margin-top:auto;padding-top:4px}
+@media (hover:hover){.act:not(:disabled):hover,.choice:hover{background:var(--yellow);color:#1C1B3A}.act:not(:disabled):hover span{color:#1C1B3A}}
+
+.today{font-size:15px;padding:10px 14px;border-radius:12px;background:var(--sky2);margin-bottom:12px}
+.emoji{font-size:36px;line-height:1;margin-bottom:8px}
+.prompt{font-size:20px;line-height:1.35;font-weight:600;margin:0 0 16px}
+.choices{display:grid;gap:10px}
+.choice{text-align:left;padding:14px 16px;border-radius:12px;border:2px solid var(--ink);background:transparent;font-weight:600;font-size:17px}
+.deltas{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 16px}
+.chip{font-size:13px;font-weight:700;padding:3px 10px;border-radius:999px;border:1.5px solid currentColor;white-space:nowrap}
+.chip.up{color:var(--good)} .chip.down{color:var(--bad)}
+
+.ledger{display:grid;grid-template-columns:1fr auto;gap:4px 12px;font-variant-numeric:tabular-nums;margin-bottom:14px}
+.ledger .tot{font-weight:700;border-top:1.5px solid var(--line);padding-top:4px}
+.mum{background:var(--sky2);border-radius:12px;padding:12px 14px;margin-bottom:14px}
+.saves{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
+.saves button{border:2px solid var(--green);background:transparent;border-radius:10px;padding:10px 4px;font-weight:700;color:var(--green);font-size:15px}
+.house{font-size:44px;text-align:center;margin:6px 0}
+
+.lottery{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:40px;line-height:1.05;text-align:center;margin:18px 0 6px;min-height:2.2em;display:flex;align-items:center;justify-content:center}
+.lottery-e{font-size:64px;text-align:center;line-height:1}
+
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button{flex:1;border:2px solid var(--ink);background:transparent;border-radius:10px;padding:8px;font-weight:700}
+.tabs button.on{background:var(--ink);color:var(--sky)}
+.rank{display:grid;grid-template-columns:28px 1fr auto;gap:8px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.rank:last-child{border-bottom:0}
+.rank .n{font-weight:800;color:var(--muted)}
+.rank .nm{font-weight:700;line-height:1.2}
+.rank .nm span{display:block;font-weight:400;font-size:13px;color:var(--muted)}
+.rank .sc{font-weight:800;font-variant-numeric:tabular-nums}
+.rank.me{background:var(--sky2);border-radius:10px;padding-left:6px;padding-right:6px}
+.area-bar{margin-bottom:10px}
+.area-bar .bar{height:12px}
+
+.topnav{display:flex;justify-content:flex-end;gap:8px;margin-bottom:8px}
+.ghost{border:0;background:transparent;font-weight:700;font-size:15px;padding:6px 8px;border-radius:8px;color:var(--muted)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);
+  background:var(--ink);color:var(--sky);padding:10px 16px;border-radius:10px;font-weight:600;font-size:15px;
+  opacity:0;transition:opacity .2s;pointer-events:none;max-width:90vw;text-align:center;z-index:5}
+.toast.show{opacity:1}
+.fade{animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.pop{animation:pop .5s ease}
+@keyframes pop{0%{transform:scale(.6);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <pattern id="wax" width="40" height="40" patternUnits="userSpaceOnUse">
+      <rect width="40" height="40" fill="#2D3192"/><circle cx="20" cy="20" r="13" fill="#F4C430"/>
+      <circle cx="20" cy="20" r="8" fill="#E5487A"/><circle cx="20" cy="20" r="3" fill="#0E7A4B"/>
+      <path d="M0 0L7 0L0 7ZM40 0L33 0L40 7ZM0 40L7 40L0 33ZM40 40L33 40L40 33Z" fill="#0E7A4B"/>
+    </pattern>
+    <pattern id="fit0" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#2D3192"/><circle cx="6" cy="6" r="4" fill="#F4C430"/><circle cx="6" cy="6" r="1.6" fill="#E5487A"/></pattern>
+    <pattern id="fit1" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#0E7A4B"/><path d="M6 1L11 6L6 11L1 6Z" fill="#F4C430"/><circle cx="6" cy="6" r="1.5" fill="#1C1B3A"/></pattern>
+    <pattern id="fit2" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#E5487A"/><rect x="0" y="0" width="6" height="6" fill="#2D3192"/><rect x="6" y="6" width="6" height="6" fill="#2D3192"/><circle cx="3" cy="3" r="1.5" fill="#F4C430"/><circle cx="9" cy="9" r="1.5" fill="#F4C430"/></pattern>
+    <pattern id="fit3" width="12" height="12" patternUnits="userSpaceOnUse"><rect width="12" height="12" fill="#F4C430"/><path d="M0 6Q3 1 6 6T12 6" stroke="#0E7A4B" stroke-width="2" fill="none"/><circle cx="6" cy="10" r="1.4" fill="#E5487A"/></pattern>
+  </defs>
+</svg>
+
+<main class="wrap" id="app" aria-live="polite"></main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+/* ---------- data ---------- */
+const BAND='<svg class="ankara" preserveAspectRatio="none" aria-hidden="true"><rect width="100%" height="100%" fill="url(#wax)"/></svg>';
+const DAYS=["Monday","Tuesday","Wednesday","Thursday","Friday","Saturday","Sunday"];
+const SKINS=["#5A3420","#7A4A2C","#9B6440","#C08560"];
+const HAIRS=["Low cut","Afro","Braids","Gele"];
+const XP=[0,4,10,18,28,40];
+
+const ROUTES={
+ student:{name:"Student Visa",em:"🎓",cash:1200,wage:70,rentMul:.8,cap:3,workE:20,workJ:-3,w:30,
+  blurb:"You came for a master’s. You stayed for the 20-hour work limit.",
+  titles:["Shelf Stacker","Shift Supervisor","Graduate Trainee","Analyst","Senior Analyst","Director"]},
+ care:{name:"Care Worker",em:"🩺",cash:600,wage:95,rentMul:.9,cap:7,workE:25,workJ:-3,w:35,
+  blurb:"Night shifts, double shifts, and a WhatsApp group of 200 carers.",
+  titles:["Care Assistant","Senior Carer","Team Lead","Deputy Manager","Home Manager","Care Agency Owner"]},
+ tech:{name:"Tech Relocation",em:"💻",cash:3000,wage:210,rentMul:1.6,cap:7,workE:22,workJ:-6,w:15,
+  blurb:"Relocation package, Zone 2 flat, imposter syndrome included.",
+  titles:["Junior Dev","Developer","Senior Dev","Staff Engineer","Principal","CTO"]},
+ born:{name:"British-Born Naija",em:"🇬🇧",cash:400,wage:80,rentMul:0,houseFee:50,cap:7,workE:20,workJ:-3,w:20,
+  blurb:"Born here, still lives with Mum. Rent is free. Freedom is not.",
+  titles:["Retail Assistant","Team Leader","Assistant Manager","Store Manager","Area Manager","Head of Everything"]}
+};
+const AREAS={
+ peckham:{name:"Peckham",rent:190,blurb:"Little Lagos. Suya on every corner."},
+ woolwich:{name:"Woolwich",rent:160,blurb:"Market days and the Elizabeth line."},
+ barking:{name:"Barking",rent:150,blurb:"More space, longer commute."},
+ croydon:{name:"Croydon",rent:165,blurb:"Trams, Boxpark, big family houses."},
+ edmonton:{name:"Edmonton",rent:155,blurb:"North London’s Naija stronghold."}
+};
+const DREAMS={
+ house:{name:"Build a House in Lagos",em:"🏡",target:5000,d:"Save £5,000 and build from land to roof."},
+ mum:{name:"Bring Mum for Christmas",em:"✈️",target:2000,d:"Save £2,000 and keep Family above 80."},
+ landlord:{name:"Become a London Landlord",em:"🔑",target:10000,d:"Save £10,000 for your first deposit."},
+ oga:{name:"Oga at the Top",em:"👑",d:"Reach the top level of your career."}
+};
+const TRAITS=[
+ {id:"hustler",n:"Hustler",d:"Side hustles pay 40% more"},
+ {id:"owambe",n:"Owambe Spirit",d:"Linking up gives 50% more joy"},
+ {id:"pet",n:"Mummy’s Pet",d:"Calls home count double"},
+ {id:"techy",n:"Fast Learner",d:"Extra career XP from work"},
+ {id:"foodie",n:"Foodie",d:"Rest days also lift your joy"},
+ {id:"iron",n:"Iron Body",d:"Shifts take less out of you"}
+];
+const LINES={
+ work:["You clocked in, clocked out, got paid.","Long shift. Your feet have filed a complaint.","Your manager said ‘good job’. Twice."],
+ hustle:["You sold 12 plates of jollof at lunch.","Two Uber Eats runs and lashes for your cousin.","Your ‘things Naija mums say’ video got a brand deal."],
+ study:["Online course, two coffees, one breakthrough.","Four YouTube tutorials at 1.5x speed."],
+ link:["Brunch turned into dinner turned into owambe.","Small chops, loud gist, good vibes."],
+ call:["Mum prayed for you for nine straight minutes.","Dad asked about ‘your plans’. You survived."],
+ rest:["You slept 11 hours. Your body thanks you.","Netflix, jollof, blanket. Perfect."]
+};
+
+/* Events: e emoji, t prompt, c choices [label, fx, outcome]; wk weekend only; area / route = targeted. fx keys m j e f x */
+const EVENTS=[
+ {e:"📱",t:"Your mum has called 4 times. She has not left a message.",c:[["Call back now",{e:-5,f:10},"She wanted to know if you’ve eaten. Forty minutes later, you still haven’t."],["Text ‘in a meeting’",{f:-10,j:5},"She replies with a thumbs up. The most dangerous emoji."]]},
+ {e:"💃",wk:1,t:"Owambe this weekend. The aso ebi is £85.",c:[["Buy it",{m:-85,j:15,f:5},"You look expensive. Your account looks less so."],["Wear last year’s",{j:5,f:-5},"Three aunties notice. Two say nothing. One says everything."]]},
+ {e:"👵",wk:1,t:"An aunty at the party asks when you’re getting married.",c:[["Say ‘next year’",{f:10,j:-5},"She is already choosing the aso ebi colour."],["Ask about her daughter’s master’s",{j:10,f:-5},"Twenty minutes on the master’s. You are free."],["Leave immediately",{e:5,f:-10},"Your mum hears about it before you reach the bus stop."]]},
+ {e:"🙏",t:"Your cousin in Lagos needs ‘small money’ for an urgent matter.",c:[["Send £50",{m:-50,f:10},"The urgent matter was a new phone. Also urgent: a case for it."],["Reply ‘God will provide’",{f:-10,j:5},"Seen. No reply. Family meeting incoming."]]},
+ {e:"🦐",t:"A Ziploc of crayfish arrives in your uncle’s suitcase.",c:[["Cook egusi tonight",{j:15,e:-10},"The flat smells like Balogun market. Your flatmate opens every window."],["Freeze it for emergencies",{j:5},"You now own three bags of ‘emergency’ crayfish."]]},
+ {e:"🚇",t:"Severe delays on the Tube.",c:[["Wait it out",{e:-10,j:-5},"Nose to armpit with a man eating an egg sandwich."],["Get an Uber",{m:-25,e:5},"Surge pricing. The driver plays Burna Boy though."]]},
+ {e:"🍚",t:"Your Ghanaian colleague says their jollof is better. Loudly.",c:[["Defend the motherland",{j:10,e:-5},"You win the argument. You also miss your 2pm."],["Admit theirs is ‘also nice’",{j:-10},"You will not be telling anyone at home about this."]]},
+ {e:"🔥",t:"You walk past a suya spot.",c:[["Large, extra yaji",{m:-15,j:15},"Your lips are burning. Your spirit is healed."],["Small. You’re saving.",{m:-6,j:5},"Discipline. You think about the large one all evening."]]},
+ {e:"📲",t:"Your dad forwards a broadcast saying microwaves steal your data.",c:[["Correct him with sources",{f:-10,e:-5},"He replies: ‘You people abroad think you know everything.’"],["React with 🙏",{f:5},"Peace in the family group. Misinformation lives on."]]},
+ {e:"⛪",t:"The church WhatsApp group is collecting for pastor’s birthday.",c:[["Give £20",{m:-20,f:5,j:5},"Your name is read out on Sunday. Mum watches the livestream proudly."],["Pretend you didn’t see it",{f:-5},"You were the only one with blue ticks."]]},
+ {e:"🧳",t:"A friend from home is visiting and wants to see the ‘real London’.",c:[["Oxford Street and the Eye",{m:-60,j:10,e:-15},"They take 400 photos and buy one keyring."],["Bring them to your area",{m:-20,j:10},"They say ‘this is just Lagos with cold.’ Fair."]]},
+ {e:"🥶",t:"It’s freezing and the heating costs money.",c:[["Heating on",{m:-30,j:5,e:5},"Warmth. You’ll see this decision again on the bill."],["Three jumpers",{j:-5},"You can see your breath indoors."]]},
+ {e:"💼",t:"Your uncle asks you to get his son a UK job ‘since you’re there’.",c:[["Promise to ‘check’",{f:5,e:-5},"He now tells everyone you’re handling it."],["Send a LinkedIn link",{f:-5,j:5},"He says you’ve changed since you travelled."]]},
+ {e:"🎙️",t:"Mum sends a seven-minute voice note.",c:[["Listen properly",{e:-5,f:10},"Minute six has the actual news: your cousin is engaged."],["Play at 2x speed",{f:5,j:5},"Mum at 2x sounds like Mum at 1x, but louder."]]},
+ {e:"🎶",t:"Afrobeats night in Shoreditch.",c:[["Go",{m:-40,j:20,e:-20},"You dance like rent isn’t due. It is."],["Stay in",{e:10,j:-5},"You watch the Instagram stories instead."]]},
+ {e:"✈️",t:"Christmas flights to Lagos just dropped. They’re climbing fast.",c:[["Panic and check prices",{j:-5},"£950. You close the app. You open it again."],["Ignore it",{j:5},"Ignorance is bliss. For now."]]},
+ {e:"🧂",t:"Your flatmate has been using your Maggi cubes.",c:[["Confront them",{j:-5,e:-5},"They didn’t know it was ‘a big deal’. It is."],["Hide them in a Celebrations tin",{j:5},"The tin trap. Generational wisdom."]]},
+ {e:"👋",t:"The cashier at Tesco hears your accent and smiles.",c:[["Say ‘How far?’",{j:10},"You are now family. They tell you where plantain is cheapest."],["Keep it British",{j:-5},"‘Cheers, mate.’ Your ancestors sigh."]]},
+ {e:"💱",t:"The naira rate moved. Sending money home hits different.",c:[["Send £100",{m:-100,f:15},"Mum calls you ‘my pride’. You’ll hear this all week."],["Wait for a better rate",{f:-5,j:5},"You refresh the rate eleven times today."]]},
+ {e:"🍌",t:"Plantain is £1 each at the corner shop.",c:[["Buy six anyway",{m:-6,j:10},"Dodo for dinner. Worth every penny."],["Refuse on principle",{j:-10},"In Lagos this buys a bunch. You think about it all evening."]]},
+ {e:"⛪",wk:1,t:"Sunday morning. Church or sleep?",c:[["Church",{e:-10,f:10,j:5},"The sermon runs two hours over. The jollof after is worth it."],["Sleep",{e:20,f:-10},"Mum checks the livestream. She knows."]]},
+ {e:"🇨🇦",t:"A friend’s WhatsApp status: they’ve just moved to Canada.",c:[["Congratulate them",{j:5},"They send a photo of snow. You have weather here, thanks."],["Check Toronto rent",{j:-10,e:-5},"You close the tab. You open it again later."]]},
+ {e:"🌧️",t:"It starts raining the second you leave without an umbrella.",c:[["Run for it",{e:-10,j:-5},"Your edges did not survive."],["Buy an £8 umbrella",{m:-8},"Your ninth umbrella. They all go somewhere."]]},
+ {e:"🪪",t:"A colleague mispronounces your name. Again.",c:[["Correct them",{j:5,e:-5},"Fourth attempt: close enough."],["Let it go",{j:-10},"You are now ‘Toby’ at work. Your name is Oluwatobiloba."]]},
+ {e:"🍳",t:"Your flatmates ask you to cook ‘that rice’ again.",c:[["Full party jollof",{m:-12,e:-15,j:20},"Smoky bottom pot. They call it ‘risotto’. You let it slide."],["Microwave meal",{e:5,j:-5},"Visible disappointment all round."]]},
+ {e:"🚌",t:"It’s late. Night bus or taxi?",c:[["Night bus",{e:-10,j:5},"Someone upstairs is eating chips aggressively. London."],["Taxi",{m:-30,e:5},"Home in 20. Wallet in pain."]]},
+ {e:"📹",t:"Mum video calls to ask if you’re eating well.",c:[["Show your best angle",{f:5},"She says you’ve lost weight. You have not."],["Show your fridge",{f:-10},"She sees only oat milk. She starts praying."]]},
+ {e:"🎓",t:"Your secondary school group is collecting for a reunion.",c:[["Pay £30",{m:-30,j:10},"Old nicknames resurface. ‘Bonga fish’ lives on."],["Mute the group",{j:5},"847 unread messages by Friday."]]},
+ {e:"⏰",wk:1,t:"Overtime offered this weekend.",c:[["Take it",{m:120,e:-20,j:-5},"Money entered. Joy left the building."],["Decline",{e:10,j:5},"You lie in. Your body thanks you."]]},
+ {e:"🛒",t:"The African shop has a ‘sale’ on Indomie.",c:[["Buy a whole carton",{m:-18,j:10},"Food security for the month."],["Buy two packs",{m:-2},"You go back for the carton tomorrow."]]},
+ {e:"🛍️",t:"At the shopping centre you bump into three people from church.",c:[["Greet everyone properly",{f:10,e:-10},"Forty minutes of ‘how is your mummy?’"],["Hide behind the Primark rails",{j:5,f:-5},"Aunty Bisi saw you. She’ll mention it on Sunday."]]},
+ {e:"🚊",wk:1,t:"A friend across London invites you over. It’s two trains and a bus.",c:[["Make the journey",{e:-15,j:15,m:-10},"Three hours of travel for jollof and gist. Worth it."],["Tell them to come to you",{e:5,j:-5},"They say the same. Nobody goes anywhere."]]},
+ /* area */
+ {area:"peckham",e:"🛍️",t:"Rye Lane is so packed you walk straight past your own cousin.",c:[["Go back and greet",{f:10,e:-5},"She reports to her mum that you’re ‘looking fresh’."],["Keep moving",{j:5,f:-5},"She posts ‘some people forget family’ on her status."]]},
+ {area:"peckham",e:"🔥",t:"Your local suya man now knows your order by heart.",c:[["Order the usual",{m:-12,j:15},"He adds extra onions. Love language."],["Try something new",{m:-12,j:5},"He looks hurt. You’ll be back to the usual."]]},
+ {area:"woolwich",e:"🥬",t:"Woolwich market has fresh ugu, ponmo and a man selling phone cases.",c:[["Stock up properly",{m:-25,j:10},"Your bag weighs more than you. The soup will be elite."],["Just the ugu",{m:-5,j:5},"Self-control. Your mum would call it stinginess."]]},
+ {area:"woolwich",e:"🌉",t:"A friend says the bus to Thamesmead is ‘basically a danfo’.",c:[["Ride it to see",{e:-5,j:10},"Someone is preaching on the top deck. They were right."],["Stay home",{e:5},"You hear about the bus preacher secondhand. Regret."]]},
+ {area:"barking",e:"🏘️",t:"Your cousin in Peckham says Barking isn’t ‘real London’.",c:[["Defend your ends",{j:10,e:-5},"Forty-five minutes. Nobody wins. You both post about it."],["Agree to keep the peace",{f:5,j:-5},"They screenshot it and send it to the family group."]]},
+ {area:"barking",e:"🚇",t:"The District line is down. Barking is now an island.",c:[["Work from home",{j:5,e:5},"Pyjama productivity."],["Rail replacement bus",{e:-15},"Ninety minutes. You’ve aged."]]},
+ {area:"croydon",e:"🎵",t:"Someone at the tram stop is playing Fela from a speaker.",c:[["Nod along",{j:10},"A stranger nods back. Community."],["Ask for the playlist",{j:15,e:-5},"You now have a new friend and a 400-song playlist."]]},
+ {area:"croydon",e:"🍗",wk:1,t:"Boxpark on Friday night?",c:[["Go",{m:-35,j:15,e:-10},"Wings, Afrobeats and a queue for the toilet."],["Save the money",{j:-5},"Everyone’s story is Boxpark. Yours is the ceiling."]]},
+ {area:"edmonton",e:"🐟",t:"Edmonton Green market has stockfish at a price that feels personal.",c:[["Pay it",{m:-30,j:10},"The flat will smell for a week. Home is home."],["Haggle Lagos-style",{m:-18,j:5,e:-5},"The seller respects you now. You’re back in Balogun."]]},
+ {area:"edmonton",e:"🏠",t:"Your new neighbour is also from Enugu.",c:[["Bring over some food",{m:-8,j:15},"You are now related. Officially."],["Just wave",{j:5},"They bring you food anyway. You owe them now."]]},
+ /* route */
+ {route:"student",e:"📝",t:"Coursework due Friday. Your manager wants you Thursday.",c:[["Do the coursework",{e:-10,x:1},"Submitted at 11:58pm. A personal best."],["Take the shift",{m:60,j:-10},"Money in. Extension request out."]]},
+ {route:"student",e:"📚",t:"A course mate asks for your notes ‘just to check something’.",c:[["Share them",{j:5},"They get a higher mark than you. Somehow."],["Say you lost them",{j:-5},"You feel guilty for exactly four minutes."]]},
+ {route:"care",e:"🤝",t:"A resident calls you ‘my child’ and won’t let go of your hand.",c:[["Stay a little longer",{j:15,e:-5},"This is why you do the job."],["Promise to come back",{j:5},"You do come back. They remember."]]},
+ {route:"care",e:"⏰",t:"The agency offers a double shift at time-and-a-half.",c:[["Take it",{m:140,e:-30},"You see two sunrises in one shift."],["Decline",{e:5},"The agency sends ‘ok’. Lowercase. Ominous."]]},
+ {route:"tech",e:"💻",t:"Standup ran 45 minutes. Nobody stood up.",c:[["Speak up about your work",{x:1,j:-5},"Your manager says ‘great visibility’. You don’t know what that means."],["Camera off, eat jollof",{j:5},"Best meeting this week."]]},
+ {route:"tech",e:"🗣️",t:"A colleague says your accent is ‘so interesting’.",c:[["Explain Nigerian English",{j:5,e:-5},"They now say ‘abeg’ in Slack. You created this."],["Smile and move on",{j:-5},"You practise your ‘British’ voice in the lift."]]},
+ {route:"born",e:"🏠",t:"Mum says ‘as long as you live in my house…’",c:[["Wash the plates now",{f:10,e:-5},"She checks them anyway. Two failed inspection."],["Argue",{j:5,f:-15},"Your WiFi password has mysteriously changed."]]},
+ {route:"born",e:"🗣️",t:"Cousins from Lagos call you ‘the oyibo one’.",c:[["Speak your best Yoruba",{j:10},"You said three words. Two were wrong."],["Accept the title",{j:-5},"You are the oyibo one. Forever."]]}
+];
+
+/* ---------- state ---------- */
+const KEY="japa_life_v2";
+let S=null, draft=null, view=null, rankTab="players";
+const app=document.getElementById("app");
+
+function load(){try{const r=localStorage.getItem(KEY);return r?JSON.parse(r):null}catch(e){return null}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
+function clamp(v){return Math.max(0,Math.min(100,Math.round(v)))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function pick(a){return a[Math.floor(Math.random()*a.length)]}
+function has(t){return S.traits.includes(t)}
+function lvl(){let l=1;for(let i=1;i<XP.length;i++) if(S.xp>=XP[i]) l=i+1;return l}
+function R(){return ROUTES[S.route]}
+function cap(){return S.route==="student"&&S.graduated?7:R().cap}
+function title(){return R().titles[lvl()-1]}
+function today(){const d=new Date();return d.getFullYear()+"-"+(d.getMonth()+1)+"-"+d.getDate()}
+function toast(msg){const el=document.getElementById("toast");el.textContent=msg;el.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove("show"),2600)}
+function gbp(n){return (n<0?"−£":"£")+Math.abs(Math.round(n)).toLocaleString("en-GB")}
+
+function avatar(look,size){
+  const skin=SKINS[look.skin], fit=`url(#fit${look.fit})`, hc="#17110C";
+  let back="",front="";
+  if(look.hair===0) front=`<path d="M21 26Q21 15 32 15Q43 15 43 26Q40 19 32 19Q24 19 21 26Z" fill="${hc}"/>`;
+  if(look.hair===1) back=`<circle cx="32" cy="23" r="16" fill="${hc}"/>`;
+  if(look.hair===2) back=`<path d="M19 26Q19 11 32 11Q45 11 45 26L46 46L42 46L41 28L23 28L22 46L18 46Z" fill="${hc}"/>`;
+  if(look.hair===3) front=`<path d="M16 25Q17 8 32 8Q48 8 49 23Q42 17 32 18Q22 17 16 25Z" fill="${fit}" stroke="#1C1B3A" stroke-width="1"/>`;
+  return `<svg viewBox="0 0 64 64" width="${size}" height="${size}" aria-hidden="true"><rect width="64" height="64" fill="var(--sky2)"/>${back}<path d="M8 66Q10 45 32 43Q54 45 56 66Z" fill="${fit}"/><rect x="28" y="35" width="8" height="9" fill="${skin}"/><circle cx="32" cy="27" r="11" fill="${skin}"/>${front}</svg>`;
+}
+
+/* ---------- dream ---------- */
+function progress(){
+  const D=DREAMS[S.dream];
+  if(S.dream==="oga"){ if(lvl()>=6) return 1; return Math.min(.99,S.xp/XP[5]); }
+  if(S.dream==="mum"){ const a=Math.min(1,S.fund/D.target), b=Math.min(1,S.f/80); return (a>=1&&b>=1)?1:Math.min(.99,a*.7+b*.3); }
+  return Math.min(1,S.fund/D.target);
+}
+function houseStage(p){return p>=1?["🏡","Finished. Housewarming in December."]:p>=.7?["🏠","Roofing. The village is talking."]:p>=.4?["🏗️","Walls going up."]:p>=.2?["🧱","Foundation laid."]:["🟫","You own the land. That’s a start."]}
+function score(){return (S.dreamsDone||0)*100+Math.round(progress()*100)}
+function checkDream(){ if(progress()>=1 && view!=="dream"){ view="dream"; render(); return true } return false }
+
+/* ---------- daily streak ---------- */
+function claimDaily(){
+  const t=today(); if(S.lastDay===t) return;
+  const y=new Date(); y.setDate(y.getDate()-1);
+  const ys=y.getFullYear()+"-"+(y.getMonth()+1)+"-"+y.getDate();
+  S.streak = S.lastDay===ys ? (S.streak||0)+1 : 1;
+  S.lastDay=t;
+  const bonus=20*Math.min(S.streak,7);
+  S.m+=bonus; save();
+  setTimeout(()=>toast(`Day ${S.streak} streak. Mum’s blessing: +£${bonus}`),300);
+}
+
+/* ---------- rankings (optional shared db) ---------- */
+let dbP=null, idP=null;
+function getDb(){ if(!dbP) dbP=(window.claude&&window.claude.use)?window.claude.use("db").catch(()=>null):Promise.resolve(null); return dbP }
+function getId(){ if(!idP) idP=(window.claude&&window.claude.use)?window.claude.use("user").then(u=>u?u.id():null).catch(()=>null):Promise.resolve(null); return idP }
+async function syncRank(){
+  try{ const db=await getDb(), id=await getId(); if(!db||!id) return;
+    await db.collection("players").doc(id).set({name:S.name.slice(0,16),area:S.area,route:S.route,dream:S.dream,
+      progress:Math.round(progress()*100),dreams:S.dreamsDone||0,score:score(),week:S.week,level:lvl(),updatedAt:Date.now()});
+  }catch(e){}
+}
+
+/* ---------- rendering ---------- */
+function render(){
+  if(view==="ranks") return renderRanks();
+  if(view==="dream") return renderDream();
+  if(!S) return renderTitle();
+  if(S.phase==="action") return renderAction();
+  if(S.phase==="event") return renderEvent();
+  if(S.phase==="eventResult") return renderEventResult();
+  if(S.phase==="sunday") return renderSunday();
+}
+
+function renderTitle(){
+  const saved=load();
+  app.innerHTML=`<section class="hero fade"><div class="card">${BAND}<div class="pad">
+    <h1 class="title">Japa Life</h1>
+    <p class="muted">Build a life in London. Chase your dream. Keep Mum happy. Five minutes a day.</p>
+    ${saved?`<button class="btn" id="cont">Continue as ${esc(saved.name)}</button><button class="btn alt" id="new">Start a new life</button>`:`<button class="btn" id="new">Start your japa</button>`}
+  </div></div></section>`;
+  if(saved) document.getElementById("cont").onclick=()=>{S=saved;claimDaily();if(!checkDream())render()};
+  document.getElementById("new").onclick=()=>{
+    if(saved && !confirm("Start over? Your current life will be replaced.")) return;
+    draft={name:"",look:{skin:1,hair:0,fit:0},traits:[],dream:null,step:1}; renderCreate();
+  };
+}
+
+function renderCreate(){
+  const d=draft;
+  if(d.step===1){
+    app.innerHTML=`<section class="card fade">${BAND}<div class="pad">
+      <h2>Who are you?</h2><p class="muted small">Step 1 of 3</p>
+      <div class="avatar-big">${avatar(d.look,112)}</div>
+      <label class="label" for="nm">Nickname</label>
+      <input type="text" id="nm" maxlength="16" placeholder="e.g. Tobi" value="${esc(d.name)}" autocomplete="off">
+      <div class="label">Skin tone</div>
+      <div class="opts">${SKINS.map((c,i)=>`<button class="swatch ${d.look.skin===i?"on":""}" data-skin="${i}" style="background:${c}" aria-label="Skin tone ${i+1}"></button>`).join("")}</div>
+      <div class="label">Hair</div>
+      <div class="opts">${HAIRS.map((h,i)=>`<button class="opt ${d.look.hair===i?"on":""}" data-hair="${i}">${h}</button>`).join("")}</div>
+      <div class="label">Outfit fabric</div>
+      <div class="opts">${[0,1,2,3].map(i=>`<button class="swatch ${d.look.fit===i?"on":""}" data-fit="${i}" aria-label="Fabric ${i+1}"><svg width="36" height="36" style="border-radius:50%"><rect width="36" height="36" fill="url(#fit${i})"/></svg></button>`).join("")}</div>
+      <button class="btn" id="next">Next</button>
+    </div></section>`;
+    const nm=document.getElementById("nm"); nm.oninput=()=>d.name=nm.value;
+    app.querySelectorAll("[data-skin]").forEach(b=>b.onclick=()=>{d.look.skin=+b.dataset.skin;renderCreate()});
+    app.querySelectorAll("[data-hair]").forEach(b=>b.onclick=()=>{d.look.hair=+b.dataset.hair;renderCreate()});
+    app.querySelectorAll("[data-fit]").forEach(b=>b.onclick=()=>{d.look.fit=+b.dataset.fit;renderCreate()});
+    document.getElementById("next").onclick=()=>{ d.name=nm.value.trim(); if(!d.name){toast("Pick a nickname first.");nm.focus();return} d.step=2; renderCreate(); };
+  } else if(d.step===2){
+    app.innerHTML=`<section class="card fade">${BAND}<div class="pad">
+      <h2>Pick two traits</h2><p class="muted small">Step 2 of 3</p>
+      ${TRAITS.map(t=>`<button class="pick ${d.traits.includes(t.id)?"on":""}" data-t="${t.id}"><b>${t.n}</b><span>${t.d}</span></button>`).join("")}
+      <button class="btn" id="next" ${d.traits.length!==2?"disabled":""}>Next</button>
+      <button class="btn alt" id="back">Back</button>
+    </div></section>`;
+    app.querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{const id=b.dataset.t;
+      if(d.traits.includes(id)) d.traits=d.traits.filter(x=>x!==id); else if(d.traits.length<2) d.traits.push(id); else {d.traits.shift();d.traits.push(id)}
+      renderCreate()});
+    document.getElementById("next").onclick=()=>{d.step=3;renderCreate()};
+    document.getElementById("back").onclick=()=>{d.step=1;renderCreate()};
+  } else if(d.step===3){
+    app.innerHTML=`<section class="card fade">${BAND}<div class="pad">
+      <h2>What’s your japa dream?</h2><p class="muted small">Step 3 of 3</p>
+      ${Object.entries(DREAMS).map(([k,v])=>`<button class="pick ${d.dream===k?"on":""}" data-d="${k}"><b>${v.em} ${v.name}</b><span>${v.d}</span></button>`).join("")}
+      <button class="btn" id="next" ${!d.dream?"disabled":""}>Take the japa lottery</button>
+      <button class="btn alt" id="back">Back</button>
+    </div></section>`;
+    app.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{d.dream=b.dataset.d;renderCreate()});
+    document.getElementById("next").onclick=renderLottery;
+    document.getElementById("back").onclick=()=>{d.step=2;renderCreate()};
+  }
+}
+
+function rollRoute(){const ent=Object.entries(ROUTES);let r=Math.random()*ent.reduce((a,[,v])=>a+v.w,0);for(const [k,v] of ent){r-=v.w;if(r<=0)return k}return "care"}
+
+function renderLottery(){
+  const result=rollRoute(); draft.route=result;
+  app.innerHTML=`<section class="card fade">${BAND}<div class="pad">
+    <h2 style="text-align:center">The japa lottery</h2>
+    <p class="muted small" style="text-align:center">You don’t choose how you land in London.</p>
+    <div class="lottery-e" id="le">✈️</div>
+    <div class="lottery" id="lt">…</div>
+    <div id="after"></div>
+  </div></section>`;
+  const keys=Object.keys(ROUTES), le=document.getElementById("le"), lt=document.getElementById("lt");
+  const reduce=window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let n=0; const total=reduce?0:18;
+  const tick=()=>{
+    if(n<total){const k=keys[n%keys.length];le.textContent=ROUTES[k].em;lt.textContent=ROUTES[k].name;n++;setTimeout(tick,60+n*8);return}
+    const r=ROUTES[result]; le.textContent=r.em; lt.textContent=r.name; lt.classList.add("pop"); le.classList.add("pop");
+    document.getElementById("after").innerHTML=`<p style="text-align:center">${r.blurb}</p>
+      <p class="muted small" style="text-align:center">Starting cash ${gbp(r.cash)}. ${r.cap<7?`Work limit: ${r.cap} shifts a week.`:"No work limit."}</p>
+      <button class="btn" id="go">Choose where you live</button>
+      <button class="btn alt" id="sh">Share my result</button>`;
+    document.getElementById("go").onclick=renderArea;
+    document.getElementById("sh").onclick=()=>share(`I just took the japa lottery in Japa Life and got: ${r.em} ${r.name} 😭 What did you get?`);
+  };
+  tick();
+}
+
+function renderArea(){
+  const born=draft.route==="born";
+  app.innerHTML=`<section class="card fade">${BAND}<div class="pad">
+    <h2>${born?"Where’s Mum’s house?":"Where do you live?"}</h2>
+    <p class="muted small">${born?"Rent-free. Rules-full.":"Rent is taken every Saturday."}</p>
+    ${Object.entries(AREAS).map(([k,a])=>`<button class="pick" data-a="${k}"><b>${a.name}</b><span>${a.blurb}${born?"":` Rent ${gbp(Math.round(a.rent*ROUTES[draft.route].rentMul))}/week.`}</span></button>`).join("")}
+  </div></section>`;
+  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>startLife(b.dataset.a));
+}
+
+function startLife(area){
+  const r=ROUTES[draft.route];
+  S={v:2,name:draft.name,look:draft.look,traits:draft.traits,dream:draft.dream,route:draft.route,area,
+     m:r.cash,e:80,j:60,f:60,xp:0,fund:0,week:1,day:0,shifts:0,wk:{earned:0,spent:0},
+     phase:"action",recent:[],streak:0,lastDay:"",dreamsDone:0};
+  claimDaily(); save(); syncRank(); render();
+}
+
+/* ---------- day loop ---------- */
+function hud(){
+  const D=DREAMS[S.dream], p=progress();
+  return `<div class="topnav"><button class="ghost" id="rk">Rankings</button><button class="ghost" id="hm">Menu</button></div>
+  <div class="hud">${avatar(S.look,56)}<div class="who"><b>${esc(S.name)}</b><span>${title()}, ${AREAS[S.area].name}</span></div>
+    <div class="money"><b>${gbp(S.m)}</b><span>${S.streak>1?`🔥 ${S.streak}-day streak`:"in your account"}</span></div></div>
+  <div class="bars">${[["e","⚡ Energy","#F4C430"],["j","😄 Joy","#E5487A"],["f","👪 Family","#0E7A4B"]].map(([k,l,c])=>`<div><div class="bar-k"><span>${l}</span><span>${S[k]}</span></div><div class="bar"><i style="width:${S[k]}%;background:${c}"></i></div></div>`).join("")}</div>
+  <div class="dream"><span class="em">${S.dream==="house"?houseStage(p)[0]:D.em}</span><div class="grow"><div class="t"><span>${D.name}</span><span>${Math.floor(p*100)}%</span></div><div class="bar"><i style="width:${p*100}%;background:var(--indigo)"></i></div></div></div>
+  <div class="when"><span class="day">${DAYS[S.day]}</span><span class="muted small">Week ${S.week}</span></div>
+  <div class="week">${DAYS.map((_,i)=>`<span class="${i<S.day?"done":i===S.day?"now":""}"></span>`).join("")}</div>`;
+}
+function bindHud(){
+  const rk=document.getElementById("rk"); if(rk) rk.onclick=()=>{view="ranks";render()};
+  const hm=document.getElementById("hm"); if(hm) hm.onclick=()=>{S=null;render()};
+}
+
+function actionFx(id){
+  const r=R(), l=lvl();
+  if(id==="work"){ const wage=Math.round(r.wage*(1+.15*(l-1)));
+    return {fx:{m:wage,e:-Math.round(r.workE*(has("iron")?.7:1)),j:r.workJ,x:has("techy")?2:1},
+      ok:S.e>=20&&S.shifts<cap(), why:S.shifts>=cap()?"Visa limit reached":"Too tired"}}
+  if(id==="hustle") return {fx:{m:[40,80].map(v=>Math.round(v*(has("hustler")?1.4:1))),e:-15},ok:S.e>=15,why:"Too tired"};
+  if(id==="study") return {fx:{x:2,e:-10,j:-2},ok:S.e>=10,why:"Too tired"};
+  if(id==="link") return {fx:{m:-25,j:Math.round(15*(has("owambe")?1.5:1)),e:-10},ok:S.m>=25&&S.e>=10,why:S.m<25?"Can’t afford it":"Too tired"};
+  if(id==="call") return {fx:{f:has("pet")?24:12,e:-5},ok:true};
+  if(id==="rest") return {fx:{e:30,j:has("foodie")?8:0},ok:true};
+}
+const ACTS=[["work","💼","Work a shift"],["hustle","🍛","Side hustle"],["study","📚","Learn new skills"],["link","🎉","Link up with friends"],["call","📞","Call home"],["rest","🛌","Rest"]];
+
+function chipsFor(fx){
+  return Object.entries(fx).filter(([,v])=>v!==0&&!(Array.isArray(v))).map(([k,v])=>{
+    const L={m:"",j:"Joy",e:"Energy",f:"Family",x:"Career XP"}[k];
+    const t=k==="m"?`${v>0?"+":"−"}£${Math.abs(v)}`:`${v>0?"+":"−"}${Math.abs(v)} ${L}`;
+    return `<span class="chip ${v>0?"up":"down"}">${t}</span>`;}).join("");
+}
+function previewText(fx){
+  return Object.entries(fx).filter(([,v])=>v!==0).map(([k,v])=>{
+    if(k==="m") return Array.isArray(v)?`£${v[0]}–${v[1]}`:(v>0?`+£${v}`:`−£${-v}`);
+    const L={j:"joy",e:"energy",f:"family",x:"XP"}[k]; return `${v>0?"+":"−"}${Math.abs(v)} ${L}`;}).join(", ");
+}
+
+function apply(fx){
+  const before=lvl();
+  for(const k in fx){ const v=fx[k];
+    if(k==="m"){S.m+=v; if(v>0)S.wk.earned+=v; else S.wk.spent-=v}
+    else if(k==="x"){S.xp+=v}
+    else S[k]=clamp(S[k]+v);
+  }
+  const after=lvl(); if(after>before) setTimeout(()=>toast(`Promoted: ${R().titles[after-1]} 🎉`),200);
+}
+
+function renderAction(){
+  app.innerHTML=hud()+`<section class="fade"><h3>What are you doing today?</h3><div class="actions">${ACTS.map(([id,em,n])=>{
+    const a=actionFx(id); return `<button class="act" data-a="${id}" ${a.ok?"":"disabled"}><div class="e">${em}</div><b>${n}</b><span>${a.ok?previewText(a.fx):a.why}</span></button>`}).join("")}</div></section>`;
+  bindHud();
+  app.querySelectorAll("[data-a]").forEach(b=>b.onclick=()=>doAction(b.dataset.a));
+}
+
+function doAction(id){
+  const a=actionFx(id); const fx={...a.fx};
+  if(Array.isArray(fx.m)) fx.m=Math.round(fx.m[0]+Math.random()*(fx.m[1]-fx.m[0]));
+  if(id==="work") S.shifts++;
+  apply(fx);
+  S.today={text:pick(LINES[id]),fx};
+  S.ev=pickEvent(); S.phase="event"; save();
+  if(!checkDream()) render();
+}
+
+function pickEvent(){
+  const wkend=S.day>=5;
+  let pool=EVENTS.map((ev,i)=>({ev,i})).filter(({ev,i})=>
+    (!ev.wk||wkend)&&(!ev.area||ev.area===S.area)&&(!ev.route||ev.route===S.route)&&!S.recent.includes(i));
+  if(!pool.length) pool=EVENTS.map((ev,i)=>({ev,i})).filter(({ev})=>!ev.area&&!ev.route&&!ev.wk);
+  const weighted=[]; pool.forEach(p=>{const w=(p.ev.area||p.ev.route)?3:1;for(let k=0;k<w;k++)weighted.push(p.i)});
+  const i=pick(weighted); S.recent.push(i); if(S.recent.length>24) S.recent.shift(); return i;
+}
+
+function todayStrip(){return S.today?`<div class="today"><b>Today:</b> ${S.today.text}<div class="deltas" style="margin:6px 0 0">${chipsFor(S.today.fx)}</div></div>`:""}
+
+function renderEvent(){
+  const ev=EVENTS[S.ev];
+  app.innerHTML=hud()+todayStrip()+`<article class="card fade">${BAND}<div class="pad">
+    <div class="emoji" aria-hidden="true">${ev.e}</div><p class="prompt">${ev.t}</p>
+    <div class="choices">${ev.c.map((c,i)=>`<button class="choice" data-i="${i}">${c[0]}</button>`).join("")}</div></div></article>`;
+  bindHud();
+  app.querySelectorAll(".choice").forEach(b=>b.onclick=()=>{const c=ev.c[+b.dataset.i];apply(c[1]);S.res={out:c[2],fx:c[1]};S.phase="eventResult";save();if(!checkDream())render()});
+}
+
+function renderEventResult(){
+  const ev=EVENTS[S.ev];
+  app.innerHTML=hud()+`<article class="card fade">${BAND}<div class="pad">
+    <div class="emoji" aria-hidden="true">${ev.e}</div><p class="prompt" style="font-weight:500">${S.res.out}</p>
+    <div class="deltas">${chipsFor(S.res.fx)}</div>
+    <button class="btn" id="nx">${S.day===6?"Wrap up the week":"Next day"}</button></div></article>`;
+  bindHud(); const nx=document.getElementById("nx"); nx.focus({preventScroll:true}); nx.onclick=endDay;
+}
+
+function endDay(){
+  S.j=clamp(S.j-2); S.f=clamp(S.f-(has("pet")?1:2)); S.e=clamp(S.e+10); S.today=null;
+  if(S.day===6){ enterSunday(); return }
+  S.day++; S.phase="action"; save(); render();
+}
+
+function enterSunday(){
+  const r=R(), a=AREAS[S.area];
+  const rent=Math.round(a.rent*r.rentMul), living=60, house=r.houseFee||0;
+  S.m-=rent+living+house; S.wk.spent+=rent+living+house;
+  let od=0; if(S.m<0){od=25;S.m-=od;S.j=clamp(S.j-15);S.wk.spent+=od}
+  S.bills={rent,living,house,od}; S.phase="sunday"; save(); render();
+}
+
+function mumLine(){
+  const f=S.f;
+  if(f>=80) return "“My pride! God will continue to bless you.”";
+  if(f>=50) return "“You’re trying. But you can call more.”";
+  if(f>=25) return "“Have you forgotten you have a mother?”";
+  return "Mum has changed her WhatsApp picture to a sad Bible verse.";
+}
+
+function renderSunday(){
+  const b=S.bills, D=DREAMS[S.dream], p=progress(), net=S.wk.earned-S.wk.spent;
+  const canSave=S.dream!=="oga";
+  const opts=[50,100,250,"All"];
+  app.innerHTML=`<div class="topnav"><button class="ghost" id="rk">Rankings</button><button class="ghost" id="hm">Menu</button></div>
+  <section class="card fade">${BAND}<div class="pad">
+    <h2>Week ${S.week} done</h2>
+    <p class="muted small">${S.streak>1?`🔥 ${S.streak}-day streak. Come back tomorrow for a bigger blessing.`:"Come back tomorrow for Mum’s daily blessing."}</p>
+    <div class="ledger">
+      <span>Earned and gifted</span><span>${gbp(S.wk.earned)}</span>
+      <span>Spent this week</span><span>${gbp(-(S.wk.spent-b.rent-b.living-b.house-b.od))}</span>
+      ${b.rent?`<span>Rent, ${AREAS[S.area].name}</span><span>${gbp(-b.rent)}</span>`:""}
+      ${b.house?`<span>Contribution to Mum’s house</span><span>${gbp(-b.house)}</span>`:""}
+      <span>Food and travel</span><span>${gbp(-b.living)}</span>
+      ${b.od?`<span>Overdraft fee</span><span>${gbp(-b.od)}</span>`:""}
+      <span class="tot">This week</span><span class="tot">${gbp(net)}</span>
+      <span class="tot">In your account</span><span class="tot">${gbp(S.m)}</span>
+    </div>
+    <div class="mum"><b>Sunday call with Mum</b><br>${mumLine()}</div>
+    <h3>${D.em} ${D.name}</h3>
+    ${S.dream==="house"?`<div class="house">${houseStage(p)[0]}</div><p style="text-align:center" class="small">${houseStage(p)[1]}</p>`:""}
+    <div class="bar" style="height:12px;margin-bottom:6px"><i style="width:${p*100}%;background:var(--indigo)"></i></div>
+    <p class="small muted">${canSave?`${gbp(S.fund)} of ${gbp(D.target)} saved${S.dream==="mum"?`, Family ${S.f} of 80`:""}.`:`${title()}. Level ${lvl()} of 6.`}</p>
+    ${canSave?`<div class="label">Move money to your dream fund</div><div class="saves">${opts.map(o=>{const amt=o==="All"?Math.max(0,S.m-100):o;return `<button data-s="${amt}" ${S.m<amt||amt<=0?"disabled":""}>${o==="All"?"All but £100":"£"+o}</button>`}).join("")}</div><p class="small muted">Money in the fund is safe from aunties.</p>`:""}
+    <button class="btn" id="nw" style="margin-top:14px">Start week ${S.week+1}</button>
+    <button class="btn alt" id="sh">Share my week</button>
+  </div></section>`;
+  bindHud();
+  app.querySelectorAll("[data-s]").forEach(btn=>btn.onclick=()=>{const amt=+btn.dataset.s;if(amt<=0||S.m<amt)return;S.m-=amt;S.fund+=amt;save();toast(`${gbp(amt)} moved to your dream fund`);if(!checkDream())renderSunday()});
+  document.getElementById("nw").onclick=newWeek;
+  document.getElementById("sh").onclick=()=>share(`Week ${S.week} in Japa Life: ${R().em} ${title()} in ${AREAS[S.area].name}, ${Math.floor(p*100)}% to “${D.name}”. Mum says: ${mumLine().replace(/[“”]/g,"")}`);
+}
+
+function newWeek(){
+  S.week++; S.day=0; S.shifts=0; S.wk={earned:0,spent:0}; S.phase="action";
+  if(S.route==="student"&&S.week===13){ S.graduated=true; setTimeout(()=>toast("You graduated! 🎓 No more work limit."),300) }
+  save(); syncRank(); render();
+}
+
+function renderDream(){
+  const D=DREAMS[S.dream];
+  app.innerHTML=`<section class="hero card fade">${BAND}<div class="pad" style="text-align:center">
+    <div class="lottery-e pop">${D.em}</div>
+    <h2 style="margin-top:12px">Dream achieved</h2>
+    <p><b>${D.name}</b> in ${S.week} week${S.week>1?"s":""}.</p>
+    <p class="muted">Mum has posted about you on three WhatsApp statuses. The village knows.</p>
+    <button class="btn alt" id="sh">Share it</button>
+    <h3 style="margin-top:20px;text-align:left">Choose your next dream</h3>
+    ${Object.entries(DREAMS).filter(([k])=>k!==S.dream).map(([k,v])=>`<button class="pick" data-d="${k}" style="text-align:left"><b>${v.em} ${v.name}</b><span>${v.d}</span></button>`).join("")}
+  </div></section>`;
+  document.getElementById("sh").onclick=()=>share(`I achieved “${D.name}” ${D.em} in Japa Life as a ${R().name} in ${AREAS[S.area].name}! Week ${S.week}. Beat that.`);
+  app.querySelectorAll("[data-d]").forEach(b=>b.onclick=()=>{S.dreamsDone=(S.dreamsDone||0)+1;S.dream=b.dataset.d;S.fund=0;view=null;save();syncRank();render()});
+}
+
+/* ---------- rankings ---------- */
+async function renderRanks(){
+  app.innerHTML=`<div class="topnav"><button class="ghost" id="bk">Back to game</button></div>
+  <section class="card fade">${BAND}<div class="pad"><h2>Japa Rankings</h2>
+  <div class="tabs"><button data-tab="players" class="${rankTab==="players"?"on":""}">Players</button><button data-tab="areas" class="${rankTab==="areas"?"on":""}">Area battle</button></div>
+  <div id="rlist"><p class="muted">Loading…</p></div></div></section>`;
+  document.getElementById("bk").onclick=()=>{view=null;render()};
+  app.querySelectorAll("[data-tab]").forEach(b=>b.onclick=()=>{rankTab=b.dataset.tab;renderRanks()});
+  const el=document.getElementById("rlist");
+  const db=await getDb(), me=await getId();
+  if(!db){ el.innerHTML=`<p class="muted">Rankings aren’t available in this view. Your progress is still saved on this device.</p><p><b>Your score:</b> ${score()}</p>`; return }
+  try{
+    await syncRank();
+    const snap=await db.collection("players").orderBy("score","desc").limit(200).get();
+    const rows=snap.docs.map(d=>({id:d.id,...d.data()}));
+    if(!rows.length){ el.innerHTML=`<p class="muted">No one’s ranked yet. Finish a week to claim first place.</p>`; return }
+    if(rankTab==="players"){
+      el.innerHTML=rows.slice(0,50).map((r,i)=>`<div class="rank ${r.id===me?"me":""}"><span class="n">${i+1}</span>
+        <div class="nm">${esc(r.name||"Someone")}${r.id===me?" (you)":""}<span>${(ROUTES[r.route]||{}).em||""} ${(AREAS[r.area]||{}).name||""}, ${(DREAMS[r.dream]||{}).em||""} ${r.progress||0}%${r.dreams?`, ${r.dreams} dream${r.dreams>1?"s":""} done`:""}</span></div>
+        <span class="sc">${r.score||0}</span></div>`).join("");
+    } else {
+      const tot={}; Object.keys(AREAS).forEach(k=>tot[k]={s:0,n:0});
+      rows.forEach(r=>{if(tot[r.area]){tot[r.area].s+=r.score||0;tot[r.area].n++}});
+      const arr=Object.entries(tot).sort((a,b)=>b[1].s-a[1].s); const max=Math.max(1,arr[0][1].s);
+      el.innerHTML=arr.map(([k,v],i)=>`<div class="area-bar"><div class="bar-k" style="font-size:15px;color:var(--ink)"><span><b>${i+1}. ${AREAS[k].name}</b>${k===S.area?" (you)":""}</span><span>${v.s} pts, ${v.n} player${v.n===1?"":"s"}</span></div><div class="bar"><i style="width:${v.s/max*100}%;background:${k===S.area?"var(--pink)":"var(--indigo)"}"></i></div></div>`).join("")+
+        `<p class="small muted">Every player’s score counts for their area. Recruit your ends.</p>`;
+    }
+  }catch(e){ el.innerHTML=`<p class="muted">Couldn’t load rankings right now. Try again in a moment.</p>` }
+}
+
+/* ---------- share ---------- */
+async function share(text){
+  const url=location.href;
+  try{ if(navigator.share){ await navigator.share({text,url}); return } }catch(e){ if(e&&e.name==="AbortError") return }
+  try{ await navigator.clipboard.writeText(text+" "+url); toast("Copied. Paste it in the group chat.") }catch(e){ toast("Couldn’t copy. Screenshot it instead.") }
+}
+
+/* ---------- boot ---------- */
+render();
+</script>
+</body>
+</html>
