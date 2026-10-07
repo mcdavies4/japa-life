@@ -288,13 +288,79 @@ const ZONES={
    {id:"carehome",type:"care",name:"Sunrise Care Home",short:"Care home",emoji:"🩺",side:-1,slot:4},
    {id:"carelink",type:"agency",name:"CareLink Recruitment",short:"Recruitment",emoji:"📝",side:-1,slot:2},
    {id:"travel",type:"travel",name:"Naija Travels",short:"Travel agent",emoji:"✈️",side:1,slot:3},
+   {id:"home-woolwich",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:3},
+   {id:"transfer-woolwich",type:"transfer",name:"Woolwich Money Transfer",short:"Money transfer",emoji:"💸",side:-1,slot:1},
+   {id:"church-woolwich",type:"church",name:"Living Waters Parish",short:"Church",emoji:"⛪",side:1,slot:6},
+   {id:"bank-woolwich",type:"bank",name:"Woolwich Bank",short:"Bank",emoji:"🏦",side:1,slot:8},
+   {id:"jobcentre-woolwich",type:"jobcentre",name:"Woolwich Jobcentre",short:"Jobcentre",emoji:"🏛️",side:-1,slot:6},
+   {id:"gp-woolwich",type:"gp",name:"Powis Street Surgery",short:"GP surgery",emoji:"🏥",side:-1,slot:5},
+   {id:"clothes-woolwich",type:"clothes",name:"Woolwich Bargains",short:"Clothes shop",emoji:"🧥",side:-1,slot:8},
    {id:"hall",type:"hall",name:"Royal Owambe Hall",short:"Owambe hall",emoji:"🎉",side:-1,slot:7}
   ],
   stalls:[[-2.6,-18],[2.6,-18],[-2.6,-13],[2.6,-13],[-2.6,-7],[2.6,-7],[-2.6,-2],[2.6,-2]],
-  exits:[]
+ exits:[]
+ },
+ barking:{name:"East Street",area:"Barking",L:46,traffic:false,road:"#8F8577",npcs:20,code:"IG11",towers:[[44,-10,36],[-46,16,30],[46,30,24]],skyline:[{k:"cw",x:-220,z:-300},{k:"blocks",x:-120,z:-320,n:6}],furniture:[["post",1,-24],["phone",-1,26],["bin",1,16],["bin",-1,-14]],
+  left:["Phone Repairs","Cash & Carry",null,null,"Hair & Beauty",null,"Pound Shop",null,"Cafe"],
+  right:[null,"Chicken & Chips",null,"Bookshop",null,"Fabrics & Lace",null,"Nail Bar",null],
+  places:[
+   {id:"station-barking",type:"station",name:"Barking Station",short:"Station",emoji:"🚉",side:1,slot:0},
+   {id:"home-barking",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"transfer-barking",type:"transfer",name:"Afro Money Transfer",short:"Money transfer",emoji:"💸",side:-1,slot:3},
+   {id:"bank-barking",type:"bank",name:"Barking Bank",short:"Bank",emoji:"🏦",side:1,slot:2},
+   {id:"jobcentre-barking",type:"jobcentre",name:"Barking Jobcentre",short:"Jobcentre",emoji:"🏛️",side:1,slot:4},
+   {id:"gp-barking",type:"gp",name:"East Street Surgery",short:"GP surgery",emoji:"🏥",side:-1,slot:5},
+   {id:"clothes-barking",type:"clothes",name:"Barking Bargains",short:"Clothes shop",emoji:"🧥",side:1,slot:6},
+   {id:"church-barking",type:"church",name:"Redeemed Glory Parish",short:"Church",emoji:"⛪",side:-1,slot:7},
+   {id:"bukka-barking",type:"bukka",name:"Mama Put Kitchen",short:"Bukka",emoji:"🍲",side:1,slot:8},
+   {id:"market-barking",type:"wmarket",name:"East Street Market",short:"Market",emoji:"🛍️",x:0,z:-6}
+  ],
+  stalls:[[-2.6,-22],[2.6,-22],[-2.6,-16],[2.6,-16],[-2.6,-10],[2.6,-10],[-2.6,2],[2.6,2],[-2.6,8],[2.6,8]],exits:[]
+ },
+ croydon:{name:"North End",area:"Croydon",L:46,traffic:false,road:"#9A9184",npcs:20,code:"CR0",tram:true,towers:[[-44,-20,46],[46,4,40]],skyline:[{k:"blocks",x:-150,z:-300,n:8},{k:"stack",x:60,z:-260}],furniture:[["post",-1,-26],["bin",1,-12],["bin",-1,22],["phone",1,30]],
+  left:["Phone Repairs","Shoe Shop",null,null,"Cafe",null,"Hair & Beauty",null,"Bakery"],
+  right:[null,"Chicken & Chips",null,"Travel Agents",null,"Opticians",null,"Bookshop",null],
+  places:[
+   {id:"station-croydon",type:"station",name:"East Croydon Station",short:"Station",emoji:"🚉",side:1,slot:0},
+   {id:"home-croydon",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"transfer-croydon",type:"transfer",name:"Naija Money Transfer",short:"Money transfer",emoji:"💸",side:-1,slot:3},
+   {id:"bank-croydon",type:"bank",name:"Croydon Bank",short:"Bank",emoji:"🏦",side:1,slot:2},
+   {id:"jobcentre-croydon",type:"jobcentre",name:"Croydon Jobcentre",short:"Jobcentre",emoji:"🏛️",side:1,slot:4},
+   {id:"gp-croydon",type:"gp",name:"North End Medical",short:"GP surgery",emoji:"🏥",side:-1,slot:5},
+   {id:"clothes-croydon",type:"clothes",name:"Croydon Bargains",short:"Clothes shop",emoji:"🧥",side:1,slot:6},
+   {id:"church-croydon",type:"church",name:"Glory Tabernacle",short:"Church",emoji:"⛪",side:-1,slot:7},
+   {id:"bukka-croydon",type:"bukka",name:"Mama Nkechi’s Kitchen",short:"Bukka",emoji:"🍲",side:-1,slot:8},
+   {id:"foodpark-croydon",type:"foodpark",name:"Container Yard",short:"Food park",emoji:"🍗",side:1,slot:8}
+  ],
+  stalls:[],exits:[]
+ },
+ edmonton:{name:"Fore Street",area:"Edmonton",L:46,traffic:true,road:"#3B3F46",npcs:18,code:"N9",crossing:0,towers:[[44,-6,40],[-44,20,34]],skyline:[{k:"shard",x:60,z:340},{k:"blocks",x:-160,z:320,n:6}],furniture:[["post",-1,-20],["phone",1,-28],["bus",1,14],["bus",-1,-12],["bin",1,28],["bin",-1,34]],
+  left:["Hair & Beauty",null,null,null,"Pound Shop",null,"Barbers",null,"Cafe"],
+  right:[null,"Chicken & Chips",null,"Fabrics & Lace",null,"Phone Repairs",null,"Launderette",null],
+  places:[
+   {id:"station-edmonton",type:"station",name:"Edmonton Green Station",short:"Station",emoji:"🚉",side:1,slot:0},
+   {id:"market-edmonton",type:"wmarket",name:"Edmonton Green Market",short:"Market",emoji:"🛍️",side:-1,slot:1},
+   {id:"home-edmonton",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"transfer-edmonton",type:"transfer",name:"Lagos Money Transfer",short:"Money transfer",emoji:"💸",side:-1,slot:3},
+   {id:"bank-edmonton",type:"bank",name:"Edmonton Bank",short:"Bank",emoji:"🏦",side:1,slot:2},
+   {id:"jobcentre-edmonton",type:"jobcentre",name:"Edmonton Jobcentre",short:"Jobcentre",emoji:"🏛️",side:1,slot:4},
+   {id:"gp-edmonton",type:"gp",name:"Fore Street Surgery",short:"GP surgery",emoji:"🏥",side:-1,slot:5},
+   {id:"clothes-edmonton",type:"clothes",name:"Edmonton Bargains",short:"Clothes shop",emoji:"🧥",side:1,slot:6},
+   {id:"church-edmonton",type:"church",name:"Mountain of Grace Ministries",short:"Church",emoji:"⛪",side:-1,slot:7},
+   {id:"bukka-edmonton",type:"bukka",name:"Iya Basira Buka",short:"Bukka",emoji:"🍲",side:1,slot:8}
+  ],
+  stalls:[[-6.2,-26],[-6.2,-34]],exits:[]
  }
 };
-const COMING=[["Barking","East London"],["Croydon","South London"],["Edmonton","North London"],["Central London","The City and Shoreditch"]];
+const COMING=[["Central London","The City and Shoreditch"],["Manchester","Up north. Cheaper rent, more rain."],["Birmingham","The Midlands. Jollof is still jollof."]];
+const AREAS={ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy, loud, everything Naija on one street."},woolwich:{area:"Woolwich",mult:.9,pos:[6,.5],blurb:"Big Nigerian community, market days, Elizabeth line."},
+  barking:{area:"Barking",mult:.85,pos:[8,5],blurb:"East London. More space for your money, East Street Market."},croydon:{area:"Croydon",mult:.92,pos:[-1,-7],blurb:"South London. Trams, big churches, the Container Yard."},
+  edmonton:{area:"Edmonton",mult:.88,pos:[0,10],blurb:"North London. Edmonton Green market and strong church life."},choumert:{area:"Peckham",pos:[0,-.5]}};
+function hz(){return S&&S.homeZone&&ZONES[S.homeZone]?S.homeZone:"ryelane"}
+function activePlaces(z){return z.places.filter(p=>p.type!=="home"||z.id===hz())}
+function homePlace(){return ZONES[hz()].places.find(p=>p.type==="home")}
+function rentNow(){return Math.round(R().rent*((AREAS[hz()]||{}).mult||1))}
+function trip2(a,b){const A=(AREAS[a]||AREAS.ryelane).pos,B=(AREAS[b]||AREAS.ryelane).pos;const d=Math.hypot(A[0]-B[0],A[1]-B[1]);return{mins:Math.round(15+d*4),fare:Math.round((2.8+d*.12)*100)/100}}
 function slotZ(zone,i){return -zone.L+6+i*10}
 Object.entries(ZONES).forEach(([zid,z])=>{
   z.id=zid;
@@ -336,12 +402,12 @@ const MUSA=[
 
 /* ================= state ================= */
 let S=null;
-function fresh(name,look){const h=ZONES.ryelane.places[1];return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,zone:"ryelane",groceries:0,
+function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,zone:home,homeZone:home,groceries:0,
   pos:{x:h.x,z:h.z+1.5},msgs:[{t:"Mum",d:0,txt:"Welcome to London, my child. Call me when you land. Don’t talk to strangers."}],unread:1,tx:[]}}
 function migrate(s){if(!s.zone)s.zone="ryelane";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
-  s.v=5;return s}
+  if(!s.homeZone)s.homeZone="ryelane";s.v=6;return s}
 function save(){if(!S||!player)return;try{S.pos={x:player.position.x,z:player.position.z};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);return r?migrate(JSON.parse(r)):null}catch(e){return null}}
 const clamp=v=>Math.max(0,Math.min(100,v));
@@ -366,7 +432,7 @@ function visaFor(route,d){return{student:{type:"Student visa",until:d+84,sponsor
   tech:{type:"Skilled Worker visa",until:d+1825,sponsor:"your tech employer"},born:{type:"British citizen",until:null,sponsor:null}}[route]||null}
 function progress(){const D=DREAMS[S.dream];if(!D)return 0;if(S.dream==="oga"){return Object.keys(CAREERS).some(c=>lvl(c)===4)?1:Math.min(.99,Math.max(...Object.keys(CAREERS).map(c=>(S.xp[c]||0)/XPL[4])))}return Math.min(1,S.fund/D.target)}
 function Z(){return ZONES[S?S.zone:"ryelane"]}
-function spots(){const z=Z();return z.places.concat(z.exits)}
+function spots(){const z=Z();return activePlaces(z).concat(z.exits)}
 function esc(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
 
 /* ================= three setup ================= */
@@ -452,7 +518,7 @@ function buildZone(zid){
   [-1,1].forEach(side=>{
     const names=side<0?zone.left:zone.right;
     for(let i=0;i<n;i++){
-      const z=slotZ(zone,i),place=zone.places.find(p=>p.side===side&&p.slot===i);
+      const z=slotZ(zone,i),place=activePlaces(zone).find(p=>p.side===side&&p.slot===i);
       const type=place?place.type:null,name=place?place.name:names[i];
       const nearBridge=zone.bridge!==undefined&&Math.abs(z-zone.bridge)<8;
       const floors=type==="church"||type==="hall"?2:nearBridge?1:1+Math.floor(rnd()*3);
@@ -471,7 +537,7 @@ function buildZone(zid){
           if(bay&&f===0&&k===0){box(.6,2.4,3.2,col,side*6.72,fy,wz);plane(2.6,1.7,winMat,side*6.41,fy,wz,ry);continue}
           plane(1.35,1.95,mat("#F2EEE4"),side*7.03,fy,wz,ry);plane(1.1,1.7,winMat,side*7.045,fy,wz,ry);plane(1.15,.07,mat("#F2EEE4"),side*7.05,fy,wz,ry);
           box(.18,.12,1.5,trim,side*7.08,fy-1.05,wz);box(.12,.22,1.45,trim,side*7.07,fy+1.1,wz)}}
-      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
+      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
       if(type==="home"){
         plane(1.4,2.4,mat("#2D3192"),side*7.03,1.2,z,ry);plane(1.4,.5,winMat,side*7.035,2.65,z,ry);
         plane(1.6,.5,own(new THREE.MeshBasicMaterial({map:textTex("3B","#F4C430","#1C1B3A",128,40,30)})),side*7.04,3.15,z+1.2,ry);
@@ -533,6 +599,7 @@ function buildZone(zid){
       for(const q of[-26,22]){const b=new THREE.Mesh(new THREE.BoxGeometry(16,70+q,14),skyMat("#9AA5B5"));b.position.set(s.x+q,(70+q)/2,s.z+10);root.add(b)}}
     if(s.k==="o2"){const d=new THREE.Mesh(new THREE.SphereGeometry(40,24,12,0,Math.PI*2,0,Math.PI/2),skyMat("#C9CED6"));d.scale.y=.35;d.position.set(s.x,0,s.z);root.add(d);
       for(let a=0;a<12;a++){const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,40,1.2),skyMat("#E6C35A"));m.position.set(s.x+Math.cos(a/12*Math.PI*2)*30,18,s.z+Math.sin(a/12*Math.PI*2)*30);root.add(m)}}
+    if(s.k==="stack"){for(let k=0;k<9;k++){const b=new THREE.Mesh(new THREE.CylinderGeometry(9-k*.6,9-k*.6,8,8),skyMat(k%2?"#8F99A8":"#A3ADBB"));b.position.set(s.x+(k%2)*1.5,4+k*8,s.z);root.add(b)}}
     if(s.k==="blocks"){for(let k=0;k<s.n;k++){const hh=20+((k*37)%40);const b=new THREE.Mesh(new THREE.BoxGeometry(12,hh,10),skyMat("#A3ADBB"));b.position.set(s.x+k*18,hh/2,s.z+((k*13)%30));root.add(b)}}
   });
   // spot markers + labels
@@ -547,6 +614,7 @@ function buildZone(zid){
   mergeStatic(root);
   spawnNPCs(zone);if(zone.traffic)spawnTraffic(zone);spawnPigeons(zone);
   if(zone.bridge!==undefined)spawnTrain(zone);
+  if(zone.tram)spawnTram(zone);
   nearPlace=null;$("act").style.display="none";
 }
 /* pigeons and trains */
@@ -558,12 +626,20 @@ function spawnPigeons(zone){
 function spawnTrain(zone){const g=new THREE.Group();root.add(g);
   for(let c=0;c<4;c++){const ox=c*8.4;box(8,2.6,2.6,"#E8E8EE",ox,1.3,0,g);box(8.02,.5,2.62,"#E87722",ox,.5,0,g);for(let k=-3;k<=3;k++)for(const q of[-1,1])box(.8,.9,.02,"#1E2633",ox+k*1.05,1.7,q*1.31,g)}
   g.position.set(-90,8.9,zone.bridge);zoneAnims.push({k:"train",g,wait:6})}
+function spawnTram(zone){
+  BUILDING=true;for(const q of[-.72,.72])box(.1,.06,2*zone.L+8,"#7D838C",q,.07,0);BUILDING=false;
+  const g=new THREE.Group();root.add(g);
+  for(let c=0;c<2;c++){const oz=c*10.4;box(2.6,3.1,10,"#E8E8EE",0,1.75,oz,g);box(2.62,.7,10.02,"#78BE20",0,.7,oz,g);for(let k=-3;k<=3;k++)for(const q of[-1,1])box(.02,1.1,1,"#1E2633",q*1.31,2.1,oz+k*1.3,g);box(2.3,1.2,.02,"#1E2633",0,2.2,oz+5.01,g)}
+  box(.1,1.2,.1,"#333",0,3.9,4,g);box(1.4,.08,.1,"#333",0,4.5,4,g);
+  g.position.set(0,0,-zone.L-14);zoneAnims.push({k:"tram",g,dir:1,wait:4,L:zone.L})}
 function animZone(dt){
   zoneAnims.forEach(a=>{
     if(a.k==="pigeon"){const g=a.g;a.t+=dt;
       if(a.fly>0){a.fly-=dt;g.position.y+=dt*4;g.position.x+=Math.sin(g.rotation.y)*dt*5;g.position.z+=Math.cos(g.rotation.y)*dt*5;if(a.fly<=0){g.position.copy(a.home);g.visible=true}else if(g.position.y>12)g.visible=false;return}
       g.children[1].position.y=.36+(Math.sin(a.t*6)>.7?-.08:0);
       if(player&&Math.hypot(player.position.x-g.position.x,player.position.z-g.position.z)<2.2){a.fly=4;g.rotation.y=Math.random()*6}}
+    if(a.k==="tram"){if(a.wait>0){a.wait-=dt;return}let block=false;if(player){const dz=player.position.z-a.g.position.z;if(Math.abs(player.position.x)<1.8&&dz*a.dir>-2&&dz*a.dir<(a.dir>0?24:6))block=true}
+      if(!block)a.g.position.z+=a.dir*dt*7;if(a.g.position.z>a.L+14||a.g.position.z<-a.L-24){a.dir*=-1;a.wait=8+Math.random()*10}}
     if(a.k==="train"){if(a.wait>0){a.wait-=dt;return}a.g.position.x+=dt*14;if(a.g.position.x>70){a.g.position.x=-100;a.wait=18+Math.random()*20}}
   });
 }
@@ -703,8 +779,8 @@ function nextHop(from,to){
   return null;
 }
 function goHome(){
-  if(S.zone==="ryelane")return goTo("home");
-  const via=nextHop(S.zone,"ryelane");if(via){goTo(via);toast(via.startsWith("station")?"Head to the station to get home":"Walking back towards home…")}
+  if(S.zone===hz())return goTo(homePlace().id);
+  const via=nextHop(S.zone,hz());if(via){goTo(via);toast(via.startsWith("station")?"Head to the station to get home":"Walking back towards home…")}
 }
 $("act").onclick=()=>{if(nearPlace)useSpot(nearPlace)};
 $("nHome").onclick=goHome;
@@ -729,11 +805,11 @@ function newDay(d){
   const r=R();
   if(w===0)S.weekShifts=0;
   if(w===5){
-    if(r.rent){money(-r.rent,`Rent, ${r.home}`);addMsg("Landlord",S.m<0?`Rent of £${r.rent} taken. Your account is negative. We need to talk.`:`Rent of £${r.rent} received. Thanks.`)}
+    if(r.rent){const rn=rentNow();money(-rn,`Rent, ${r.home}, ${AREAS[hz()].area}`);addMsg("Landlord",S.m<0?`Rent of £${rn} taken. Your account is negative. We need to talk.`:`Rent of £${rn} received. Thanks.`)}
     if(r.houseFee){money(-r.houseFee,"House contribution to Mum");addMsg("Mum",S.m<0?"Your contribution bounced. In MY house?":"Thank you for your contribution. Now wash the plates.")}
     if(S.m<0)S.n.f=clamp(S.n.f-20);else S.flags.firstRent=true}
   if(has("pet")&&Math.random()<.25){money(10,"Gift from Mum");addMsg("Mum","I sent you £10. Buy yourself something. Not suya.")}
-  if(w===4){if(R().rent)addMsg("Landlord",`Reminder: rent of £${R().rent} is due tomorrow (Saturday).`);addMsg("Aunty Bisi","Owambe at Royal Owambe Hall, Woolwich, tomorrow from 6 PM. Aso ebi optional. Attendance compulsory.")}
+  if(w===4){if(R().rent)addMsg("Landlord",`Reminder: rent of £${rentNow()} is due tomorrow (Saturday).`);addMsg("Aunty Bisi","Owambe at Royal Owambe Hall, Woolwich, tomorrow from 6 PM. Aso ebi optional. Attendance compulsory.")}
   addMsg("Mum",pick(MUM));
   if(w===6)addMsg("Abundant Grace","Sunday service today, 9 AM to 1 PM. Free jollof after. Come with your friends!");
   if(F().niDue&&d>=F().niDue&&!F().ni){F().ni=true;addMsg("HMRC","Your National Insurance number has arrived by post: QQ 12 34 56 C.")}
@@ -749,8 +825,8 @@ function collapse(){
   if(D.on)endDelivery("");
   const nextMorning=(day()+1)*1440+9*60;advance(Math.max(60,nextMorning-S.T),"sleep");
   S.n.e=60;S.n.f=clamp(S.n.f-15);money(-20,"Uber home after collapsing");
-  const home=ZONES.ryelane.places.find(p=>p.id==="home");
-  enterZone("ryelane",{x:home.x,z:home.z+1.5},Math.PI,true);
+  const home=homePlace();
+  enterZone(hz(),{x:home.x,z:home.z+1.5},Math.PI,true);
   openSheet(`<h2>You collapsed 😵</h2><p class="sub">Exhaustion caught up with you. A stranger called you an Uber home.</p>
     <div class="result">You woke up at home at ${timeStr(mod())}. −£20, −15 Fun. Mum must never hear about this.</div>
     <button class="primary" id="ok">Get up</button>`);$("ok").onclick=closeSheet;
@@ -770,12 +846,12 @@ function travel(to,how,fromId){
   fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
   fade.classList.add("on");
   setTimeout(()=>{
-    if(how==="train"){advance(35);money(-FARE,`Train to ${z.area}`)}else advance(4);
+    const tt=trip2(S.zone,to);if(how==="train"){advance(tt.mins);money(-tt.fare,`Train to ${z.area}`)}else advance(4);
     let pos,yaw;
     if(how==="train"){const st=z.station;pos={x:st.side*3.6,z:st.z};yaw=st.z<0?0:Math.PI}
     else{const back=z.exits.find(x=>x.to===fromId)||z.exits[0];const zz=back.z-Math.sign(back.z)*4.5;pos={x:0,z:zz};yaw=zz<0?0:Math.PI}
     enterZone(to,pos,yaw);
-    setTimeout(()=>{fade.classList.remove("on");busy=false;if(how==="train")toast(`Welcome to ${z.area}. −£${FARE.toFixed(2)} fare`)},250);
+    setTimeout(()=>{fade.classList.remove("on");busy=false;if(how==="train")toast(`Welcome to ${z.area}. −£${tt.fare.toFixed(2)} fare`)},250);
   },650);
 }
 function useSpot(p){
@@ -786,9 +862,9 @@ function useSpot(p){
 function openStation(p){
   const h=hour(),open=h>=5||h<1;
   const dests=Object.values(ZONES).filter(z=>z.station&&z.id!==S.zone);
-  openSheet(`<h2>🚉 ${p.name}</h2><p class="sub">${open?"Trains run 5 AM to 1 AM. Fare £"+FARE.toFixed(2)+".":"Closed. First train at 5 AM."}</p>
-    <div class="list">${dests.map(z=>`<button class="opt" data-to="${z.id}" ${open&&S.m>=FARE?"":"disabled"}><span class="e">🚆</span><div><b>${z.area}</b><span>${!open?"No trains now":S.m<FARE?"Not enough for the fare":`${z.name}, about 35 min`}</span></div></button>`).join("")}
-    ${COMING.map(([a,d])=>`<button class="opt" disabled><span class="e">🚧</span><div><b>${a}</b><span>${d}. Coming soon</span></div></button>`).join("")}</div>
+  openSheet(`<h2>🚉 ${p.name}</h2><p class="sub">${open?"Trains run 5 AM to 1 AM.":"Closed. First train at 5 AM."}</p>
+    <div class="list">${dests.map(z=>{const t=trip2(S.zone,z.id);return `<button class="opt" data-to="${z.id}" ${open&&S.m>=t.fare?"":"disabled"}><span class="e">🚆</span><div><b>${z.area}${z.id===hz()?" 🏠":""}</b><span>${!open?"No trains now":S.m<t.fare?"Not enough for the fare":`${z.name} · ${t.mins} min · £${t.fare.toFixed(2)}`}</span></div></button>`}).join("")}
+    ${COMING.map(([a,d])=>`<button class="opt" disabled><span class="e">🚧</span><div><b>${a}</b><span>${d} Coming soon</span></div></button>`).join("")}</div>
     <button class="close" id="cl">Leave</button>`);
   $("cl").onclick=closeSheet;
   $("sheetIn").querySelectorAll("[data-to]").forEach(b=>b.onclick=()=>travel(b.dataset.to,"train"));
@@ -803,6 +879,8 @@ function isOpen(type){const h=hour();
   if(type==="barber"||type==="salon"||type==="foodstore")return h>=9&&h<20;
   if(type==="hall")return true;
   if(type==="agency")return h>=9&&h<17;
+  if(type==="bukka")return h>=11&&h<22;
+  if(type==="foodpark")return h>=12||h<1;
   if(type==="jobcentre"||type==="bank")return dow()<5&&h>=9&&h<17;
   if(type==="gp")return dow()<5&&h>=8&&h<18;
   if(type==="clothes")return h>=9&&h<20;
@@ -811,7 +889,7 @@ function isOpen(type){const h=hour();
   if(type==="riders")return h>=8&&h<23;
   if(type==="care")return h>=7&&h<19;
   return true}
-function hoursText(type){return{jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
+function hoursText(type){return{bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
   church:"Open 8 AM to 9 PM. Sunday service 9 AM to 1 PM.",market:"Open 8 AM to 6 PM. Cheapest foodstuff in Peckham.",wmarket:"Open 8 AM to 6 PM.",
   barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]}
 const add=(k,v)=>{if(v>0&&k==="f"&&has("owambe"))v*=1.25;if(v>0&&k==="h"&&has("foodie"))v*=1.25;if(v<0&&k==="e"&&has("iron"))v*=.75;S.n[k]=clamp(S.n[k]+v)};
@@ -853,6 +931,15 @@ function actionsFor(type){
     {e:"🔔",n:"Work a 4-hour care shift",s:`Call-bell mini-game. About £${(wage("care")*4).toFixed(0)}, −30 Energy`,ok:!noSp&&open&&h<15.5&&n.e>=30&&n.h>=10&&capLeft()>0,
       why:noSp?"Your sponsor lost its licence. Find a new one at CareLink Recruitment.":!open||h>=15.5?"Last shift starts at 3:30 PM":capLeft()<=0?"Visa limit: 5 shifts this week":n.e<30?"Too tired for a care shift":"Eat something first",run:()=>{startBells();return null}},
     {e:"☕",n:"Tea with the residents",s:"30 min, +14 Fun",ok:open,why:"Closed",run:()=>{advance(30);add("f",14);return pick(["Mr Okafor told you about Lagos in 1974. Twice.","Mrs Patel beat you at cards. She cheated. You let it go.","Uncle Femi says you look like his son. He says that to everyone."])}}
+  ]}
+  if(type==="bukka") return [
+    {e:"🍲",n:"Amala and ewedu",s:"£8, +45 Food, +10 Fun",ok:open&&S.m>=8,why:closedWhy(type,"Not enough money"),run:()=>{money(-8,curPlace.name);advance(30);add("h",45);add("f",10);return pick(["The amala was so soft you didn’t need teeth.","Gbegiri, ewedu, two pieces of meat. Mama added ponmo for free.","You licked your fingers in public. No regrets."])}},
+    {e:"🥣",n:"Pounded yam and egusi",s:"£10, +55 Food, +12 Fun",ok:open&&S.m>=10,why:closedWhy(type,"Not enough money"),run:()=>{money(-10,curPlace.name);advance(40);add("h",55);add("f",12);add("e",-5);return "Heavy. You need a nap. Worth it."}},
+    {e:"🗣️",n:"Gist with Mama",s:"20 min, +10 Fun, +2 Respect",ok:open,why:"Closed",run:()=>{advance(20);add("f",10);resp(2);return pick(["Mama knows everyone’s business on this street. Now you do too.","She asked if you’ve eaten. You were literally eating.","She says her son is a doctor in Leeds. She says it four times."])}}
+  ];
+  if(type==="foodpark"){const lit=(dow()>=4)&&hour()>=18;return [
+    {e:"🍗",n:lit?"Wings, Afrobeats and vibes":"Wings and a drink",s:lit?"£15, 3 hours, +30 Fun, +20 Food":"£12, +18 Fun, +20 Food",ok:open&&S.m>=(lit?15:12),why:closedWhy(type,"Not enough money"),
+      run:()=>{money(-(lit?15:12),"Container Yard");advance(lit?180:60);add("f",lit?30:18);add("h",20);if(lit)add("e",-12);return lit?"The DJ played Asake and the whole yard sang. You lost your voice and found your joy.":"Quiet afternoon. Good wings. You people-watched for an hour."}}
   ]}
   if(type==="jobcentre") return [
     {e:"🪪",n:F().ni?"Your NI number":F().niDue?"NI number on its way":"Apply for a National Insurance number",s:F().ni?"QQ 12 34 56 C. Guard it with your life.":F().niDue?"Arriving by post soon":"1 hour of forms. Arrives by post in 2 days.",ok:!F().ni&&!F().niDue&&isOpen("jobcentre"),why:F().ni||F().niDue?"Done":"Open 9 AM to 5 PM, weekdays",
@@ -915,7 +1002,7 @@ function actionsFor(type){
       run:()=>{S.ajo={week:0,turn:2+Math.floor(Math.random()*3)};advance(20);resp(3);return `Welcome to the ajo! Sister Funke keeps the book. Your turn to collect £125 is week ${S.ajo.turn}. Don’t miss a Sunday.`}}]:[])
   ]}
   if(type==="market") return [
-    {e:"🥬",n:"Buy foodstuff",s:"£8 for 3 home-cooked meals",ok:open&&S.m>=8,why:closedWhy(type,"Not enough money"),run:()=>{money(-8,"Choumert Market foodstuff");S.groceries+=3;advance(25);add("f",5);
+    {e:"🥬",n:"Buy foodstuff",s:"£8 for 3 home-cooked meals",ok:open&&S.m>=8,why:closedWhy(type,"Not enough money"),run:()=>{money(-8,(curPlace?curPlace.name:"Market")+" foodstuff");S.groceries+=3;advance(25);add("f",5);
       return `Ugu, scotch bonnet, plantain and rice. You now have ${S.groceries} meals’ worth at home.`}},
     {e:"🍩",n:"Puff-puff from the aunty",s:"£2, +12 Hunger, +6 Fun",ok:open&&S.m>=2,why:closedWhy(type,"Not enough money"),run:()=>{money(-2,"Puff-puff");advance(10);add("h",12);add("f",6);return "Still warm. She called you ‘my dear’. You’ll be back."}},
     {e:"🤝",n:"Haggle for fun",s:"20 min, +12 Fun",ok:open,why:"Closed",run:()=>{advance(20);add("f",12);return pick(["You got 50p off. The trader respects you now.","You haggled so well she asked if you’re from Onitsha.","You lost the haggle but gained a friend."])}}
@@ -929,7 +1016,7 @@ function actionsFor(type){
     {e:"💬",n:"Salon gist",s:"30 min, +12 Fun",ok:open,why:"Closed",run:()=>{advance(30);add("f",12);return "You heard about three weddings, one breakup and an aunty’s new business. You know too much now."}}
   ];
   if(type==="wmarket") return [
-    {e:"🐟",n:"Stock up on stockfish",s:"£15 for 5 home-cooked meals",ok:open&&S.m>=15,why:closedWhy(type,"Not enough money"),run:()=>{money(-15,"Woolwich Market foodstuff");S.groceries+=5;advance(30);add("f",5);
+    {e:"🐟",n:"Stock up on stockfish",s:"£15 for 5 home-cooked meals",ok:open&&S.m>=15,why:closedWhy(type,"Not enough money"),run:()=>{money(-15,(curPlace?curPlace.name:"Market")+" foodstuff");S.groceries+=5;advance(30);add("f",5);
       return `Stockfish, crayfish and egusi. The whole train will smell it. ${S.groceries} meals at home.`}},
     {e:"👗",n:"Buy ankara fabric",s:"£20, +15 Fun",ok:open&&S.m>=20,why:closedWhy(type,"Not enough money"),run:()=>{money(-20,"Ankara fabric");advance(30);add("f",15);return "Six yards of wax print. Your tailor will see you soon."}}
   ];
@@ -944,9 +1031,10 @@ function actionsFor(type){
   ]}
   return [];
 }
+let curPlace=null;
 function openPlace(p,result){
   const acts=actionsFor(p.type),open=isOpen(p.type);
-  openSheet(`<h2>${p.emoji} ${p.type==="home"?R().home:p.name}</h2><p class="sub">${open?hoursText(p.type):"Closed right now. "+hoursText(p.type)}</p>
+  curPlace=p;openSheet(`<h2>${p.emoji} ${p.type==="home"?`${R().home}, ${AREAS[hz()].area}`:p.name}</h2><p class="sub">${open?hoursText(p.type):"Closed right now. "+hoursText(p.type)}</p>
     ${result?`<div class="result">${result}</div>`:""}
     <div class="list">${acts.map((a,i)=>`<button class="opt" data-i="${i}" ${a.ok?"":"disabled"}><span class="e">${a.e}</span><div><b>${a.n}</b><span>${a.ok?a.s:a.why}</span></div></button>`).join("")}</div>
     <button class="close" id="cl">Leave</button>`);
@@ -1172,17 +1260,17 @@ function resp(v){S.respect=Math.max(0,S.respect+v)}
 const F=()=>S.flags;
 const CHAPTERS=[
  {n:"Just Landed",d:"Your first weeks in London. Sort out the basics every Nigerian freshie has to do.",goals:[
-  {id:"ni",n:"Get your National Insurance number",hint:"Apply at the Jobcentre on Rye Lane. It comes by post.",place:"jobcentre",st:()=>F().niDue&&!F().ni?"📬 Applied. It’s on its way by post.":null,done:()=>F().ni},
-  {id:"bank",n:"Open a UK bank account",hint:"Peckham Bank, Rye Lane. Bring proof of address (they’ll ask).",place:"bank",st:()=>F().bankTried&&!F().addr?(F().addrDue?"📬 Waiting for your landlord’s letter.":"✉️ Ask your landlord for a proof-of-address letter (at home)."):null,done:()=>F().bank},
-  {id:"gp",n:"Register with a GP",hint:"Choumert Medical Centre, through the end of Rye Lane.",place:"gp",done:()=>F().gp},
-  {id:"wage",n:"Earn your first UK wages",hint:"Any shift, delivery, or remote work.",place:"riders",done:()=>F().firstWage},
-  {id:"church",n:"Find your church",hint:"Visit Abundant Grace Ministries on Rye Lane.",place:"church",done:()=>F().church},
-  {id:"coat",n:"Buy a proper winter coat",hint:"Peckham Bargains, Rye Lane. Winter is not a joke.",place:"clothes",done:()=>F().coat},
+  {id:"ni",n:"Get your National Insurance number",hint:"Apply at your local Jobcentre. It comes by post.",place:"jobcentre",st:()=>F().niDue&&!F().ni?"📬 Applied. It’s on its way by post.":null,done:()=>F().ni},
+  {id:"bank",n:"Open a UK bank account",hint:"Your local bank. Bring proof of address (they’ll ask).",place:"bank",st:()=>F().bankTried&&!F().addr?(F().addrDue?"📬 Waiting for your landlord’s letter.":"✉️ Ask your landlord for a proof-of-address letter (at home)."):null,done:()=>F().bank},
+  {id:"gp",n:"Register with a GP",hint:"Your local GP surgery.",place:"gp",done:()=>F().gp},
+  {id:"wage",n:"Earn your first UK wages",hint:"Any shift, delivery (Rye Lane), or remote work.",place:"riders",done:()=>F().firstWage},
+  {id:"church",n:"Find your church",hint:"Visit the church on your high street.",place:"church",done:()=>F().church},
+  {id:"coat",n:"Buy a proper winter coat",hint:"The clothes shop on your high street. Winter is not a joke.",place:"clothes",done:()=>F().coat},
   {id:"rent",n:"Pay your first rent",hint:"Taken every Saturday. Make sure the money is there.",place:"home",done:()=>F().firstRent},
-  {id:"home",n:"Send money home for the first time",hint:"Naija Money Transfer on Rye Lane.",place:"transfer",done:()=>S.sendCount>=1}]},
+  {id:"home",n:"Send money home for the first time",hint:"The money transfer shop on your high street.",place:"transfer",done:()=>S.sendCount>=1}]},
  {n:"Settling In",d:"Two jobs, the ajo, your first owambe. Packing shifts begins.",unlock:"📲 ShiftNow agency alerts and 💪 double shifts are now unlocked.",goals:[
   {id:"twojobs",n:"Work in two different jobs",hint:"Try the till, deliveries, or the care home in Woolwich.",place:"work",done:()=>Object.values(S.xp).filter(v=>v>=1).length>=2},
-  {id:"ajojoin",n:"Join the church ajo",hint:"Ask at Abundant Grace. £25 a week, five members.",place:"church",done:()=>!!S.ajo||F().ajoPaid},
+  {id:"ajojoin",n:"Join the church ajo",hint:"Ask at your church. £25 a week, five members.",place:"church",done:()=>!!S.ajo||F().ajoPaid},
   {id:"ajopay",n:"Collect your ajo payout",hint:"Keep contributing every Sunday until it’s your turn.",place:"church",done:()=>F().ajoPaid},
   {id:"owambe",n:"Attend your first owambe",hint:"Royal Owambe Hall, Woolwich. Saturdays from 6 PM.",place:"hall",done:()=>F().owambe},
   {id:"promo",n:"Get your first promotion",hint:"Keep working shifts in any career.",place:"work",done:()=>Object.keys(CAREERS).some(c=>lvl(c)>=1)},
@@ -1207,7 +1295,7 @@ function chapterDone(){
     <button class="close" id="shc">Share it</button><button class="primary" id="ok" style="margin-top:8px">Let’s go</button>`);
   $("ok").onclick=closeSheet;$("shc").onclick=()=>showCard(makeCard("chapter",{player:S.name,n:S.chapter-1,name:ch.n,goals:ch.goals.map(g=>g.n)}),`I just finished Chapter ${S.chapter-1}: “${ch.n}” in Japa Life 🇳🇬🇬🇧 Come and japa with me!`);
 }
-function placeZone(id){for(const z of Object.values(ZONES))if(z.places.some(p=>p.id===id))return z;return null}
+function placeZone(id){for(const z of Object.values(ZONES))if(activePlaces(z).some(p=>p.id===id||p.type===id))return z;return null}
 function openGoals(){
   const ch=curChapter(),li=lvInfo(),done=ch.goals.filter(g=>S.goals[g.id]).length;
   openSheet(`<p class="sub" style="margin:0">Chapter ${S.chapter}</p><h2>${ch.n}</h2><p class="sub">${ch.d}</p>
@@ -1216,9 +1304,10 @@ function openGoals(){
     <div class="msg" style="margin-top:14px"><small>Japa Level ${li.L}</small><b>${li.t}</b><div class="xpbar"><i style="width:${li.rem/li.need*100}%"></i></div><small>${li.rem} / ${li.need} XP to next level · 🤝 Respect ${S.respect}</small></div>
     <button class="close" id="cl">Close</button>`);
   $("cl").onclick=closeSheet;
-  $("sheetIn").querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{const id=b.dataset.g,z=placeZone(id);closeSheet();
-    if(z.id===S.zone)goTo(id);else if(z.id==="choumert"&&S.zone==="ryelane")goTo("exit-choumert"),toast("Head through to Choumert Road");
-    else if(z.id==="woolwich")toast("Take the train from Peckham Rye Station to Woolwich");else{const v=nextHop(S.zone,z.id);if(v)goTo(v);toast(`It’s on ${z.name}, ${z.area}`)}});
+  $("sheetIn").querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{const t=b.dataset.g;closeSheet();
+    const here=spots().find(p=>p.type===t||p.id===t);if(here)return goTo(here.id);
+    const order=[hz(),...Object.keys(ZONES)];let tz=null,tp=null;for(const zid of order){const p=activePlaces(ZONES[zid]).find(p=>p.type===t||p.id===t);if(p){tz=ZONES[zid];tp=p;break}}
+    if(!tz)return toast("Coming soon");const v=nextHop(S.zone,tz.id);if(v)goTo(v);toast(`${tp.name} is on ${tz.name}, ${tz.area}`)});
 }
 
 /* ================= japa realities: life events, partner, papers, shift alerts ================= */
@@ -1348,7 +1437,7 @@ function trip(kind){
   const o=dateOf(day());const days=(365-o.doy+2)%365||365;advance(days*1440-mod()+9*60,"sleep");
   S.n.h=90;S.n.e=90;S.n.y=90;S.n.f=100;S.ticket=false;S.trips++;S.lastTrip=kind;
   let extra="";if(S.partner&&S.partner.where==="home"){S.partner.love=100;extra=` You finally saw ${S.partner.name} after months. Nobody talked about plates.`}
-  const home=ZONES.ryelane.places.find(p=>p.id==="home");enterZone("ryelane",{x:home.x,z:home.z+1.5},Math.PI);
+  const home=homePlace();enterZone(hz(),{x:home.x,z:home.z+1.5},Math.PI);
   addMsg("Mum","The house is so quiet since you left. Come back next year. Bring a spouse.");
   return kind==="detty"?`Two weeks of concerts, beach clubs, owambes and traffic. You sprayed naira like a governor. Your cousins now call you ‘Sir’. You’re back in Peckham, broke but glowing. Official IJGB.${extra}`
     :`Christmas in the village: rice, goat meat, 40 relatives, and a church service that lasted the whole of 25 December. Grandma said you’ve gotten fat. Best two weeks of your year.${extra}`;
@@ -1387,7 +1476,7 @@ function openPhone(){
   let body="";
   if(phoneTab==="msgs")body=S.msgs.map(m=>`<div class="msg"><small>${m.t}, ${DAYS_FULL[m.d%7]} week ${Math.floor(m.d/7)+1}</small>${m.txt}</div>`).join("");
   if(phoneTab==="bank"){const toSat=(5-dow()+7)%7;
-    body=`<div class="big">${gbp(S.m)}</div><p class="sub">${R().rent?`Rent of £${R().rent}`:`£${R().houseFee} to Mum`} is due ${toSat===0?"today":toSat===1?"tomorrow":"in "+toSat+" days"} (Saturday). Meals at home: ${S.groceries}. Dream fund: £${Math.round(S.fund)}. Sent home (black tax) so far: £${Math.round(S.sent)}.</p>
+    body=`<div class="big">${gbp(S.m)}</div><p class="sub">${R().rent?`Rent of £${rentNow()}`:`£${R().houseFee} to Mum`} is due ${toSat===0?"today":toSat===1?"tomorrow":"in "+toSat+" days"} (Saturday). Meals at home: ${S.groceries}. Dream fund: £${Math.round(S.fund)}. Sent home (black tax) so far: £${Math.round(S.sent)}.</p>
     ${S.tx.length?S.tx.map(t=>`<div class="row"><span>${t.label}</span><span style="color:${t.amt<0?"var(--bad)":"var(--green)"}">${t.amt<0?"−":"+"}£${Math.abs(t.amt).toFixed(2)}</span></div>`).join(""):`<p class="sub">No transactions yet.</p>`}`}
   if(phoneTab==="work"){const r=R();
     body=`<p class="sub">${r.em} ${r.name}. ${r.perk}${r.cap<99?` Shifts this week: ${S.weekShifts} of ${r.cap}.`:""}</p>`+
@@ -1418,19 +1507,31 @@ function openPhone(){
         <text x="${p.x<0||p.kind==="exit"?sx(p.x)+16:sx(p.x)-16}" y="${sz(p.z)+4}" text-anchor="${p.x<0||p.kind==="exit"?"start":"end"}" font-size="11" font-weight="700" fill="#fff" paint-order="stroke" stroke="#1C1B3A" stroke-width="3">${p.kind==="exit"?p.name:p.short}</text></g>`).join("")}
       <circle cx="${sx(px)}" cy="${sz(pz)}" r="7" fill="#E5487A" stroke="#fff" stroke-width="2.5"/></svg></div>
     <h2 style="font-size:20px;margin:16px 0 8px">London</h2>
-    ${[["Peckham","Rye Lane, Choumert Road",S.zone==="ryelane"||S.zone==="choumert"],["Woolwich","Powis Street",S.zone==="woolwich"]].map(([a,d,here])=>`<div class="row"><span><b>${a}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":"Open"}</span></div>`).join("")}
+    ${[["ryelane","Rye Lane, Choumert Road"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"]].map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
-  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
+  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
   const st=$("st");if(st)st.onclick=()=>{phoneTab="set";openPhone()};
   const sh=$("shd");if(sh)sh.onclick=()=>shareText(`I’m ${Math.floor(progress()*100)}% of the way to “${DREAMS[S.dream].name}” ${DREAMS[S.dream].em} in Japa Life as a ${R().name}. Join me on Rye Lane!`);
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
+  const mv=$("mv");if(mv)mv.onclick=openMove;
   const rs=$("reset");if(rs)rs.onclick=()=>{if(confirm("Start over? This life will be gone.")){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}};
   $("sheetIn").querySelectorAll("[data-t]").forEach(b=>b.onclick=()=>{phoneTab=b.dataset.t;openPhone()});
   $("sheetIn").querySelectorAll("[data-go]").forEach(g=>g.addEventListener("click",()=>{closeSheet();goTo(g.dataset.go)}));
   updateHUD();
+}
+
+function openMove(){
+  const opts=Object.keys(AREAS).filter(k=>ZONES[k]&&ZONES[k].places.some(p=>p.type==="home")&&k!==hz());
+  const cost=k=>R().rent?Math.round(R().rent*AREAS[k].mult*2+80):60;
+  openSheet(`<h2>🏠 Move house</h2><p class="sub">${R().rent?"Deposit (2 weeks’ rent) plus a £80 agent fee.":"Mum is moving too? Van hire is £60."} You’re in ${AREAS[hz()].area} now.</p>
+    <div class="list">${opts.map(k=>`<button class="opt" data-mv="${k}" ${S.m>=cost(k)?"":"disabled"}><span class="e">🚚</span><div><b>${AREAS[k].area} ${ZONES[k].code}</b><span>${R().rent?`Rent £${Math.round(R().rent*AREAS[k].mult)}/week · `:""}Moving cost £${cost(k)}${S.m<cost(k)?" (not enough money)":""}</span></div></button>`).join("")}</div>
+    <button class="close" id="cl">Cancel</button>`);
+  $("cl").onclick=closeSheet;
+  $("sheetIn").querySelectorAll("[data-mv]").forEach(b=>b.onclick=()=>{const k=b.dataset.mv;money(-cost(k),`Moving to ${AREAS[k].area}`);S.homeZone=k;advance(240);add("e",-25);
+    addMsg("Mum",`You moved to ${AREAS[k].area}? Send me the address. And find a church there!`);closeSheet();const hp=homePlace();enterZone(k,{x:hp.x,z:hp.z+1.5},Math.PI);toast(`🏠 Welcome to your new home in ${AREAS[k].area}`)});
 }
 
 /* ================= day/night ================= */
@@ -1610,7 +1711,7 @@ function showStart(){
   $("qs").onclick=()=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;
     draft.name=nm.value.trim()||pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo"]);draft.migrate=null;
     draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);
-    draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);showSetup(4)};
+    draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.home=pick(["ryelane","woolwich","barking","croydon","edmonton"]);showSetup(4)};
   $("ins").onclick=()=>{$("start").style.display="none";installApp();const t=setInterval(()=>{if(!uiOpen){clearInterval(t);$("start").style.display="flex"}},300)};
   previewPlayer();
 }
@@ -1635,9 +1736,16 @@ function showSetup(step){
     setupCard(`<h2>Relationship status</h2><p class="sub">Japa changes marriages. Choose wisely.</p>
       ${R3.map(([k,n,d])=>`<button class="pickc ${draft.rel===k?"on":""}" data-r="${k}"><b>${n}</b><span>${d}</span></button>`).join("")}
       <p class="sub">Note: on Student and Care routes, new dependants rules mean your spouse may have to stay in Nigeria.</p>
-      <button class="primary" id="nx" ${!draft.rel?"disabled":""}>Take the japa lottery</button><button class="close" id="bk">Back</button>`);
+      <button class="primary" id="nx" ${!draft.rel?"disabled":""}>Next</button><button class="close" id="bk">Back</button>`);
     $("start").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{draft.rel=b.dataset.r;showSetup(35)});
-    $("nx").onclick=()=>showSetup(4);$("bk").onclick=()=>showSetup(3);
+    $("nx").onclick=()=>showSetup(36);$("bk").onclick=()=>showSetup(3);
+  } else if(step===36){
+    draft.home=draft.home||"ryelane";
+    setupCard(`<h2>Where in London?</h2><p class="sub">Your home, church and local high street. You can travel everywhere by train.</p>
+      ${Object.keys(AREAS).filter(k=>ZONES[k]&&ZONES[k].places.some(p=>p.type==="home")).map(k=>`<button class="pickc ${draft.home===k?"on":""}" data-h="${k}"><b>${AREAS[k].area} <span style="font-weight:600;opacity:.7">${ZONES[k].code}</span></b><span>${AREAS[k].blurb} Rent ${AREAS[k].mult<1?Math.round((1-AREAS[k].mult)*100)+"% cheaper than Peckham":"is Peckham prices"}.</span></button>`).join("")}
+      <button class="primary" id="nx">Take the japa lottery</button><button class="close" id="bk">Back</button>`);
+    $("start").querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{draft.home=b.dataset.h;showSetup(36)});
+    $("nx").onclick=()=>showSetup(4);$("bk").onclick=()=>showSetup(35);
   } else if(step===4||step===4.5){
     let res=draft.route;if(step===4){const ent=Object.entries(ROUTES);let r=Math.random()*ent.reduce((a,[,v])=>a+v.w,0);res="care";for(const[k,v]of ent){r-=v.w;if(r<=0){res=k;break}}}
     draft.route=res;
@@ -1647,16 +1755,16 @@ function showSetup(step){
     const tick=()=>{if(n<total){const k=keys[n%keys.length];$("le").textContent=ROUTES[k].em;$("lt").textContent=ROUTES[k].name;n++;setTimeout(tick,60+n*9);return}
       const R0=ROUTES[res];$("le").textContent=R0.em;$("lt").textContent=R0.name;
       const pnote=draft.rel&&draft.rel!=="single"?((res==="student"||res==="care")?`<br>💔 Dependants rules: your ${draft.rel} stays in Nigeria for now. Long distance it is.`:`<br>❤️ Your ${draft.rel} came with you to London.`):"";
-      $("after").innerHTML=`<p style="text-align:center">${R0.blurb}</p><div class="result">${R0.perk}${pnote}<br>Home: ${R0.home}. ${R0.rent?`Rent £${R0.rent}/week.`:`£${R0.houseFee}/week to Mum.`}${draft.migrate?"":`<br>Starting cash: £${R0.cash}.`}</div>
+      $("after").innerHTML=`<p style="text-align:center">${R0.blurb}</p><div class="result">${R0.perk}${pnote}<br>Home: ${R0.home}, ${AREAS[draft.home||"ryelane"].area}. ${R0.rent?`Rent £${R0.rent}/week.`:`£${R0.houseFee}/week to Mum.`}${draft.migrate?"":`<br>Starting cash: £${R0.cash}.`}</div>
         <button class="primary" id="go2">Land in London ✈️</button><button class="close" id="shl">Share my result</button>`;
       $("shl").onclick=()=>{const after=$("after"),keep=after.innerHTML;showCard(makeCard("lottery",{em:R0.em,name:R0.name,home:R0.home,player:draft.name||"I"}),`I took the japa lottery in Japa Life and got ${R0.em} ${R0.name} 😭 What did you get?`,after);$("cardBack").onclick=()=>{showSetup(4.5)}};
       $("go2").onclick=()=>{
-        if(draft.migrate){const s=draft.migrate;s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
-        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair});s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
+        if(draft.migrate){const s=draft.migrate;if(!s.homeZone)s.homeZone="ryelane";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
+        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||"ryelane");s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
     tick();
   }
 }
-function previewPlayer(){if(preview)preview.parent.remove(preview);const h=ZONES.ryelane.places[1];preview=makePerson(SKINS[draft.skin],SHIRTS[draft.shirt],"#1C1B3A",draft.hair,scene);preview.position.set(h.x,.18,h.z+1.5);preview.rotation.y=.4}
+function previewPlayer(){if(preview)preview.parent.remove(preview);const h=ZONES.ryelane.places.find(p=>p.type==="home");preview=makePerson(SKINS[draft.skin],SHIRTS[draft.shirt],"#1C1B3A",draft.hair,scene);preview.position.set(h.x,.18,h.z+1.5);preview.rotation.y=.4}
 function begin(state,isNew){
   if(!state.route){draft.migrate=state;draft.name=state.name;draft.traits=[];draft.dream=null;draft.rel=null;$("start").style.display="flex";showSetup(2);return}
   S=state;$("start").style.display="none";if(preview){preview.parent.remove(preview);preview=null}
@@ -1664,8 +1772,8 @@ function begin(state,isNew){
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
   const zid=ZONES[S.zone]?S.zone:"ryelane";
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
-  if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to Peckham 🇬🇧</h2><p class="sub">You just landed. Here’s how life works.</p>
-    <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${R().rent?`Rent is £${R().rent}`:`You pay Mum £${R().houseFee}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
+  if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} 🇬🇧</h2><p class="sub">You just landed. Here’s how life works.</p>
+    <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${R().rent?`Rent is £${rentNow()}`:`You pay Mum £${R().houseFee}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);
 }
 
