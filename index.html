@@ -7,7 +7,7 @@
 <meta name="description" content="Naija life in London, free in your browser. Work shifts, pay rent on Saturday, attend owambes, keep Mum happy and chase your japa dream with real players on Rye Lane.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Japa Life: Naija life in London">
-<meta property="og:description" content="Shifts. Rent on Saturday. Owambe. Mum's calls. Play free with real people on Rye Lane, Peckham.">
+<meta property="og:description" content="Naija life in London or Toronto. Shifts, rent, owambe, Mum's calls. Play free with real people.">
 <meta property="og:image" content="https://japa-life.pages.dev/og.png">
 <meta property="og:url" content="https://japa-life.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -229,6 +229,10 @@ const CAREERS={
  security:{name:"Night security, Westminster House",where:"Central London",wage:13.5,req:"sia",titles:["Security Officer","Senior Officer","Supervisor","Site Manager","Security Director"]},
  nurse:{name:"Thames General Hospital (NHS)",where:"Central London",wage:19.5,req:"nmc",titles:["Staff Nurse (Band 5)","Senior Staff Nurse","Charge Nurse (Band 6)","Ward Manager (Band 7)","Matron"]}
 };
+CAREERS.warehouse={name:"Northline Fulfilment warehouse",where:"Scarborough",wage:12,country:"ca",titles:["Picker","Packer","Lead Hand","Shift Supervisor","Operations Manager"]};
+const CAREERS_CA={retail:{name:"Maple Grocery",where:"Brampton"},care:{name:"Maple Grove Long-Term Care",where:"Scarborough",titles:["PSW","Senior PSW","PSW Team Lead","RPN","Director of Care"]},delivery:{name:"Chop Express rider",where:"Brampton"}};
+function CR(c){const b=CAREERS[c];return isCA()&&CAREERS_CA[c]?Object.assign({},b,CAREERS_CA[c]):b}
+function careerHere(c){const k=CAREERS[c];if(k.country)return k.country===(S.country||"uk");if(isCA())return ["retail","care","delivery","tech","warehouse"].includes(c);return c!=="warehouse"}
 function unlocked(c){const r=CAREERS[c].req;return !r||(S.exams&&S.exams[r]&&S.exams[r].passed)}
 const ROUTES={
  student:{name:"Student Visa",em:"🎓",cash:900,rent:120,home:"Shared room, Flat 3B",cap:5,w:30,blurb:"You came for a master’s. You stayed for the 20-hour work limit.",perk:"Max 5 paid shifts a week. Cheapest rent."},
@@ -290,6 +294,60 @@ const ZONES={
   stalls:[[-2.6,-20],[2.6,-20],[-2.6,-14],[2.6,-14],[-2.6,-8],[2.6,-8],[-2.6,4],[2.6,4],[-2.6,10],[2.6,10],[-2.6,16],[2.6,16]],
   ends:[null,"Bellenden Road (coming soon)"],
   exits:[{id:"exit-ryelane",to:"ryelane",name:"Rye Lane",end:-1}]
+ },
+ queen:{country:"ca",name:"Queen St West",area:"Toronto",L:46,traffic:true,road:"#3B3F46",npcs:22,code:"M5V",crossing:-6,tram:true,tramColor:"#D52B1E",towers:[[44,-20,60],[-46,6,72],[46,24,54],[-44,-30,48]],skyline:[{k:"cn",x:-40,z:-260},{k:"blocks",x:-180,z:-300,n:9},{k:"blocks",x:80,z:-320,n:7}],
+  furniture:[["post",-1,-26],["bin",1,-12],["bin",-1,22],["bus",1,16]],ends:["Spadina Avenue (coming soon)","Yonge Street (coming soon)"],
+  left:["Coffee Shop","Vintage Clothes",null,"Poutine",null,"Pharmacy","Bubble Tea",null,"Record Store"],
+  right:[null,"Bookstore",null,"Shawarma",null,"Sneaker Store",null,"Cannabis Store",null],
+  places:[
+   {id:"station-queen",type:"station",name:"Osgoode Station",short:"Subway",emoji:"🚇",side:1,slot:0},
+   {id:"home-queen",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"bank-queen",type:"bank",name:"Maple Bank",short:"Bank",emoji:"🏦",side:1,slot:2},
+   {id:"jobcentre-queen",type:"jobcentre",name:"Service Canada Centre",short:"Service Canada",emoji:"🏛️",side:-1,slot:4},
+   {id:"gp-queen",type:"gp",name:"ServiceOntario",short:"ServiceOntario",emoji:"🪪",side:1,slot:4},
+   {id:"clothes-queen",type:"clothes",name:"Winter Gear Outlet",short:"Winter gear",emoji:"🧥",side:-1,slot:7},
+   {id:"church-queen",type:"church",name:"Kingdom Life Assembly",short:"Church",emoji:"⛪",side:1,slot:6},
+   {id:"transfer-queen",type:"transfer",name:"Naija Money Transfer",short:"Money transfer",emoji:"💸",side:1,slot:8},
+   {id:"bus-queen",type:"busstop",name:"Streetcar stop, Queen St W",short:"Streetcar stop",emoji:"🚋",x:4.9,z:18}
+  ],stalls:[],exits:[]
+ },
+ brampton:{country:"ca",name:"Main Street",area:"Brampton",L:46,traffic:true,road:"#3B3F46",npcs:18,code:"L6V",crossing:6,towers:[[44,-10,30],[-46,20,26]],skyline:[{k:"cn",x:120,z:-420},{k:"blocks",x:-160,z:-300,n:5}],
+  furniture:[["post",1,-24],["bin",-1,10],["bus",-1,-18],["bin",1,30]],ends:["Queen Street (coming soon)","Steeles Avenue (coming soon)"],
+  left:["Pharmacy","Roti Shop",null,null,"Hair & Beauty",null,"Dollar Store",null,"Coffee Shop"],
+  right:[null,"Insurance Broker",null,null,"Tax Services",null,"Driving School",null,"Phone Repairs"],
+  places:[
+   {id:"station-brampton",type:"station",name:"Brampton GO Station",short:"GO Station",emoji:"🚆",side:1,slot:0},
+   {id:"home-brampton",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"transfer-brampton",type:"transfer",name:"Lagos Express Money Transfer",short:"Money transfer",emoji:"💸",side:-1,slot:3},
+   {id:"work-brampton",type:"work",name:"Maple Grocery",short:"Work (grocery)",emoji:"💼",side:1,slot:2},
+   {id:"riders-brampton",type:"riders",name:"Chop Express Riders",short:"Rider hub",emoji:"🛵",side:1,slot:3},
+   {id:"foodstore-brampton",type:"foodstore",name:"Lagos to Brampton Foods",short:"African store",emoji:"🛒",side:-1,slot:5},
+   {id:"church-brampton",type:"church",name:"Redemption Glory Parish",short:"Church",emoji:"⛪",side:1,slot:5},
+   {id:"hall-brampton",type:"hall",name:"Royal Banquet Hall",short:"Banquet hall",emoji:"🎉",side:-1,slot:7},
+   {id:"travel-brampton",type:"travel",name:"Naija Travels Toronto",short:"Travel agent",emoji:"✈️",side:1,slot:7},
+   {id:"bukka-brampton",type:"bukka",name:"Mama Tee’s Kitchen",short:"Bukka",emoji:"🍲",side:1,slot:8},
+   {id:"bus-brampton",type:"busstop",name:"Bus stop, Main Street",short:"Bus stop",emoji:"🚌",x:-4.9,z:-18}
+  ],stalls:[],exits:[]
+ },
+ scarborough:{country:"ca",name:"Eglinton Ave East",area:"Scarborough",L:46,traffic:true,road:"#3B3F46",npcs:18,code:"M1K",crossing:-10,towers:[[46,6,44],[-44,-20,40],[44,-34,36]],skyline:[{k:"cn",x:-160,z:-380},{k:"blocks",x:60,z:-300,n:6}],
+  furniture:[["post",-1,16],["bin",1,-20],["bus",1,24],["bin",-1,-30]],ends:["Kennedy Road (coming soon)","Warden Avenue (coming soon)"],
+  left:["Jerk Chicken",null,null,null,"Tax Services",null,null,"Pharmacy",null],
+  right:[null,"Dollar Store",null,"Hair & Beauty",null,null,"Phone Repairs",null,"Roti Shop"],
+  places:[
+   {id:"station-scarborough",type:"station",name:"Kennedy Station",short:"Subway",emoji:"🚇",side:1,slot:0},
+   {id:"home-scarborough",type:"home",name:"Home",short:"Home",emoji:"🏠",side:-1,slot:2},
+   {id:"warehouse-scarborough",type:"warehouse",name:"Northline Fulfilment",short:"Warehouse",emoji:"📦",side:-1,slot:1},
+   {id:"care-scarborough",type:"care",name:"Maple Grove Long-Term Care",short:"Care home",emoji:"🩺",side:1,slot:2},
+   {id:"market-scarborough",type:"wmarket",name:"Afro-Caribbean Market",short:"Market",emoji:"🛍️",side:-1,slot:3},
+   {id:"bank-scarborough",type:"bank",name:"Maple Bank",short:"Bank",emoji:"🏦",side:1,slot:4},
+   {id:"jobcentre-scarborough",type:"jobcentre",name:"Service Canada Centre",short:"Service Canada",emoji:"🏛️",side:-1,slot:5},
+   {id:"gp-scarborough",type:"gp",name:"ServiceOntario",short:"ServiceOntario",emoji:"🪪",side:1,slot:5},
+   {id:"church-scarborough",type:"church",name:"Living Faith Chapel",short:"Church",emoji:"⛪",side:-1,slot:6},
+   {id:"clothes-scarborough",type:"clothes",name:"Winter Gear Outlet",short:"Winter gear",emoji:"🧥",side:1,slot:7},
+   {id:"bukka-scarborough",type:"bukka",name:"Suya Junction",short:"Suya spot",emoji:"🔥",side:-1,slot:8},
+   {id:"transfer-scarborough",type:"transfer",name:"Naija Money Transfer",short:"Money transfer",emoji:"💸",side:1,slot:8},
+   {id:"bus-scarborough",type:"busstop",name:"Bus stop, Eglinton Ave",short:"Bus stop",emoji:"🚌",x:4.9,z:24}
+  ],stalls:[],exits:[]
  },
  central:{name:"Northumberland Ave",area:"Central London",L:46,traffic:true,road:"#3B3F46",npcs:22,code:"WC2",crossing:12,towers:[],skyline:[{k:"bigben",x:-70,z:-250},{k:"eye",x:80,z:-240},{k:"shard",x:150,z:-330}],
   furniture:[["post",-1,-26],["phone",1,-20],["phone",-1,30],["bin",1,30],["bin",-1,6]],ends:["Trafalgar Square (coming soon)","Embankment (coming soon)"],
@@ -398,10 +456,11 @@ const ZONES={
  }
 };
 const COMING=[["Manchester","Up north. Cheaper rent, more rain."],["Birmingham","The Midlands. Jollof is still jollof."]];
-const AREAS={ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy, loud, everything Naija on one street."},woolwich:{area:"Woolwich",mult:.9,pos:[6,.5],blurb:"Big Nigerian community, market days, Elizabeth line."},
+const AREAS={queen:{area:"Downtown Toronto",mult:1.3,pos:[0,0],ca:1,blurb:"Condos, streetcars, the CN Tower. Rent will humble you."},brampton:{area:"Brampton",mult:.95,pos:[-9,6],ca:1,blurb:"Big Nigerian and South Asian community. Banquet halls every weekend."},scarborough:{area:"Scarborough",mult:.85,pos:[8,3],ca:1,blurb:"East Toronto. Warehouses, care homes and the best suya in the city."},ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy, loud, everything Naija on one street."},woolwich:{area:"Woolwich",mult:.9,pos:[6,.5],blurb:"Big Nigerian community, market days, Elizabeth line."},
   barking:{area:"Barking",mult:.85,pos:[8,5],blurb:"East London. More space for your money, East Street Market."},croydon:{area:"Croydon",mult:.92,pos:[-1,-7],blurb:"South London. Trams, big churches, the Container Yard."},
   edmonton:{area:"Edmonton",mult:.88,pos:[0,10],blurb:"North London. Edmonton Green market and strong church life."},choumert:{area:"Peckham",pos:[0,-.5]},highst:{area:"Peckham",pos:[0,.6]},central:{area:"Central London",pos:[-1,3.5]}};
 function hz(){return S&&S.homeZone&&ZONES[S.homeZone]?S.homeZone:"ryelane"}
+function inCountry(z){return (z.country||"uk")===((S&&S.country)||draft.country||"uk")}
 function activePlaces(z){return z.places.filter(p=>p.type!=="home"||z.id===hz())}
 function homePlace(){return ZONES[hz()].places.find(p=>p.type==="home")}
 const HOMES=["Shared room","Studio flat","1-bed flat","2-bed flat","3-bed house","Your own home"],RENTS=[120,150,210,280,360,240],CREDIT_REQ=[0,250,400,550,700];
@@ -455,33 +514,43 @@ const MUSA=[
 
 /* ================= state ================= */
 let S=null;
-function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,kids:[],parents:null,preg:null,zone:home,homeZone:home,groceries:0,
+function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0,warehouse:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,kids:[],parents:null,preg:null,zone:home,homeZone:home,groceries:0,
   pos:{x:h.x,z:h.z+1.5},msgs:[{t:"Mum",d:0,txt:"Welcome to London, my child. Call me when you land. Don’t talk to strangers."}],unread:1,tx:[]}}
 function migrate(s){if(!s.zone)s.zone="ryelane";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
-  if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;if(!s.kids)s.kids=[];if(s.parents===undefined)s.parents=null;if(s.preg===undefined)s.preg=null;s.v=8;return s}
+  if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;if(!s.kids)s.kids=[];if(s.parents===undefined)s.parents=null;if(s.preg===undefined)s.preg=null;if(!s.country)s.country="uk";if(s.xp&&s.xp.warehouse===undefined)s.xp.warehouse=0;s.v=9;return s}
 function save(){if(!S||!player)return;try{S.pos={x:player.position.x,z:player.position.z};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);return r?migrate(JSON.parse(r)):null}catch(e){return null}}
 const clamp=v=>Math.max(0,Math.min(100,v));
 const pick=a=>a[Math.floor(Math.random()*a.length)];
-const gbp=n=>(n<0?"−£":"£")+Math.abs(n).toFixed(2).replace(/\.00$/,"");
+function isCA(){return !!(S&&S.country==="ca")}
+const FXR=1.8;
+const gbp=n=>{if(isCA()){const v=Math.abs(n)*FXR;return (n<0?"−$":"$")+(v>=1000?Math.round(v).toLocaleString():v.toFixed(2).replace(/\.00$/,""))}return (n<0?"−£":"£")+Math.abs(n).toFixed(2).replace(/\.00$/,"")};
+function cur(s){if(!isCA()||s==null)return s;return String(s).replace(/(−)?£(\d[\d,]*(?:\.\d+)?)/g,(m,neg,num)=>{const v=parseFloat(num.replace(/,/g,""))*FXR;return (neg||"")+"$"+(v>=100?Math.round(v).toLocaleString():v.toFixed(2).replace(/\.00$/,""))})}
 function day(){return Math.floor(S.T/1440)}
 function mod(){return Math.floor(S.T%1440)}
 function dow(){return day()%7}
 function hour(){return mod()/60}
 function timeStr(mins){mins=Math.floor(mins%1440);let h=Math.floor(mins/60),m=mins%60;const ap=h<12?"AM":"PM";h=h%12||12;return `${h}:${String(m).padStart(2,"0")} ${ap}`}
 function lvl(c){let i=0;XPL.forEach((t,k)=>{if((S.xp[c]||0)>=t)i=k});return i}
-function title(c){return CAREERS[c].titles[lvl(c)]}
-function wage(c){return CAREERS[c].wage*(1+.12*lvl(c))*(c==="care"&&S.route==="care"?1.2:1)}
-function R(){return ROUTES[S.route]||ROUTES.care}
+function title(c){return CR(c).titles[lvl(c)]}
+function wage(c){return CR(c).wage*(1+.12*lvl(c))*(c==="care"&&S.route==="care"?1.2:1)}
+const ROUTES_CA={
+ student:{name:"Study Permit",em:"🎓",home:"Shared room",blurb:"A college diploma, a 24-hour work limit, and a big PR dream.",perk:"Max 6 shifts a week (24 hours) during term. Cheapest rent.",cap:6},
+ care:{name:"PSW Work Permit",em:"🩺",home:"Studio flat",blurb:"Personal Support Worker in long-term care. Night shifts and snow boots.",perk:"+20% pay at Maple Grove Long-Term Care, Scarborough."},
+ tech:{name:"Express Entry PR",em:"🍁",home:"1-bed flat",blurb:"Landed as a permanent resident. Then every employer asked for ‘Canadian experience’.",perk:"Already PR. Remote tech work unlocks after a few weeks of Canadian experience."},
+ born:{name:"Canadian-Born Naija",em:"🇨🇦",home:"Mum’s house",blurb:"Born in Brampton. Says ‘eh’ and ‘abeg’ in the same sentence.",perk:"No rent, but $90 a week to Mum and her house rules."}};
+function R(){const b=ROUTES[S.route]||ROUTES.care;return isCA()?Object.assign({},b,ROUTES_CA[S.route]||{}):b}
+function routeFor(c,k){const b=ROUTES[k];return c==="ca"?Object.assign({},b,ROUTES_CA[k]||{}):b}
 function has(t){return S.traits&&S.traits.includes(t)}
 function mainCareer(){return Object.keys(CAREERS).sort((a,b)=>(S.xp[b]||0)-(S.xp[a]||0))[0]}
 function gainXP(c,v){F().firstWage=true;jxp(Math.round(v*12));const before=lvl(c);S.xp[c]=(S.xp[c]||0)+v*(has("learner")?1.5:1);const after=lvl(c);
   if(after>before){addMsg("Mum",`My child is now ${CAREERS[c].titles[after]}! I’ve told the whole church.`);setTimeout(()=>toast(`🎉 Promoted: ${CAREERS[c].titles[after]}`),300);checkDream()}
   return after>before}
-function capLeft(){return (S.route==="student"&&S.visa&&S.visa.type!=="Student visa"?99:R().cap)-S.weekShifts}
-function visaFor(route,d){return{student:{type:"Student visa",until:d+84,sponsor:null},care:{type:"Health & Care Worker visa",until:d+1095,sponsor:"Sunrise Care Home",revoked:false},
+function capLeft(){return (S.route==="student"&&S.visa&&S.visa.type!=="Student visa"&&S.visa.type!=="Study permit"?99:R().cap)-S.weekShifts}
+function visaFor(route,d,c){if((c||(S&&S.country))==="ca")return{student:{type:"Study permit",until:d+84,sponsor:null},care:{type:"Work permit (LMIA)",until:d+1095,sponsor:"Maple Grove Long-Term Care",revoked:false},tech:{type:"Permanent Resident",until:null,sponsor:null},born:{type:"Canadian citizen",until:null,sponsor:null}}[route]||null;
+  return{student:{type:"Student visa",until:d+84,sponsor:null},care:{type:"Health & Care Worker visa",until:d+1095,sponsor:"Sunrise Care Home",revoked:false},
   tech:{type:"Skilled Worker visa",until:d+1825,sponsor:"your tech employer"},born:{type:"British citizen",until:null,sponsor:null}}[route]||null}
 function progress(){const D=DREAMS[S.dream];if(!D)return 0;if(S.dream==="oga"){return Object.keys(CAREERS).some(c=>lvl(c)===4)?1:Math.min(.99,Math.max(...Object.keys(CAREERS).map(c=>(S.xp[c]||0)/XPL[4])))}return Math.min(1,S.fund/D.target)}
 function Z(){return ZONES[S?S.zone:"ryelane"]}
@@ -559,14 +628,14 @@ function buildZone(zid){
   const woolwich=zone.area==="Woolwich";
   // street, pavements, kerbs
   box(8,.04,2*L+240,zone.road,0,.02,0);
-  if(zone.traffic){for(let z=-L;z<L;z+=6)box(.25,.05,2.5,"#E8E8EE",0,.05,z);
-    [-1,1].forEach(s=>{box(.1,.05,2*L+4,"#F2C81B",s*3.75,.05,0);box(.1,.05,2*L+4,"#F2C81B",s*3.55,.05,0)})}
+  if(zone.traffic){if(zone.country==="ca"){for(const q of[-.12,.12])box(.1,.05,2*L+120,"#F2C81B",q,.05,0)}else{for(let z=-L;z<L;z+=6)box(.25,.05,2.5,"#E8E8EE",0,.05,z);
+    [-1,1].forEach(s=>{box(.1,.05,2*L+4,"#F2C81B",s*3.75,.05,0);box(.1,.05,2*L+4,"#F2C81B",s*3.55,.05,0)})}}
   else{for(let z=-L;z<L;z+=2)box(8,.045,.06,"#7E7468",0,.045,z)}
   [-1,1].forEach(s=>{box(3.4,.18,2*L+240,"#A9ACB4",s*5.7,.09,0);box(.2,.22,2*L+240,"#8E929C",s*4.05,.11,0);
     for(let z=-L;z<L;z+=1.6)box(3.4,.185,.04,"#9A9DA5",s*5.7,.09,z)});
   if(zone.crossing!==undefined){const cz=zone.crossing;for(let x=-3.5;x<=3.5;x+=1)box(.6,.05,3,"#F2F2F2",x,.05,cz);
     [-1,1].forEach(s=>{box(.15,2.4,.15,"#222",s*4.3,1.2,cz+1.8);box(.5,.5,.5,own(new THREE.MeshLambertMaterial({color:0xF4A23A,emissive:0x553300})),s*4.3,2.6,cz+1.8)});
-    flatText("LOOK RIGHT",3,.75,-1.8,cz-2.2,Math.PI);flatText("LOOK RIGHT",3,.75,1.8,cz+2.2,0)}
+    if(zone.country!=="ca"){flatText("LOOK RIGHT",3,.75,-1.8,cz-2.2,Math.PI);flatText("LOOK RIGHT",3,.75,1.8,cz+2.2,0)}}
   // street ends: the road carries on past a junction, lined with more terraces
   const tms=[STOCK[0],REDB[0],STUCCO[0],STOCK[2]].map(c=>own(new THREE.MeshLambertMaterial({map:terraceTex(c)})));
   const tbox=(w,hh,d,x,z)=>{const m=new THREE.Mesh(new THREE.BoxGeometry(w,hh,d),tms[Math.floor(rnd()*tms.length)]);m.position.set(x,hh/2,z);m.userData.st=1;root.add(m);box(w-.4,.6,d-.4,"#4A4E57",x,hh+.3,z)};
@@ -609,7 +678,7 @@ function buildZone(zid){
           if(bay&&f===0&&k===0){box(.6,2.4,3.2,col,side*6.72,fy,wz);plane(2.6,1.7,winMat,side*6.41,fy,wz,ry);continue}
           plane(1.35,1.95,mat("#F2EEE4"),side*7.03,fy,wz,ry);plane(1.1,1.7,winMat,side*7.045,fy,wz,ry);plane(1.15,.07,mat("#F2EEE4"),side*7.05,fy,wz,ry);
           box(.18,.12,1.5,trim,side*7.08,fy-1.05,wz);box(.12,.22,1.45,trim,side*7.07,fy+1.1,wz)}}
-      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",estate:"#0E7A4B",commission:"#0E7A4B",exams:"#2D3192",security:"#1C1B3A",hospital:"#3BA3D9",cars:"#C2304F",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
+      const sc=place?({home:"#1C1B3A",work:"#0E7A4B",transfer:"#0E7A4B",riders:"#E5487A",care:"#2D3192",warehouse:"#E85A1A",estate:"#0E7A4B",commission:"#0E7A4B",exams:"#2D3192",security:"#1C1B3A",hospital:"#3BA3D9",cars:"#C2304F",library:"#0E7A4B",gym:"#3BA3D9",fabrics:"#E5487A",bukka:"#C2304F",foodpark:"#1C1B3A",bank:"#2D3192",jobcentre:"#0E7A4B",clothes:"#E5487A",gp:"#3BA3D9",agency:"#1C1B3A",travel:"#0E7A4B",suya:"#C2304F",church:"#2D3192",station:"#1C1B3A",barber:"#C2304F",salon:"#E5487A",foodstore:"#0E7A4B",hall:"#B5835A"}[type]||"#2D3192"):r2p(SIGN);
       if(type==="home"){
         plane(1.4,2.4,mat("#2D3192"),side*7.03,1.2,z,ry);plane(1.4,.5,winMat,side*7.035,2.65,z,ry);
         plane(1.6,.5,own(new THREE.MeshBasicMaterial({map:textTex("3B","#F4C430","#1C1B3A",128,40,30)})),side*7.04,3.15,z+1.2,ry);
@@ -673,6 +742,9 @@ function buildZone(zid){
       for(const q of[-26,22]){const b=new THREE.Mesh(new THREE.BoxGeometry(16,70+q,14),skyMat("#9AA5B5"));b.position.set(s.x+q,(70+q)/2,s.z+10);root.add(b)}}
     if(s.k==="o2"){const d=new THREE.Mesh(new THREE.SphereGeometry(40,24,12,0,Math.PI*2,0,Math.PI/2),skyMat("#C9CED6"));d.scale.y=.35;d.position.set(s.x,0,s.z);root.add(d);
       for(let a=0;a<12;a++){const m=new THREE.Mesh(new THREE.BoxGeometry(1.2,40,1.2),skyMat("#E6C35A"));m.position.set(s.x+Math.cos(a/12*Math.PI*2)*30,18,s.z+Math.sin(a/12*Math.PI*2)*30);root.add(m)}}
+    if(s.k==="cn"){const sh=new THREE.Mesh(new THREE.CylinderGeometry(2.2,6,170,8),skyMat("#A9B2BE"));sh.position.set(s.x,85,s.z);root.add(sh);
+      const pod=new THREE.Mesh(new THREE.CylinderGeometry(11,9,9,16),skyMat("#8E98A6"));pod.position.set(s.x,125,s.z);root.add(pod);
+      const ant=new THREE.Mesh(new THREE.CylinderGeometry(.8,1.6,70,6),skyMat("#C9CED6"));ant.position.set(s.x,205,s.z);root.add(ant)}
     if(s.k==="bigben"){const t=new THREE.Mesh(new THREE.BoxGeometry(12,90,12),skyMat("#A6957A"));t.position.set(s.x,45,s.z);root.add(t);
       const c=new THREE.Mesh(new THREE.BoxGeometry(14,14,14),skyMat("#9C8A6E"));c.position.set(s.x,97,s.z);root.add(c);
       const f=new THREE.Mesh(new THREE.CircleGeometry(5,20),skyMat("#E8E2C8"));f.position.set(s.x,97,s.z+7.1);root.add(f);
@@ -711,7 +783,7 @@ function spawnTrain(zone){const g=new THREE.Group();root.add(g);
 function spawnTram(zone){
   BUILDING=true;for(const q of[-.72,.72])box(.1,.06,2*zone.L+8,"#7D838C",q,.07,0);BUILDING=false;
   const g=new THREE.Group();root.add(g);
-  for(let c=0;c<2;c++){const oz=c*10.4;box(2.6,3.1,10,"#E8E8EE",0,1.75,oz,g);box(2.62,.7,10.02,"#78BE20",0,.7,oz,g);for(let k=-3;k<=3;k++)for(const q of[-1,1])box(.02,1.1,1,"#1E2633",q*1.31,2.1,oz+k*1.3,g);box(2.3,1.2,.02,"#1E2633",0,2.2,oz+5.01,g)}
+  for(let c=0;c<2;c++){const oz=c*10.4;box(2.6,3.1,10,zone.tramColor?"#D52B1E":"#E8E8EE",0,1.75,oz,g);box(2.64,.4,10.04,"#E8E8EE",0,2.6,oz,g);box(2.62,.7,10.02,zone.tramColor||"#78BE20",0,.7,oz,g);for(let k=-3;k<=3;k++)for(const q of[-1,1])box(.02,1.1,1,"#1E2633",q*1.31,2.1,oz+k*1.3,g);box(2.3,1.2,.02,"#1E2633",0,2.2,oz+5.01,g)}
   box(.1,1.2,.1,"#333",0,3.9,4,g);box(1.4,.08,.1,"#333",0,4.5,4,g);
   g.position.set(0,0,-zone.L-14);zoneAnims.push({k:"tram",g,dir:1,wait:4,L:zone.L})}
 function animZone(dt){
@@ -727,13 +799,15 @@ function animZone(dt){
 }
 /* weather */
 let rain=null;
-function setRain(on){
-  if(on&&!rain){const n=2200,pos=new Float32Array(n*3);for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*36;pos[i*3+1]=Math.random()*18;pos[i*3+2]=(Math.random()-.5)*36}
+let rainMode=null;
+function setRain(on,snow){
+  if(on&&rain&&rainMode!==(snow?"snow":"rain")){scene.remove(rain);rain.geometry.dispose();rain.material.dispose();rain=null}
+  if(on&&!rain){rainMode=snow?"snow":"rain";const n=2200,pos=new Float32Array(n*3);for(let i=0;i<n;i++){pos[i*3]=(Math.random()-.5)*36;pos[i*3+1]=Math.random()*18;pos[i*3+2]=(Math.random()-.5)*36}
     const g=new THREE.BufferGeometry();g.setAttribute("position",new THREE.BufferAttribute(pos,3));
-    rain=new THREE.Points(g,new THREE.PointsMaterial({color:0xDCE4EE,size:.16,transparent:true,opacity:.85}));scene.add(rain)}
+    rain=new THREE.Points(g,new THREE.PointsMaterial({color:snow?0xFFFFFF:0xDCE4EE,size:snow?.2:.16,transparent:true,opacity:snow?.95:.85}));scene.add(rain)}
   if(!on&&rain){scene.remove(rain);rain.geometry.dispose();rain.material.dispose();rain=null}
 }
-function rainTick(dt){if(!rain)return;const p=rain.geometry.attributes.position,a=p.array;for(let i=1;i<a.length;i+=3){a[i]-=dt*16;if(a[i]<0)a[i]+=18}p.needsUpdate=true;
+function rainTick(dt){if(!rain)return;const p=rain.geometry.attributes.position,a=p.array,sn=rainMode==="snow",tt=performance.now()/1000;for(let i=1;i<a.length;i+=3){a[i]-=dt*(sn?2.4:16);if(sn)a[i-1]+=Math.sin(tt+i)*dt*.4;if(a[i]<0)a[i]+=18}p.needsUpdate=true;
   rain.position.set(camera.position.x,0,camera.position.z)}
 
 
@@ -780,6 +854,12 @@ function makeBus(color,stripe){
   for(const z of[-3,3])for(const x of[-1.2,1.2])box(.3,.9,.9,"#151515",x,.45,z,g);
   return g;
 }
+function makeCityBus(label){
+  const g=new THREE.Group();root.add(g);
+  box(2.5,3,11,"#E8E8EE",0,1.9,0,g);box(2.52,.6,11.02,"#D52B1E",0,.9,0,g);box(2.52,.15,11.02,"#D52B1E",0,3.1,0,g);
+  for(const x of[-1.26,1.26])box(.02,1,9.6,"#1E2633",x,2.1,0,g);box(2.3,1.3,.02,"#1E2633",0,2.1,5.51,g);
+  const rs=new THREE.Mesh(new THREE.PlaneGeometry(2,.4),own(new THREE.MeshBasicMaterial({map:textTex(label,"#111111","#F4A23A",512,100,52)})));rs.position.set(0,3.05,5.52);g.add(rs);
+  for(const z of[-3.6,3.6])for(const x of[-1.2,1.2])box(.3,.9,.9,"#151515",x,.45,z,g);return g}
 function makeCab(){
   const g=new THREE.Group();root.add(g);
   box(1.9,.9,4.2,"#111215",0,.8,0,g);box(1.75,.95,2.4,"#111215",0,1.65,-.1,g);
@@ -794,9 +874,10 @@ function makeCar(color){
   return g;
 }
 function spawnTraffic(zone){
-  [["bus","#C8102E"],["bus","#C8102E",1],["cab"],["car","#E8E8EE"],["car","#2E4A6B"],["cab"],["car","#8B2E2E"]].forEach((d,i)=>{
-    const v=d[0]==="bus"?makeBus(d[1],d[2]):d[0]==="cab"?makeCab():makeCar(d[1]);const lane=i%2?1:-1;
-    v.userData={lane,speed:(d[0]==="bus"?6:9)+Math.random()*3,len:d[0]==="bus"?9:4,lim:zone.L+14};
+  const ca=zone.country==="ca";
+  (ca?[["cbus","501 QUEEN"],["car","#E8E8EE"],["car","#2E4A6B"],["cbus","32 EGLINTON"],["car","#8B2E2E"],["car","#1C1B3A"],["car","#6E6E78"]]:[["bus","#C8102E"],["bus","#C8102E",1],["cab"],["car","#E8E8EE"],["car","#2E4A6B"],["cab"],["car","#8B2E2E"]]).forEach((d,i)=>{
+    const v=d[0]==="cbus"?makeCityBus(d[1]):d[0]==="bus"?makeBus(d[1],d[2]):d[0]==="cab"?makeCab():makeCar(d[1]);const lane=i%2?1:-1;
+    v.userData={lane,speed:(d[0]==="bus"||d[0]==="cbus"?6:9)+Math.random()*3,len:d[0]==="bus"?9:d[0]==="cbus"?11:4,lim:zone.L+14};
     v.position.set(lane*-2,0,-zone.L+i*20);v.rotation.y=lane>0?Math.PI:0;cars.push(v);
   });
 }
@@ -826,15 +907,15 @@ canvas.addEventListener("pointerup",e=>{
 
 /* ================= UI ================= */
 let uiOpen=false,nearPlace=null,phoneTab="msgs",busy=false;
-function toast(t){const el=$("toast");el.textContent=t;el.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove("show"),2800)}
-function openSheet(html){$("sheetIn").innerHTML=html;$("sheet").style.display="block";$("veil").style.display="block";$("sheet").scrollTop=0;uiOpen=true;joyV={x:0,y:0};knob.style.transform=""}
+function toast(t){const el=$("toast");el.textContent=cur(t);el.classList.add("show");clearTimeout(toast.h);toast.h=setTimeout(()=>el.classList.remove("show"),2800)}
+function openSheet(html){$("sheetIn").innerHTML=cur(html);$("sheet").style.display="block";$("veil").style.display="block";$("sheet").scrollTop=0;uiOpen=true;joyV={x:0,y:0};knob.style.transform=""}
 function closeSheet(){if(MG.active){const lb=MG.label;mgStop();toast(lb||"Shift abandoned. No pay.")}$("sheet").style.display="none";$("veil").style.display="none";uiOpen=false;save()}
 $("veil").onclick=()=>{if(!MG.active&&!S.dreamDone)closeSheet()};
 const NEEDS=[["h","🍲 Food","#E85A1A"],["e","⚡ Energy","#F4C430"],["y","🧼 Clean","#3BA3D9"],["f","😄 Fun","#E5487A"],["love","❤️ Love","#C2304F"]];
 $("needs").innerHTML=NEEDS.map(([k,l])=>`<div class="need"><span>${l}</span><div class="b"><i id="nb_${k}"></i></div></div>`).join("");
 function updateHUD(){
   const z=Z();
-  $("clock").innerHTML=`${DAYS[dow()]} ${dateStr(day())}, ${timeStr(mod())}<small>${{rain:"🌧️",cloud:"☁️",sun:"☀️"}[S.weather||"cloud"]} ${z.name}, ${z.area}</small>`;
+  $("clock").innerHTML=`${DAYS[dow()]} ${dateStr(day())}, ${timeStr(mod())}<small>${{rain:"🌧️",cloud:"☁️",sun:"☀️",snow:"❄️"}[S.weather||"cloud"]}${isCA()&&S.temp!==undefined?` ${S.temp}°C`:""} ${z.name}, ${z.area}</small>`;
   $("cash").textContent=gbp(S.m);$("cash").style.color=S.m<0?"var(--bad)":"";
   const hasP=!!S.partner;$("needs").style.gridTemplateColumns=`repeat(${hasP?5:4},1fr)`;$("nb_love").parentNode.parentNode.style.display=hasP?"":"none";
   NEEDS.forEach(([k,,c])=>{const el=$("nb_"+k);const v=k==="love"?(S.partner?S.partner.love:0):S.n[k];el.style.width=v+"%";el.style.background=v<20?"#C2304F":c});
@@ -845,10 +926,10 @@ function updateHUD(){
 function updateChips(){
   const px=player.position.x,pz=player.position.z;
   const list=spots().map(p=>({p,d:Math.hypot(p.x-px,p.z-pz)})).sort((a,b)=>a.d-b.d);
-  const bk=S.booked?`<button class="chip glass" data-bk="1" style="border:2px solid var(--yellow)">📌 ${S.booked.c==="care"?"Care shift":"Till shift"} ${timeStr(S.booked.start*60)}</button>`:"";
+  const bk=S.booked?`<button class="chip glass" data-bk="1" style="border:2px solid var(--yellow)">📌 ${S.booked.c==="care"?"Care shift":S.booked.c==="warehouse"?"Warehouse shift":"Till shift"} ${timeStr(S.booked.start*60)}</button>`:"";
   $("chips").innerHTML=bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("");
   $("chips").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>goTo(b.dataset.go));
-  const bb=$("chips").querySelector("[data-bk]");if(bb)bb.onclick=()=>{const id=S.booked.c==="care"?"carehome":"work";if(spots().some(p=>p.id===id))goTo(id);else toast(S.booked.c==="care"?"Take the train to Woolwich for your care shift":"Head back to Rye Lane for your till shift")};
+  const bb=$("chips").querySelector("[data-bk]");if(bb)bb.onclick=()=>{const t=S.booked.c==="care"?"care":S.booked.c==="warehouse"?"warehouse":"work";const sp=spots().find(p=>p.type===t);if(sp)goTo(sp.id);else toast("Your booked shift is in another area. Take the train or bus.")};
 }
 function goTo(id){const p=spots().find(x=>x.id===id);if(!p)return;autoTarget={x:p.x,z:p.z+.01};toast(`Walking to ${p.kind==="exit"?p.name:p.short}…`)}
 /* route finding across zones (walk exits + trains) */
@@ -856,7 +937,7 @@ function nextHop(from,to){
   if(from===to)return null;const prev={[from]:null},q=[from];
   while(q.length){const c=q.shift();const z=ZONES[c];
     const links=z.exits.map(x=>({to:x.to,via:x.id}));
-    if(z.station)Object.values(ZONES).forEach(o=>{if(o.station&&o.id!==c)links.push({to:o.id,via:z.station.id})});
+    if(z.station)Object.values(ZONES).forEach(o=>{if(o.station&&o.id!==c&&(o.country||"uk")===(z.country||"uk"))links.push({to:o.id,via:z.station.id})});
     for(const l of links){if(l.to in prev)continue;prev[l.to]={from:c,via:l.via};if(l.to===to){let n=to;while(prev[n].from!==from)n=prev[n].from;return prev[n].via}q.push(l.to)}}
   return null;
 }
@@ -871,7 +952,7 @@ $("nMap").onclick=()=>{phoneTab="map";openPhone()};
 $("nPhone").onclick=()=>{phoneTab=S.unread?"msgs":phoneTab==="map"?"msgs":phoneTab;openPhone()};
 
 /* ================= time & needs ================= */
-function addMsg(t,txt){S.msgs.unshift({t,d:day(),txt});S.msgs=S.msgs.slice(0,40);S.unread++}
+function addMsg(t,txt){S.msgs.unshift({t,d:day(),txt:cur(txt)});S.msgs=S.msgs.slice(0,40);S.unread++}
 function addTx(label,amt){S.tx.unshift({label,amt,d:day()});S.tx=S.tx.slice(0,20)}
 function money(amt,label){S.m=Math.round((S.m+amt)*100)/100;addTx(label,amt)}
 function decay(mins,mode){
@@ -900,7 +981,13 @@ function newDay(d){
     if(S.ajo.week===S.ajo.turn){money(125,"Ajo payout");F().ajoPaid=true;addMsg("Sister Funke (Ajo)","It’s your turn! £125 has been sent to you. Use it wisely, not on suya.")}
     if(S.ajo.week>=5){S.ajo=null;addMsg("Sister Funke (Ajo)","This ajo cycle is complete. Everybody collected. God is faithful. New cycle starts soon.")}}
   {const m=dateOf(d).m;if(!F().coat&&["Nov","Dec","Jan","Feb"].includes(m)){S.n.f=clamp(S.n.f-8);if(Math.random()<.3)addMsg("Mum","Are you wearing a coat? I saw on the news that London is cold. Buy a coat!")}}
-  {const r=Math.random();S.weather=r<.38?"rain":r<.75?"cloud":"sun";if(S.weather==="rain"){S.n.f=clamp(S.n.f-2);if(Math.random()<.4)addMsg("Mum","They said it’s raining in London again. Carry umbrella!")}}
+  {const r=Math.random();const mo=dateOf(d).m;
+   if(S.country==="ca"){const base={Oct:9,Nov:2,Dec:-6,Jan:-10,Feb:-9,Mar:-2,Apr:7,May:14,Jun:21,Jul:25,Aug:24,Sep:18}[mo];S.temp=Math.round(base+(Math.random()-.5)*10);
+     const cold=["Nov","Dec","Jan","Feb","Mar"].includes(mo);S.weather=cold&&S.temp<1&&r<.5?"snow":r<.25?"rain":r<.6?"cloud":"sun";
+     if(S.temp<=-5&&!F().coat){S.n.f=clamp(S.n.f-10);S.n.e=clamp(S.n.e-10);addMsg("Mum",`They said it’s ${S.temp}°C in Toronto?! Have you bought a proper coat? Don’t let that cold enter your bones!`)}
+     if(mo==="Jan"&&dateOf(d).day===1&&F().coat){F().winterDone=true;addMsg("Mum","You survived your first Canadian winter so far! Your father says you are now ‘a polar bear’.")}
+     if(S.temp<=-15&&Math.random()<.5)S.evq.push("deep_freeze")}
+   else{S.weather=r<.38?"rain":r<.75?"cloud":"sun";if(S.weather==="rain"){S.n.f=clamp(S.n.f-2);if(Math.random()<.4)addMsg("Mum","They said it’s raining in London again. Carry umbrella!")}}}
   bizNewDay(d);papersNewDay(d);ch4NewDay(d);
   if(homeIdx()>=2)add("f",homeIdx()*2);
   lifeNewDay(d);
@@ -952,7 +1039,7 @@ const BUS_LINES=["Someone upstairs is playing Afrobeats on speaker, no headphone
 const UBER_LINES=["Your driver is Nigerian. You talked about jollof the whole way. 5 stars.","The driver said ‘Long time’ even though you’ve never met.","The Prius smelled of air freshener and destiny.","He asked if you’re ‘from Africa’. You said yes. He said ‘which part of Africa is Lagos?’"];
 function openTravel(p,mode){
   const h=hour(),trainOpen=h>=5||h<1;
-  const here=S.zone,dests=Object.values(ZONES).filter(z=>z.station&&z.id!==here&&(z.id!=="central"||S.chapter>=3)&&!(AREAS[z.id]&&AREAS[here]&&AREAS[z.id].area===AREAS[here].area&&mode!=="uber"&&mode!=="drive"));
+  const here=S.zone,dests=Object.values(ZONES).filter(z=>z.station&&z.id!==here&&inCountry(z)&&(z.id!=="central"||S.chapter>=3)&&!(AREAS[z.id]&&AREAS[here]&&AREAS[z.id].area===AREAS[here].area&&mode!=="uber"&&mode!=="drive"));
   const tabs=[["train","🚆 Train"],["bus","🚌 Bus"],["uber","🚖 Uber"],...(S.car?[["drive","🚗 Drive"]]:[])].filter(([m])=>m!=="train"||(p&&p.type==="station"));
   const avail=m=>m==="train"?trainOpen:true;
   const title=p?`${p.emoji} ${p.name}`:"🚖 Get around London";
@@ -960,7 +1047,7 @@ function openTravel(p,mode){
   const list=((mode==="uber"||mode==="drive")&&here!==hz()&&!dests.some(z=>z.id===hz())?[ZONES[hz()]]:[]).concat(dests);
   openSheet(`<h2>${title}</h2><div class="tabs">${tabs.map(([m,l])=>`<button data-m="${m}" class="${m===mode?"on":""}">${l}</button>`).join("")}</div><p class="sub">${note}</p>
     <div class="list">${list.map(z=>{const t=trip2(here,z.id,mode),ok=avail(mode)&&S.m>=t.fare;return `<button class="opt" data-to="${z.id}" ${ok?"":"disabled"}><span class="e">${mode==="train"?"🚆":mode==="bus"?"🚌":mode==="drive"?"🚗":"🚖"}</span><div><b>${z.area}${z.id===hz()?" 🏠":""}</b><span>${!avail(mode)?"Not running now":S.m<t.fare?"Not enough money":`${z.name} · ${t.mins} min · £${t.fare.toFixed(2)}`}</span></div></button>`}).join("")}
-    ${mode==="train"?COMING.map(([a,d])=>`<button class="opt" disabled><span class="e">🚧</span><div><b>${a}</b><span>${d} Coming soon</span></div></button>`).join(""):""}</div>
+    ${mode==="train"?(isCA()?[["Calgary","Alberta. More snow, cheaper rent."],["Edmonton","Alberta. Big Nigerian community."],["Winnipeg","Manitoba. Cheapest rent in the game."]]:COMING).map(([a,d])=>`<button class="opt" disabled><span class="e">🚧</span><div><b>${a}</b><span>${d} Coming soon</span></div></button>`).join(""):""}</div>
     <button class="close" id="cl">Close</button>`);
   $("cl").onclick=closeSheet;
   $("sheetIn").querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>openTravel(p,b.dataset.m));
@@ -976,6 +1063,7 @@ function isOpen(type){const h=hour();
   if(type==="barber"||type==="salon"||type==="foodstore")return h>=9&&h<20;
   if(type==="hall")return true;
   if(type==="agency")return h>=9&&h<17;
+  if(type==="warehouse")return true;
   if(type==="bukka")return h>=11&&h<22;
   if(type==="library")return h>=9&&h<20;
   if(type==="exams")return dow()<6&&h>=8&&h<18;
@@ -996,7 +1084,8 @@ function isOpen(type){const h=hour();
   if(type==="riders")return h>=8&&h<23;
   if(type==="care")return h>=7&&h<19;
   return true}
-function hoursText(type){return{estate:"Open 9 AM to 6 PM. Shared ownership specialists.",exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
+function hoursText(type){if(isCA()){if(type==="jobcentre")return "Open 8:30 AM to 4 PM, weekdays. SIN numbers and job help.";if(type==="gp")return "Open 8:30 AM to 5 PM, weekdays. Health cards and licences.";if(type==="clothes")return "Open 9 AM to 8 PM. Coats rated to minus 30.";if(type==="work")return "Open 7 AM to 10 PM. £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".";if(type==="care")return "Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+".";if(type==="hall")return "Owambe every Saturday from 6 PM. Heated, thank God."}
+  return{warehouse:"Shifts around the clock. Warehouse work, no experience needed.",estate:"Open 9 AM to 6 PM. Shared ownership specialists.",exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
   church:"Open 8 AM to 9 PM. Sunday service 9 AM to 1 PM.",market:"Open 8 AM to 6 PM. Cheapest foodstuff in Peckham.",wmarket:"Open 8 AM to 6 PM.",
   barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]}
 const add=(k,v)=>{if(v>0&&k==="f"&&has("owambe"))v*=1.25;if(v>0&&k==="h"&&has("foodie"))v*=1.25;if(v<0&&k==="e"&&has("iron"))v*=.75;S.n[k]=clamp(S.n[k]+v)};
@@ -1010,7 +1099,7 @@ function actionsFor(type){
     {e:"🍳",n:"Cook jollof",s:S.groceries>0?`Uses market foodstuff (${S.groceries} left). +45 Hunger, +8 Fun`:"£4, 45 min, +45 Hunger, +5 Fun",ok:S.groceries>0||S.m>=4,why:"Not enough money",run:()=>{
       if(S.groceries>0){S.groceries--;add("f",3)}else money(-4,"Jollof ingredients");advance(45);add("h",45);add("f",5);return "Party jollof. Smoky bottom. You are your mother’s child."}},
     {e:"🍜",n:"Indomie emergency",s:"£1, 10 min, +20 Hunger",ok:S.m>=1,why:"Not enough money",run:()=>{money(-1,"Indomie");advance(10);add("h",20);return "Two packs, one egg. A classic."}},
-    ...(S.route==="tech"?[{e:"💻",n:"Work from home (4 hours)",s:`+£${(wage("tech")*4).toFixed(0)}, −20 Energy, −8 Fun`,ok:h>=8&&h<19&&n.e>=20,why:n.e<20?"Too tired":"Office hours are 8 AM to 7 PM",run:()=>{
+    ...(S.route==="tech"&&(!isCA()||Object.entries(S.xp).filter(([k])=>k!=="tech").reduce((a,[,v])=>a+v,0)>=6)?[{e:"💻",n:"Work from home (4 hours)",s:`+£${(wage("tech")*4).toFixed(0)}, −20 Energy, −8 Fun`,ok:h>=8&&h<19&&n.e>=20,why:n.e<20?"Too tired":"Office hours are 8 AM to 7 PM",run:()=>{
       const pay=Math.round(wage("tech")*4*100)/100;advance(240);add("e",-20);add("f",-8);add("h",-12);money(pay,"Remote tech work");S.weekShifts++;gainXP("tech",1);
       return pick(["Four Zoom calls. One of them could have been an email. ","You fixed the bug. You don’t know how. ","Your manager said ‘let’s circle back’ three times. "])+`You earned £${pay.toFixed(2)}.`}}]:[]),
     ...(S.partner&&S.partner.where==="uk"?[
@@ -1117,15 +1206,36 @@ function actionsFor(type){
     {e:"🍗",n:lit?"Wings, Afrobeats and vibes":"Wings and a drink",s:lit?"£15, 3 hours, +30 Fun, +20 Food":"£12, +18 Fun, +20 Food",ok:open&&S.m>=(lit?15:12),why:closedWhy(type,"Not enough money"),
       run:()=>{money(-(lit?15:12),"Container Yard");advance(lit?180:60);add("f",lit?30:18);add("h",20);if(lit)add("e",-12);return lit?"The DJ played Asake and the whole yard sang. You lost your voice and found your joy.":"Quiet afternoon. Good wings. You people-watched for an hour."}}
   ]}
+  if(isCA()&&type==="jobcentre") return [
+    {e:"🪪",n:F().ni?"Your SIN ✅":"Apply for your SIN",s:F().ni?(S.route==="student"||S.route==="care"?"Starts with a 9: temporary residents. Guard it.":"Guard it with your life."):"30 min. Bring your permit and passport. Issued same day.",ok:!F().ni&&isOpen("jobcentre"),why:F().ni?"Done":"Open 8:30 AM to 4 PM, weekdays",
+      run:()=>{advance(30);F().ni=true;jxp(10);return "Done in one visit. The officer said ‘Welcome to Canada!’ and meant it. You now have a SIN. Every employer will ask for it."}},
+    {e:"💼",n:"Ask about jobs",s:"20 min",ok:isOpen("jobcentre"),why:"Closed",run:()=>{advance(20);return pick(["‘Do you have Canadian experience?’ You do not. That’s why you’re here.","They suggest a warehouse in Scarborough or PSW work. Everyone suggests PSW work.","A free ‘newcomer employment workshop’: how to make your CV Canadian. Remove your photo and date of birth. Noted."])}}
+  ];
+  if(isCA()&&type==="gp") return [
+    {e:"🪪",n:F().gp?"Health card ✅":"Apply for your Ontario health card",s:F().gp?"Doctors, hospitals: covered":"30 min. Permit, passport, proof of address",ok:!F().gp&&isOpen("gp"),why:F().gp?"Done":"Open 8:30 AM to 5 PM, weekdays",
+      run:()=>{advance(30);F().gp=true;jxp(10);return "Photo taken (you blinked). The card arrives by mail. You’re covered for doctors and hospitals. Finding a family doctor is a different quest."}},
+    {e:"🚗",n:"Ask about a driver’s licence",s:"10 min",ok:isOpen("gp"),why:"Closed",run:()=>{advance(10);return "Ontario has stages: G1 (written test), G2 (road test), then G. Your Nigerian licence might help with the wait time. That’s a Chapter 3 problem."}}
+  ];
+  if(isCA()&&type==="clothes") return [
+    {e:"🧥",n:F().coat?"Winter gear ✅":"Full winter kit: coat, boots, gloves, toque",s:"£120. Minus 20 is not a vibe.",ok:!F().coat&&isOpen("clothes")&&S.m>=120,why:F().coat?"Done":closedWhy("clothes","Not enough money"),
+      run:()=>{money(-120,"Winter gear");advance(40);F().coat=true;add("f",8);return "Parka rated to minus 30, waterproof boots, thermal gloves and a toque. The cashier, from Ghana, said ‘You will thank me in January.’"}},
+    {e:"🧤",n:"Hand warmers and thermals",s:"£15, +6 Fun",ok:isOpen("clothes")&&S.m>=15,why:closedWhy("clothes","Not enough money"),run:()=>{money(-15,"Thermals");advance(10);add("f",6);return "Thermal leggings under jeans. Nigerian aunties call this ‘sense’."}}
+  ];
+  if(type==="warehouse") return [
+    ...(bookedFor("warehouse")?[{e:"📌",n:"Start your booked agency shift",s:`+${Math.round((S.booked.mult-1)*100)}% pay. Picking mini-game.`,ok:n.e>=20,why:"Too tired",run:()=>{startPick();return null}}]:[]),
+    {e:"📦",n:"Work a 4-hour warehouse shift",s:`Picking mini-game · about £${(wage("warehouse")*4).toFixed(0)}, −28 Energy`,ok:isOpen("warehouse")&&n.e>=25&&n.h>=10&&capLeft()>0,why:capLeft()<=0?"Work limit reached this week":n.e<25?"Too tired":"Eat something first",run:()=>{startPick();return null}},
+    {e:"🥤",n:"Break room",s:"20 min, +8 Fun",ok:true,run:()=>{advance(20);add("f",8);return pick(["Your supervisor is also Nigerian. He pretended not to know you on day one. Now he gives you the good scanner.","Someone microwaved fish. Again.","A guy from Ibadan has been here 6 years with an engineering degree. He says ‘Canadian experience is a scam.’ He’s smiling though."])}}
+  ];
   if(type==="jobcentre") return [
     {e:"🪪",n:F().ni?"Your NI number":F().niDue?"NI number on its way":"Apply for a National Insurance number",s:F().ni?"QQ 12 34 56 C. Guard it with your life.":F().niDue?"Arriving by post soon":"1 hour of forms. Arrives by post in 2 days.",ok:!F().ni&&!F().niDue&&isOpen("jobcentre"),why:F().ni||F().niDue?"Done":"Open 9 AM to 5 PM, weekdays",
       run:()=>{advance(60);add("e",-5);F().niDue=day()+2;return "Forms done. The adviser said ‘It’ll come by post.’ You will check the letterbox 40 times."}},
     {e:"💼",n:"Ask about jobs",s:"20 min",ok:isOpen("jobcentre"),why:"Closed",run:()=>{advance(20);return pick(["The adviser suggests care work. Everyone suggests care work.","‘Have you considered security? You need an SIA licence.’ You write it down.","They printed you a list of jobs. Half want UK experience. To get UK experience, you need a job."])}}
   ];
   if(type==="bank") return [
-    {e:"🏦",n:F().bank?"Your account is open":"Open a current account",s:F().bank?"Sort code memorised. Card in your wallet.":F().addr?"You have your proof-of-address letter":"30 min. Bring proof of address.",ok:!F().bank&&isOpen("bank"),why:F().bank?"Done":"Open 9 AM to 5 PM, weekdays",
+    ...(isCA()&&!F().bank?[{e:"🏦",n:"Open a newcomer bank account",s:"30 min. Passport and permit",ok:isOpen("bank"),why:"Open 9:30 AM to 5 PM, weekdays",run:()=>{advance(30);F().bank=true;add("f",10);jxp(10);return "Easy! A newcomer package with no monthly fee for a year, and a secured credit card to build your credit. Canada runs on credit."}}]:[]),
+    ...(isCA()?[]:[{e:"🏦",n:F().bank?"Your account is open":"Open a current account",s:F().bank?"Sort code memorised. Card in your wallet.":F().addr?"You have your proof-of-address letter":"30 min. Bring proof of address.",ok:!F().bank&&isOpen("bank"),why:F().bank?"Done":"Open 9 AM to 5 PM, weekdays",
       run:()=>{advance(30);if(!F().addr){F().bankTried=true;add("f",-6);return "‘Sorry, we need proof of address.’ You don’t have bills in your name yet. Ask your landlord for a letter (at home)."}
-        F().bank=true;add("f",10);return "Account opened! Your card arrives in 5 working days. You now say ‘sort code’ like a proper Londoner."}},
+        F().bank=true;add("f",10);return "Account opened! Your card arrives in 5 working days. You now say ‘sort code’ like a proper Londoner."}}]),
     {e:"💳",n:F().cbCard?"Credit builder card ✅":"Get a credit builder card",s:F().cbCard?"Pay it off every month. Your score grows weekly.":`Builds your credit score (now ${S.credit})`,ok:isOpen("bank")&&F().bank&&!F().cbCard,why:!F().bank?"Open an account first":F().cbCard?"You have one":"Closed",
       run:()=>{advance(20);F().cbCard=true;S.credit=Math.min(999,S.credit+40);return "£250 limit. The adviser said ‘Use it small, pay it off in full.’ You will not use it for Detty December. (You might.)"}}
   ];
@@ -1159,7 +1269,7 @@ function actionsFor(type){
     {e:"💸",n:"Send £20 to Mum",s:"+12 Fun, Mum is happy",ok:isOpen("transfer")&&S.m>=20,why:closedWhy("transfer","Not enough money"),run:()=>{money(-20,"Sent to Mum");S.sent+=20;S.sendCount++;resp(2);advance(10);add("f",12);addMsg("Mum",pick(["God bless you my child! I’ve told your aunties.","Received! You are my pride. Call me.","Thank you. I used it for church levy. God will repay you."]));return "Sent. Mum has already screenshotted it for the family group."}}
   ]}
   if(type==="riders") return [
-    {e:"🛵",n:"Start a delivery shift",s:"Ride the streets, beat the timer, earn tips",ok:isOpen("riders")&&n.e>=20&&capLeft()>0&&S.zone==="ryelane",
+    {e:"🛵",n:"Start a delivery shift",s:"Ride the streets, beat the timer, earn tips",ok:isOpen("riders")&&n.e>=20&&capLeft()>0,
       why:!isOpen("riders")?"Rider shifts run 8 AM to 11 PM":capLeft()<=0?"Visa limit: 5 shifts this week":"Too tired to ride",run:()=>{closeSheet();startDelivery();return null}},
     {e:"📋",n:"Rider stats",s:"Your rider level and best times",ok:true,run:()=>`${title("delivery")}. Deliveries done: ${S.best.deliveries||0}. Best shift: £${(S.best.shift||0).toFixed(2)}.`}
   ];
@@ -1241,15 +1351,15 @@ function finishShift(c,perf,lines,label){
   if(bk){S.booked=null;S.rep=Math.min(5,r2(S.rep+.1));lines+=` Booked agency shift: +${Math.round((bk.mult-1)*100)}% pay. Agency rating ⭐${S.rep.toFixed(1)}.`}
   if(wasDouble)lines+=" Double shift: overtime +10%. Your back has filed a complaint.";
   S.hoursToday+=4;
-  advance(240);add("e",c==="care"||c==="nurse"?-30:-25);add("h",-15);add("y",-10);S.weekShifts++;money(pay,label);const promo=gainXP(c,1);
+  advance(240);add("e",c==="care"||c==="nurse"||c==="warehouse"?-30:-25);add("h",-15);add("y",-10);S.weekShifts++;money(pay,label);const promo=gainXP(c,1);
   const grade=perf>=.9?"⭐ Excellent shift":perf>=.6?"👍 Good shift":perf>=.3?"😐 Okay shift":"😬 Rough shift";
-  openSheet(`<h2>${grade}</h2><p class="sub">${CAREERS[c].name}, 4 hours</p>
+  openSheet(`<h2>${grade}</h2><p class="sub">${CR(c).name}, 4 hours</p>
     <div class="result">${lines}<br><br><b>You earned £${pay.toFixed(2)}.</b>${smelly?" Pay docked 20%: your manager says you ‘smell like hard work’. Shower.":""}${promo?`<br>🎉 Promoted to <b>${title(c)}</b>!`:""}</div>
     <button class="close" id="psl">🧾 Share my payslip</button>
     ${!wasDouble&&S.chapter>=2&&c!=="tech"&&S.n.e>=25&&capLeft()>0?`<button class="close" id="dbl">💪 Pack another shift (double, +10%)</button>`:""}
     <button class="primary" id="ok" style="margin-top:8px">Done</button>`);$("ok").onclick=closeSheet;updateHUD();save();
-  const db=$("dbl");if(db)db.onclick=()=>{MG.double=true;c==="care"?startBells():c==="nurse"?startBells(true):c==="security"?startCCTV():startTill()};
-  $("psl").onclick=()=>showCard(makeCard("payslip",{employer:c==="care"?(S.visa&&S.visa.sponsor&&S.route==="care"?S.visa.sponsor:"Sunrise Care Home"):CAREERS[c].name,player:S.name,title:title(c),lines:[["Hours","4"],["Rate",`£${wage(c).toFixed(2)}/hr`],["Grade",grade.replace(/^\S+\s/,"")]],total:`£${pay.toFixed(2)}`}),`Just finished a shift as ${title(c)} in Japa Life. £${pay.toFixed(2)} 💷`);
+  const db=$("dbl");if(db)db.onclick=()=>{MG.double=true;c==="care"?startBells():c==="nurse"?startBells(true):c==="security"?startCCTV():c==="warehouse"?startPick():startTill()};
+  $("psl").onclick=()=>showCard(makeCard("payslip",{employer:c==="care"?(S.visa&&S.visa.sponsor&&S.route==="care"?S.visa.sponsor:CR("care").name):CR(c).name,player:S.name,title:title(c),lines:[["Hours","4"],["Rate",`£${wage(c).toFixed(2)}/hr`],["Grade",grade.replace(/^\S+\s/,"")]],total:`£${pay.toFixed(2)}`}),`Just finished a shift as ${title(c)} in Japa Life. £${pay.toFixed(2)} 💷`);
   if(S.n.e<=0){closeSheet();collapse()}
   else if(Math.random()<.3)S.evq.push("auto");
 }
@@ -1360,6 +1470,19 @@ function examResult(passed,title,msg){track("exam",{k:title,result:passed?"pass"
 function exam(k){return S.exams[k]||(S.exams[k]={})}
 
 /* ================= Chapter 3: security & ward mini-games ================= */
+const BINS=["Phone cases","Kettles","Trainers","Dog food","Books","Toys","Hair dryers","Batteries","Mugs"];
+function startPick(){
+  const dbl=MG.double;mgStop();MG.double=dbl;MG.active=true;MG.label="Shift abandoned. No pay.";let t=30,done=0,wrong=0,order=[],idx=0;
+  const draw=()=>{openSheet(`<h2>📦 Picking</h2><p class="sub">Pick the order items in sequence. The scanner is watching your rate.</p>
+    <div class="row"><span class="timer" id="mgt">${t}s</span><span>✅ ${done} orders &nbsp; ❌ ${wrong}</span></div>
+    <div class="result">Order: ${order.map((o,i)=>i<idx?`<s>${o}</s>`:i===idx?`<b>${o}</b>`:o).join(" → ")}</div>
+    <div class="grid3">${shuffle(BINS.slice()).map(b=>`<button class="tot" style="font-size:14px" data-b="${b}">${b}</button>`).join("")}</div><button class="close" id="cl">Leave shift</button>`);
+    $("cl").onclick=closeSheet;
+    $("sheetIn").querySelectorAll("[data-b]").forEach(b=>b.onclick=()=>{if(b.dataset.b===order[idx]){idx++;if(idx>=order.length){done++;next();return}}else{wrong++;toast("Wrong bin. The scanner beeped at you.")}draw()})};
+  const next=()=>{order=shuffle(BINS.slice()).slice(0,3);idx=0;draw()};next();
+  MG.timers.push(setInterval(()=>{t--;const el=$("mgt");if(el)el.textContent=t+"s";if(t<=0){const perf=(done-wrong*.3)/6;
+    finishShift("warehouse",perf,`Orders picked: ${done}. Mis-picks: ${wrong}. `+pick(["Your feet walked 14 km today. Your Fitbit is concerned.","The rate board says you’re in the top 10. You don’t get a bonus. You get respect.","A forklift reversed past you beeping like a danfo conductor."]),"Shift at Northline Fulfilment")}},1000));
+}
 function startCCTV(){
   const dbl=MG.double;mgStop();MG.double=dbl;MG.active=true;let t=30,caught=0,missed=0,falseA=0;const live={};
   openSheet(`<h2>🛡️ CCTV watch</h2><p class="sub">Night shift, Westminster House. Tap a camera when there’s a person where there shouldn’t be. Foxes don’t count.</p>
@@ -1525,6 +1648,23 @@ function ch4NewDay(d){
   if(S.preg&&d>=S.preg.due){S.preg=null;S.evq.push("baby")}
   if(S.kids&&S.kids.length&&d%7===0&&!S.parents){money(-110*S.kids.length,"Nursery fees");if(Math.random()<.4)addMsg("Nursery",pick(["Your child bit someone today. They were provoked.","Your child said ‘innit’ today. We thought you should know.","Your child refused the fish fingers and asked for ‘rice and stew’."]))}
 }
+function caEvents(){LE.push(
+ {id:"canexp",cond:()=>isCA(),from:"Recruiter",av:"📋",t:()=>"Great CV! Very impressive. Just one question: do you have Canadian experience?",c:[
+  ["‘How do I get it if nobody hires me?’",{f:-5},"‘That’s a great question!’ She did not answer it. She wished you luck."],
+  ["Take the warehouse job for now",{f:2,rs:2},"Survival job, but it’s Canadian experience. Every Nigerian engineer in Toronto has this story."]]},
+ {id:"crs_mum",cond:()=>isCA(),from:"Mum",av:"👩🏾‍🦱",t:()=>"What is your CRS score now? Mrs Okafor’s son got his ITA last week. He’s an accountant too.",c:[
+  ["Explain how Express Entry works",{f:-3},"Ten minutes later: ‘So when is the next draw?’ You don’t know. Nobody knows."],["‘We’re praying on it, Mum’",{f:4},"She’s adding it to the church prayer list. Your CRS is now a congregational matter."]]},
+ {id:"black_ice",cond:()=>isCA()&&S.temp!==undefined&&S.temp<0,from:"The sidewalk",av:"🧊",t:()=>"You stepped out of the bus and the pavement was pure black ice.",c:[
+  ["Walk like a penguin",{f:4},"Small steps, knees bent, arms out. A Canadian nodded at you with respect."],["Walk normally, you’re from Lagos",{e:-12,f:-6},"You went down like a sack of rice. A stranger asked if you’re okay. Your pride is not okay."]]},
+ {id:"double_double",cond:()=>isCA(),from:"Coworker Josh",av:"☕",t:()=>"Josh insists you try a ‘double double’ from the coffee shop. Two cream, two sugar.",c:[
+  ["Try it",{m:-2,f:6},"It’s basically Lipton tea energy, but coffee. You’re hooked."],["‘I drink Milo’",{f:4},"Josh has never heard of Milo. You now have a mission."]]},
+ {id:"sorry",cond:()=>isCA(),from:"A stranger",av:"🙇🏾",t:()=>"You stepped on a man’s foot on the subway. He said ‘sorry’ to YOU.",c:[
+  ["Say sorry back",{f:6},"You both said sorry four times. You are becoming Canadian."],["Say ‘no wahala’",{f:8},"He said ‘no wahala’ back. Toronto is a Lagos suburb now."]]},
+ {id:"banquet_gele",cond:()=>isCA()&&S.temp!==undefined&&S.temp<-5,from:"Aunty Folake",av:"💃🏾",t:()=>"Owambe in Brampton this Saturday! It will be minus 15. I’m wearing my open-toe heels and full gele. Are you coming?",c:[
+  ["Go, with boots in a bag",{f:12,rs:3},"You changed into your shoes in the car park like everybody else. The jollof was worth the frostbite risk."],["Stay home",{f:-4},"You saw it on WhatsApp status. Aunty’s gele survived the wind. Impressive."]]},
+ {id:"deep_freeze",forced:1,from:"Environment Canada",av:"🥶",t:()=>`Extreme cold warning: ${S.temp}°C with the wind chill. Frostbite can happen in minutes.`,c:[
+  ["Stay in and cook egusi",{f:6,h:20},"The whole building smells like home. Your neighbour knocked to ask what it was. You gave him a plate."],["Go to your shift anyway",{e:-10,m:20},"The bus didn’t come for 25 minutes. Your eyelashes froze. You got paid. You are built different."]]}
+);}
 function ch4Events(){LE.push(
  {id:"ilr_granted",forced:1,from:"UK Visas and Immigration",av:"🇬🇧",t:()=>"Congratulations. You have been granted Indefinite Leave to Remain in the United Kingdom.",c:[
   ["😭🙌🏾 Thank God!",{f:40},"",()=>{jxp(200);resp(15);addMsg("Mum","ILR?! No more visa wahala?! I’m doing thanksgiving in church on Sunday. Send money for the cake. A big cake.");return "No more visa renewals. No more health surcharge. No more checking the expiry date at 3 AM. You read the email eleven times. You screenshotted it. You’re settled."}]]},
@@ -1572,9 +1712,11 @@ function startDelivery(){
   toast("🛵 Shift started. Follow the yellow arrow!");newOrder();
 }
 function newOrder(){
-  const z=ZONES.ryelane;const px=player.position.x,pz=player.position.z;
-  const opts=PICKUPS.map(([n,s,i])=>({name:n,x:s*6.2,z:slotZ(z,i)})).filter(o=>Math.hypot(o.x-px,o.z-pz)>12);
-  const pu=pick(opts.length?opts:PICKUPS.map(([n,s,i])=>({name:n,x:s*6.2,z:slotZ(z,i)})));
+  const z=Z();const px=player.position.x,pz=player.position.z;
+  let all=z.id==="ryelane"?PICKUPS.map(([n,s,i])=>({name:n,x:s*6.2,z:slotZ(z,i)})):[];
+  if(!all.length){const n0=Math.round((2*z.L-12)/10)+1;for(const s of[-1,1])for(let i=0;i<n0;i++){const nm=(s<0?z.left:z.right)[i];const pl=activePlaces(z).find(p=>p.side===s&&p.slot===i);const name=pl&&["bukka","foodstore","suya","clothes","market","wmarket","work"].includes(pl.type)?pl.name:nm;if(name&&(!pl||name===pl.name))all.push({name,x:s*6.2,z:slotZ(z,i)})}}
+  const opts=all.filter(o=>Math.hypot(o.x-px,o.z-pz)>12);
+  const pu=pick(opts.length?opts:all);
   let dz;do{dz=-z.L+4+Math.random()*(2*z.L-8)}while(Math.abs(dz-pu.z)<25);
   const side=Math.random()<.5?-1:1;const drop={name:`Flat ${10+Math.floor(Math.random()*80)}`,x:side*6.2,z:dz};
   const dist=Math.hypot(pu.x-px,pu.z-pz)+Math.hypot(drop.x-pu.x,drop.z-pu.z);
@@ -1644,7 +1786,7 @@ function stamp(x,cx,cy,r,top,mid,bot,color){x.save();x.translate(cx,cy);x.rotate
 function makeCard(kind,d){track("card",{kind});
   if(kind==="lottery"){const{c,x}=cardBase("THE JAPA LOTTERY","I don’t choose how I land in London.");
     x.font="170px sans-serif";x.textAlign="center";x.fillText(d.em,540,440);
-    stamp(x,540,800,270,"UK ENTRY · "+dateStr(0).toUpperCase(),d.name.toUpperCase().slice(0,16),d.home.toUpperCase().slice(0,24),"#E5487A");
+    stamp(x,540,800,270,(draft.country==="ca"||isCA()?"CANADA ENTRY · ":"UK ENTRY · ")+dateStr(0).toUpperCase(),d.name.toUpperCase().slice(0,16),d.home.toUpperCase().slice(0,24),"#E5487A");
     x.textAlign="left";x.fillStyle="#FFFFFF";x.font='700 40px Figtree, sans-serif';x.fillText(`${d.player} got ${d.name}. What did you get?`,70,1170);return c}
   if(kind==="payslip"){const{c,x}=cardBase(d.employer.toUpperCase(),"PAYSLIP");
     x.fillStyle="#FFFFFF";x.fillRect(70,280,940,820);x.fillStyle="#1C1B3A";x.font='700 38px Figtree, sans-serif';
@@ -1726,7 +1868,27 @@ const CHAPTERS=[
   {id:"respect80",n:"Become a respected Aunty/Uncle (80 Respect)",hint:"Church, owambes, helping people, family milestones.",place:"church",done:()=>S.respect>=80}]},
  {n:"Legacy",d:"Coming soon: citizenship, your house in Lagos, a chieftaincy title, your own shop on Rye Lane, and mentoring new arrivals.",soon:true,goals:[]}
 ];
-function curChapter(){return CHAPTERS[Math.min(S.chapter,CHAPTERS.length)-1]}
+const CHAPTERS_CA=[
+ {n:"Just Landed",d:"Your first weeks in Canada. Paperwork, a job, and getting ready for winter.",goals:[
+  {id:"ni",n:"Get your SIN (Social Insurance Number)",hint:"Service Canada Centre. You need it to work.",place:"jobcentre",done:()=>F().ni},
+  {id:"bank",n:"Open a Canadian bank account",hint:"Maple Bank. Newcomer packages are common.",place:"bank",done:()=>F().bank},
+  {id:"gp",n:"Get your provincial health card",hint:"ServiceOntario. Bring your permit and proof of address.",place:"gp",done:()=>F().gp},
+  {id:"wage",n:"Earn your first Canadian paycheque",hint:"Grocery, warehouse, PSW shifts or deliveries.",place:"work",done:()=>F().firstWage},
+  {id:"church",n:"Find your church",hint:"Every area has a Nigerian church. Usually in a plaza.",place:"church",done:()=>F().church},
+  {id:"coat",n:"Get proper winter gear",hint:"Winter Gear Outlet. Coat, boots, gloves, toque. Not optional.",place:"clothes",done:()=>F().coat},
+  {id:"rent",n:"Pay your first rent",hint:"Taken every Saturday in this game. Make sure the money is there.",place:"home",done:()=>F().firstRent},
+  {id:"home",n:"Send money home for the first time",hint:"The money transfer shop.",place:"transfer",done:()=>S.sendCount>=1}]},
+ {n:"Settling In",d:"Two jobs, your first Canadian winter, the ajo, and an owambe in a banquet hall.",unlock:"📲 ShiftNow alerts and 💪 double shifts are unlocked. ❄️ Winter is coming.",goals:[
+  {id:"twojobs",n:"Work in two different jobs",hint:"Grocery, warehouse, PSW or deliveries. ‘Canadian experience’ starts here.",place:"work",done:()=>Object.values(S.xp).filter(v=>v>=1).length>=2},
+  {id:"winter",n:"Survive your first Canadian winter",hint:"Make it to 1 January with your winter gear on.",place:"clothes",done:()=>F().winterDone},
+  {id:"ajojoin",n:"Join the church ajo",hint:"Ask at your church. Five members, weekly contributions.",place:"church",done:()=>!!S.ajo||F().ajoPaid},
+  {id:"owambe",n:"Attend an owambe in a banquet hall",hint:"Royal Banquet Hall, Brampton. Saturdays from 6 PM.",place:"hall",done:()=>F().owambe},
+  {id:"promo",n:"Get your first promotion",hint:"Keep working shifts.",place:"work",done:()=>Object.keys(CAREERS).some(c=>lvl(c)>=1)},
+  {id:"respect",n:"Earn 25 Respect in the community",hint:"Church, owambes, helping people.",place:"church",done:()=>S.respect>=25},
+  {id:"sends",n:"Send money home 3 times",hint:"Black tax doesn’t care about the exchange rate.",place:"transfer",done:()=>S.sendCount>=3}]},
+ {n:"The Grind to PR",d:"Coming soon: IELTS, credential evaluation, your CRS score, Express Entry draws, PR, and the G licence.",soon:true,goals:[]}
+];
+function curChapter(){const L0=isCA()?CHAPTERS_CA:CHAPTERS;return L0[Math.min(S.chapter,L0.length)-1]}
 let goalT=0;
 function goalTick(dt){
   goalT-=dt;if(goalT>0||!S)return;goalT=1;
@@ -1786,9 +1948,9 @@ const LE=[
   ["Lend him £3,000",{m:-3000,f:-5},"It has been three months. He is in Manchester. He has not paid. He posts gym selfies."],
   ["Say no, kindly",{f:2},"He says you’ve changed. Your bank balance is why."]]},
  /* papers and CoS */
- {id:"scam_agent",once:1,from:"‘Dr’ Badmus, Relocation Agent",av:"🕴🏾",cond:()=>S.route!=="born",t:()=>"I have a 100% guaranteed Certificate of Sponsorship for your brother back home. Care home job. Just £10,000. Very legit. Many people have travelled.",c:[
+ {id:"scam_agent",once:1,from:"‘Dr’ Badmus, Relocation Agent",av:"🕴🏾",cond:()=>S.route!=="born",t:()=>isCA()?"I have a 100% guaranteed LMIA job offer for your brother. PSW job in Alberta. Just £10,000. Very legit. Many people have travelled.":"I have a 100% guaranteed Certificate of Sponsorship for your brother back home. Care home job. Just £10,000. Very legit. Many people have travelled.",c:[
   ["Pay a £2,000 deposit",{m:-2000,f:-5},"He sends a PDF. The logo looks… photocopied.",()=>{S.agentDue=day()+3}],
-  ["Refuse. Charging for a CoS is illegal",{f:8},"Correct. Real sponsors never charge for a Certificate of Sponsorship."],
+  ["Refuse. Selling jobs or sponsorship is illegal",{f:8},"Correct. Real employers never charge you for a job offer, an LMIA or a Certificate of Sponsorship. That’s fraud."],
   ["Report him to the Home Office",{f:12},"Reported. You feel like a superhero in a care uniform."]]},
  {id:"agent_gone",forced:1,from:"‘Dr’ Badmus, Relocation Agent",av:"🕴🏾",t:()=>"This account is no longer on WhatsApp.",c:[
   ["😭",{f:-15},"The deposit is gone, and your brother is still in Lagos. Now you warn everyone: never pay for a CoS."]]},
@@ -1799,11 +1961,11 @@ const LE=[
   ["Ask for instalments (£300 now)",{m:-300,f:-12},"She agreed. Filed. 21 more days. Keep applying.",()=>{S.visa.deadline=day()+21}]]},
  {id:"graduation",forced:1,from:"Your university",av:"🎓",t:()=>"Congratulations! You’ve graduated. Your Graduate visa lets you work full-time for 18 months.",c:[
   ["🎓 Celebrate!",{f:30},"Mum shared your graduation photo in nine WhatsApp groups. No more 20-hour limit!",()=>{S.visa={type:"Graduate visa",until:day()+548,sponsor:null}}]]},
- {id:"switch_care",once:1,from:"Friend Ronke",av:"👩🏾‍⚕️",cond:()=>S.visa&&S.visa.type==="Graduate visa",t:()=>"Our care home can sponsor you before the switching window closes in 2028. Shall I put your name forward?",c:[
+ {id:"switch_care",once:1,from:"Friend Ronke",av:"👩🏾‍⚕️",cond:()=>!isCA()&&S.visa&&S.visa.type==="Graduate visa",t:()=>"Our care home can sponsor you before the switching window closes in 2028. Shall I put your name forward?",c:[
   ["Yes, sponsor me",{f:5},"Done. You’re now on a Health & Care Worker visa. Settlement is a 10-year road. 😭 But you’re in.",()=>{S.visa={type:"Health & Care Worker visa",until:day()+1095,sponsor:"Golden Years Care",revoked:false}}],
   ["No, I’ll find a graduate job",{f:2},"Bold. Your LinkedIn headline now says ‘Open to work’."]]},
- {id:"tech_threshold",once:1,from:"HR",av:"💼",cond:()=>S.route==="tech",t:()=>"Good news: your salary is above the new skilled worker threshold. Bad news: so is your rent.",c:[["Phew",{f:5},"You celebrate with Indomie. Cost of living is real."]]},
- {id:"born_cousin",from:"Cousin Tobi in Lagos",av:"🇳🇬",cond:()=>S.route==="born",t:()=>"Since you’re British, abeg sponsor me. Just sign something small.",c:[
+ {id:"tech_threshold",once:1,from:"HR",av:"💼",cond:()=>S.route==="tech"&&!isCA(),t:()=>"Good news: your salary is above the new skilled worker threshold. Bad news: so is your rent.",c:[["Phew",{f:5},"You celebrate with Indomie. Cost of living is real."]]},
+ {id:"born_cousin",from:"Cousin Tobi in Lagos",av:"🇳🇬",cond:()=>S.route==="born",t:()=>`Since you’re ${isCA()?"Canadian":"British"}, abeg sponsor me. Just sign something small.`,c:[
   ["Explain that’s not how it works",{f:3},"He says ‘You people are wicked.’ Then asks for data money."],["Send him the gov.uk page",{f:5},"He has left the chat."]]},
  /* partner */
  {id:"never_home",from:()=>nm(),av:"❤️",cond:()=>S.partner&&(S.weekShifts>=4||S.hoursToday>=8),t:()=>"You love that job more than me. When last did we sit down together?",c:[
@@ -1822,7 +1984,7 @@ const LE=[
   ["Book counselling with the pastor",{f:-5},"Two hours, many Bible verses, and real honest talk. It helped.",()=>{S.partner.love=40}],
   ["Couples therapy (£60)",{m:-60},"The therapist made you both say one nice thing. You both cried a little. Progress.",()=>{S.partner.love=50}],
   ["Take some time apart",{f:-15},"You agree to give each other space for a while.",()=>{S.partner.love=25}]]},
- {id:"matchmaker",from:"Aunty Bisi",av:"💍",cond:()=>!S.partner,t:()=>"There’s a nice person in our church. Works at the NHS. Has ILR. Shall I give them your number?",c:[
+ {id:"matchmaker",from:"Aunty Bisi",av:"💍",cond:()=>!S.partner,t:()=>isCA()?"There’s a nice person in our church. A nurse at the hospital. Has PR. Shall I give them your number?":"There’s a nice person in our church. Works at the NHS. Has ILR. Shall I give them your number?",c:[
   ["Yes, why not",{f:6},"",()=>{if(Math.random()<.45){const w=Math.random()<.5;S.partner={name:pick(w?WIVES:HUSBANDS),kind:"partner",where:"uk",love:60};return `You went for jollof with ${S.partner.name}. You laughed for three hours. You’re officially seeing each other! ❤️ Aunty Bisi is taking credit.`}return "You met for suya. They talked about their ex for 40 minutes. No."}],
   ["No, I’m focusing on my papers",{f:2},"‘Papers won’t keep you warm,’ she says."]]},
  {id:"mum_marry",from:"Mum",av:"👩🏾‍🦱",cond:()=>!S.partner,t:()=>"Your mates are carrying babies. You are carrying shifts.",c:[
@@ -1836,14 +1998,14 @@ const LE=[
   ["Correct them",{f:5,e:-3},"Fourth attempt: close enough."],["Let it go",{f:-8},"You are now ‘Toby’ at work. Your name is Oluwatobiloba."]]},
  {id:"ijgb",from:"Friend Seyi",av:"🛬",t:()=>"Seyi just got back from two weeks in Lagos and now has a brand new accent.",c:[
   ["Call them IJGB",{f:10},"‘I Just Got Back.’ They pretend to be offended. They are proud."],["Ask how Lagos was",{f:5},"‘Everything was expensive but I didn’t feel it, you know?’ You did not know."]]},
- {id:"crayfish",from:"Uncle Emeka",av:"🦐",t:()=>"I’ve landed at Heathrow! Your mum sent crayfish, stockfish, and a whole bag of garri. Come and pick it up.",c:[
+ {id:"crayfish",from:"Uncle Emeka",av:"🦐",t:()=>(isCA()?"I’ve landed at Pearson!":"I’ve landed at Heathrow!")+" Your mum sent crayfish, stockfish, and a whole bag of garri. Come and pick it up.",c:[
   ["Go and collect it",{f:15,e:-10},"The flat smells like Balogun market. Your neighbours have questions.",()=>{S.groceries+=6}],["Ask him to post it",{f:-3},"‘Post? Do you know how much this cost?’"]]},
  {id:"cover_shift",from:"Coworker Blessing",av:"🙏🏾",cond:()=>S.route!=="tech",t:()=>"Abeg can you cover my shift tonight? My mum is not feeling well and I need to call home.",c:[
   ["Cover it (£46)",{m:46,e:-18,f:-3,rs:5},"You did a 4-hour shift on top of your day. She owes you one.",()=>{S.hoursToday+=4}],["Say you can’t",{f:-2},"She understands. She asks someone else."]]},
- {id:"heating",from:"British Gas",av:"🔥",t:()=>"Your energy bill is ready. It’s more than your rent in Lagos was for a year.",c:[
+ {id:"heating",cond:()=>!isCA(),from:"British Gas",av:"🔥",t:()=>"Your energy bill is ready. It’s more than your rent in Lagos was for a year.",c:[
   ["Pay it and wear three jumpers",{m:-40,f:-5},"You can see your breath indoors. Very British experience."],["Pay it and keep the heating on",{m:-70,f:5},"Warm. Poor. Warm."]]}
 ];
-ch4Events();
+ch4Events();caEvents();
 function evById(id){return LE.find(e=>e.id===id)}
 function pickAuto(){const ok=LE.filter(e=>!e.forced&&(!e.once||!S.seen[e.id])&&(!e.cond||e.cond()));return ok.length?pick(ok):null}
 function fxChips(fx){return Object.entries(fx).filter(([k,v])=>k!=="sent"&&v).map(([k,v])=>{const L={m:"",f:"Fun",e:"Energy",h:"Hunger",love:"Love",rep:"Rating",rs:"Respect"}[k];
@@ -1868,13 +2030,13 @@ function lifeNewDay(d){
   if(S.partner){loveAdd(-(S.partner.where==="home"?3:2)-(S.weekShifts>=5?3:0));if(S.partner.love<=0&&!S.evq.includes("crisis"))S.evq.push("crisis")}
   const v=S.visa;
   if(v){if(v.type==="Student visa"&&d>=v.until&&!S.evq.includes("graduation"))S.evq.push("graduation");
-    if(S.route==="care"&&v.sponsor==="Sunrise Care Home"&&!v.revoked&&!S.seen.licence_revoked&&d>=12&&Math.random()<.07)S.evq.push("licence_revoked");
+    if(!isCA()&&S.route==="care"&&v.sponsor==="Sunrise Care Home"&&!v.revoked&&!S.seen.licence_revoked&&d>=12&&Math.random()<.07)S.evq.push("licence_revoked");
     if(v.revoked&&v.deadline&&d>v.deadline&&!S.evq.includes("lawyer"))S.evq.push("lawyer")}
   if(S.agentDue&&d>=S.agentDue){S.agentDue=null;S.evq.push("agent_gone")}
   const o=dateOf(d);
   if(o.m==="Dec"&&o.day===19&&S.ticket)S.evq.push("detty");
   if(o.m==="Dec"&&o.day===20&&!S.ticket)addMsg("Mum","Everybody’s children are coming home for Christmas. I’ll just be here. Alone. It’s fine.");
-  if(o.m==="Dec"&&o.day===1)addMsg("Naija Travels","Detty December fares are climbing every day! Book now in Woolwich before it’s too late.");
+  if(o.m==="Dec"&&o.day===1)addMsg("Naija Travels",isCA()?"Detty December fares from Toronto are climbing every day! Book now in Brampton.":"Detty December fares are climbing every day! Book now in Woolwich before it’s too late.");
   if(Math.random()<.65&&S.evq.filter(x=>x==="auto").length<1)S.evq.push("auto");
 }
 LE.push(
@@ -1893,7 +2055,7 @@ function trip(kind){
   let extra="";if(S.partner&&S.partner.where==="home"){S.partner.love=100;extra=` You finally saw ${S.partner.name} after months. Nobody talked about plates.`}
   const home=homePlace();enterZone(hz(),{x:home.x,z:home.z+1.5},Math.PI);
   addMsg("Mum","The house is so quiet since you left. Come back next year. Bring a spouse.");
-  return kind==="detty"?`Two weeks of concerts, beach clubs, owambes and traffic. You sprayed naira like a governor. Your cousins now call you ‘Sir’. You’re back in Peckham, broke but glowing. Official IJGB.${extra}`
+  return kind==="detty"?`${isCA()?"From minus 15 in Toronto to 32 degrees in Lagos. ":""}Two weeks of concerts, beach clubs, owambes and traffic. You sprayed naira like a governor. Your cousins now call you ‘Sir’. You’re back in ${AREAS[hz()].area}, broke but glowing. Official IJGB.${extra}`
     :`Christmas in the village: rice, goat meat, 40 relatives, and a church service that lasted the whole of 25 December. Grandma said you’ve gotten fat. Best two weeks of your year.${extra}`;
 }
 /* agency shift alerts */
@@ -1905,10 +2067,10 @@ function alertTick(dt){
   if(alertLive)return;
   alertT-=dt;if(alertT>0)return;alertT=60+Math.random()*60+(5-S.rep)*25;
   const h=hour();if(h<7||h>21||S.booked||S.route==="tech"||capLeft()<=0)return;
-  const opts=["retail"];if(!(S.route==="care"&&S.visa&&S.visa.revoked))opts.push("care");
+  const opts=["retail"];if(!(S.route==="care"&&S.visa&&S.visa.revoked))opts.push("care");if(isCA())opts.push("warehouse");
   const c=pick(opts),start=Math.min(22,Math.max(Math.ceil(h+1.5),h>=17?20:0));if(start>22)return;
   const night=start>=20,mult=night?1.5:r2(1.2+Math.random()*.2);
-  alertLive={c,start,mult,d:day()};const where=c==="care"?"Sunrise Care Home, Woolwich":"Kwik Cash & Carry, Rye Lane";
+  alertLive={c,start,mult,d:day()};const where=isCA()?{care:"Maple Grove LTC, Scarborough",retail:"Maple Grocery, Brampton",warehouse:"Northline Fulfilment, Scarborough"}[c]:c==="care"?"Sunrise Care Home, Woolwich":"Kwik Cash & Carry, Rye Lane";
   const el=$("alert");el.style.display="flex";
   el.innerHTML=`<span style="font-size:24px">📲</span><span class="m">ShiftNow: ${night?"Night":"Extra"} shift at ${where}, ${timeStr(start*60)}. +${Math.round((mult-1)*100)}% pay!<small id="alt">First come, first served · 20s</small></span><button class="grab" id="agrab">Grab</button><button id="aclose">✕</button>`;
   let left=20;const iv=setInterval(()=>{left--;const t=$("alt");if(t)t.textContent=`First come, first served · ${left}s`;if(left<=0)killAlert("Someone else grabbed it.")},1000);alertLive.iv=iv;
@@ -1934,15 +2096,15 @@ function openPhone(){
     ${S.tx.length?S.tx.map(t=>`<div class="row"><span>${t.label}</span><span style="color:${t.amt<0?"var(--bad)":"var(--green)"}">${t.amt<0?"−":"+"}£${Math.abs(t.amt).toFixed(2)}</span></div>`).join(""):`<p class="sub">No transactions yet.</p>`}`}
   if(phoneTab==="work"){const r=R();
     body=`<p class="sub">${r.em} ${r.name}. ${r.perk}${r.cap<99?` Shifts this week: ${S.weekShifts} of ${r.cap}.`:""}</p>`+
-    Object.entries(CAREERS).filter(([c])=>c!=="tech"||S.route==="tech").map(([c,k])=>{const i=lvl(c),next=XPL[i+1],x=S.xp[c]||0;
+    Object.keys(CAREERS).filter(c=>(c!=="tech"||S.route==="tech")&&careerHere(c)).map(c=>[c,CR(c)]).map(([c,k])=>{const i=lvl(c),next=XPL[i+1],x=S.xp[c]||0;
       if(!unlocked(c))return `<div class="msg" style="opacity:.6"><small>${k.name}, ${k.where}</small><b>🔒 ${k.titles[0]}</b><br><small>${k.req==="sia"?"Needs an SIA licence (Test Centre, Central London)":"Needs NMC registration: CBT and OSCE (Test Centre)"}</small></div>`;
       return `<div class="msg"><small>${k.name}, ${k.where}</small><b>${k.titles[i]}</b>${c==="delivery"?" · paid per delivery":` · £${wage(c).toFixed(2)}/hour`}
       <div style="height:6px;border-radius:3px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${next?Math.min(100,(x-XPL[i])/(next-XPL[i])*100):100}%;background:#0E7A4B"></i></div>
       <small style="margin-top:4px">${next?`Next: ${k.titles[i+1]}`:"Top of the ladder 👑"}</small></div>`}).join("")}
   if(phoneTab==="biz")body=bizTab();
-  if(phoneTab==="papers"){const v=S.visa||{type:"Unknown"};const inUK=day()+(S.skip||0);const settle=S.route==="born"?null:3650;
+  if(phoneTab==="papers"){const v=S.visa||{type:"Unknown"};const inUK=day()+(S.skip||0);const settle=S.route==="born"||isCA()?null:3650;
     body=`<div class="msg"><small>Immigration status</small><b>${v.type}</b>${v.sponsor?`<br>Sponsor: ${v.revoked?"⚠️ none, licence revoked":v.sponsor}`:""}${v.until?`<br>Expires: ${dateStr(v.until)}${Math.floor(v.until/365)?` (year ${Math.floor((START_DOY+v.until)/365)+1})`:""}`:""}${v.revoked?`<br>⏳ Find a new sponsor by ${dateStr(v.deadline)} (CareLink, Woolwich)`:""}</div>
-    ${settle?`<div class="msg"><small>Settlement (ILR)</small><b>Day ${inUK} of ${settle.toLocaleString()} 😭</b><div style="height:8px;border-radius:4px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(1,inUK/settle*100)}%;background:#0E7A4B"></i></div><small style="margin-top:4px">The new 10-year route. Only ${settle-inUK} days to go.</small></div>`:`<div class="msg"><small>Status</small><b>British 🇬🇧</b><br>Your cousins keep asking you to ‘sponsor’ them.</div>`}
+    ${settle?`<div class="msg"><small>Settlement (ILR)</small><b>Day ${inUK} of ${settle.toLocaleString()} 😭</b><div style="height:8px;border-radius:4px;background:rgba(127,127,150,.3);margin-top:6px;overflow:hidden"><i style="display:block;height:100%;width:${Math.max(1,inUK/settle*100)}%;background:#0E7A4B"></i></div><small style="margin-top:4px">The new 10-year route. Only ${settle-inUK} days to go.</small></div>`:isCA()?`<div class="msg"><small>Road to settlement</small><b>${S.route==="born"?"Canadian 🇨🇦":S.route==="tech"?"Permanent Resident 🍁":"Express Entry: coming in Chapter 3"}</b><br>${S.route==="tech"?"Citizenship needs 1,095 days in Canada within 5 years.":S.route==="born"?"Your cousins keep asking you to ‘sponsor’ them.":"Canadian work experience, IELTS and credential evaluation all raise your CRS score."}</div>`:`<div class="msg"><small>Status</small><b>British 🇬🇧</b><br>Your cousins keep asking you to ‘sponsor’ them.</div>`}
     <div class="msg"><small>Family</small><b>${S.partner?`${S.partner.name} (${S.partner.kind})`:"Single"}</b>${S.partner?`<br>${S.partner.where==="home"?"In Nigeria. Dependants rules mean they stayed behind for now.":"Here in London with you."}`:""}</div>
     <div class="msg"><small>ShiftNow agency rating</small><b>⭐ ${S.rep.toFixed(1)}</b>${S.booked?`<br>📌 Booked: ${CAREERS[S.booked.c].name}, ${timeStr(S.booked.start*60)} today (+${Math.round((S.booked.mult-1)*100)}%)`:"<br>Watch for shift alerts. Grab them fast."}</div>
     ${ilrBox()}${familyBox()}${papersBox()}<div class="msg"><small>Credit score</small><b>${S.credit} / 999</b><br>${F().roll?"✅ On the electoral roll":`<button class="close" id="vote" style="margin-top:6px">🗳️ Register to vote (electoral roll)</button><small style="margin-top:4px">Commonwealth citizens with permission to stay can register in the UK. It helps your credit score.</small>`}</div>
@@ -1963,8 +2125,8 @@ function openPhone(){
       ${spots().map(p=>`<g data-go="${p.id}" style="cursor:pointer"><circle cx="${sx(p.x)}" cy="${sz(p.z)}" r="12" fill="${p.kind==="exit"?"#FFFFFF":"#F4C430"}" stroke="#1C1B3A" stroke-width="2"/><text x="${sx(p.x)}" y="${sz(p.z)+5}" text-anchor="middle" font-size="13">${p.kind==="exit"?"→":p.emoji}</text>
         <text x="${p.x<0||p.kind==="exit"?sx(p.x)+16:sx(p.x)-16}" y="${sz(p.z)+4}" text-anchor="${p.x<0||p.kind==="exit"?"start":"end"}" font-size="11" font-weight="700" fill="#fff" paint-order="stroke" stroke="#1C1B3A" stroke-width="3">${p.kind==="exit"?p.name:p.short}</text></g>`).join("")}
       <circle cx="${sx(px)}" cy="${sz(pz)}" r="7" fill="#E5487A" stroke="#fff" stroke-width="2.5"/></svg></div>
-    <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">London</h2>
-    ${[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])].map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
+    <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">${isCA()?"Toronto area":"London"}</h2>
+    ${(isCA()?[["queen","Queen Street West"],["brampton","Main Street"],["scarborough","Eglinton Ave East"]]:[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])]).map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
   if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
@@ -2001,12 +2163,12 @@ let lastNight=null;
 function lighting(){
   const h=S?hour():10;let t;
   if(h<5||h>=21)t=0;else if(h<7)t=(h-5)/2;else if(h<18)t=1;else t=1-(h-18)/3;
-  const wet=S&&S.weather==="rain",grey=S&&S.weather!=="sun";const dayC=wet?C_GREY:grey?tmpC.copy(C_DAY).lerp(C_GREY,.55):C_DAY;
+  const snowy=S&&S.weather==="snow",wet=S&&(S.weather==="rain"||snowy),grey=S&&S.weather!=="sun";const dayC=wet?C_GREY:grey?tmpC.copy(C_DAY).lerp(C_GREY,.55):C_DAY;
   if(t<.5)skyC.copy(C_NIGHT).lerp(C_DAWN,t*2);else skyC.copy(C_DAWN).lerp(dayC,(t-.5)*2);
   scene.background=skyC;scene.fog.color.copy(skyC);document.body.style.background="#"+skyC.getHexString();
   sun.intensity=(.15+.75*t)*(wet?.55:grey?.8:1);hemi.intensity=.35+.45*t;
   skyMats.forEach(m=>m.color.copy(m.userData.base).lerp(skyC,.55).multiplyScalar(.35+.65*Math.max(t,.15)));
-  setRain(!!wet);
+  setRain(!!wet,snowy);if(snowy)skyC.lerp(tmpC.set(0xE8ECF2),.35),scene.background=skyC,scene.fog.color.copy(skyC);
   const night=t<.45;if(night!==lastNight){lastNight=night;winMat.emissive.setHex(night?0x6a5420:0);lampMat.emissive.setHex(night?0xffd27a:0)}
 }
 
@@ -2157,29 +2319,39 @@ function showStart(){
     $("cont").onclick=()=>begin(saved);$("nw").onclick=()=>{draft.editing=true;showStart()};return;
   }
   st.innerHTML=`<div class="card"><div style="height:30px;background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' fill='%232D3192'/%3E%3Ccircle cx='14' cy='14' r='9' fill='%23F4C430'/%3E%3Ccircle cx='14' cy='14' r='5' fill='%23E5487A'/%3E%3C/svg%3E&quot;)"></div>
-    <div style="padding:16px 18px 18px"><h1>Japa Life</h1><p class="sub">Walk Peckham. Take the train to Woolwich. Work, eat suya, pay rent on Saturday, keep Mum happy.</p>
+    <div style="padding:16px 18px 18px"><h1>Japa Life</h1><p class="sub">Naija life abroad. London or Toronto: work, eat suya, pay rent on Saturday, keep Mum happy.</p>
     <div class="lbl">Nickname</div><input type="text" id="nm" maxlength="16" placeholder="e.g. Tobi" value="${esc(draft.name)}" autocomplete="off">
     <div class="lbl">Skin tone</div><div class="sw">${SKINS.map((c,i)=>`<button data-skin="${i}" class="${draft.skin===i?"on":""}" style="background:${c}" aria-label="Skin ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Outfit</div><div class="sw">${SHIRTS.map((c,i)=>`<button data-shirt="${i}" class="${draft.shirt===i?"on":""}" style="background:${c};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)" aria-label="Outfit ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Hair</div><div class="sw pills">${HAIRS.map((h,i)=>`<button data-hair="${i}" class="${draft.hair===i?"on":""}">${h}</button>`).join("")}</div>
-    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start (random life)</button><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
+    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start: random life in 🇬🇧</button><button class="close" id="qsca">⚡ Quick start: random life in 🇨🇦</button><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
   const nm=$("nm");nm.oninput=()=>draft.name=nm.value;
   st.querySelectorAll("[data-skin]").forEach(b=>b.onclick=()=>{draft.skin=+b.dataset.skin;showStart()});
   st.querySelectorAll("[data-shirt]").forEach(b=>b.onclick=()=>{draft.shirt=+b.dataset.shirt;showStart()});
   st.querySelectorAll("[data-hair]").forEach(b=>b.onclick=()=>{draft.hair=+b.dataset.hair;showStart()});
   $("go").onclick=()=>{const n=nm.value.trim();if(!n){toast("Pick a nickname first");nm.focus();return}
     if(load()&&!confirm("This replaces your current life. Continue?"))return;
-    draft.name=n;draft.migrate=null;showSetup(2)};
-  $("qs").onclick=()=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;
+    draft.name=n;draft.migrate=null;showSetup(1.5)};
+  $("qsca").onclick=()=>{draft.country="ca";$("qs").onclick(true)};
+  $("qs").onclick=(keep)=>{if(keep!==true)draft.country="uk";if(load()&&!confirm("This replaces your current life. Continue?"))return;
     draft.name=nm.value.trim()||pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo"]);draft.migrate=null;
     draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);
-    draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.home=pick(["ryelane","woolwich","barking","croydon","edmonton"]);showSetup(4)};
+    draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.country=draft.country||"uk";draft.home=draft.country==="ca"?pick(["queen","brampton","scarborough"]):pick(["ryelane","woolwich","barking","croydon","edmonton"]);showSetup(4)};
   $("ins").onclick=()=>{$("start").style.display="none";installApp();const t=setInterval(()=>{if(!uiOpen){clearInterval(t);$("start").style.display="flex"}},300)};
   previewPlayer();
 }
-function setupCard(inner){$("start").style.display="flex";$("start").innerHTML=`<div class="card" style="max-height:88vh;overflow:auto"><div style="height:30px;background:var(--indigo)"></div><div style="padding:16px 18px 18px">${inner}</div></div>`}
+function setupCard(inner){$("start").style.display="flex";if(draft.country==="ca")inner=String(inner).replace(/£(\d[\d,]*)/g,(m,n)=>"$"+Math.round(parseFloat(n.replace(/,/g,""))*FXR).toLocaleString());$("start").innerHTML=`<div class="card" style="max-height:88vh;overflow:auto"><div style="height:30px;background:var(--indigo)"></div><div style="padding:16px 18px 18px">${inner}</div></div>`}
 function showSetup(step){
   draft.traits=draft.traits||[];
+  if(step===1.5){
+    draft.country=draft.country||"uk";
+    setupCard(`<h2>Where are you japa-ing to?</h2><p class="sub">Each country has its own streets, papers, jobs and wahala.</p>
+      <button class="pickc ${draft.country==="uk"?"on":""}" data-c="uk"><b>🇬🇧 United Kingdom</b><span>London: Peckham, Woolwich, Barking, Croydon, Edmonton. CoS wahala, rent on Saturday, owambe in Woolwich.</span></button>
+      <button class="pickc ${draft.country==="ca"?"on":""}" data-c="ca"><b>🇨🇦 Canada</b><span>Toronto: Downtown, Brampton, Scarborough. Minus 20 winters, ‘Canadian experience’, and the CRS score.</span></button>
+      <button class="primary" id="nx">Next</button>`);
+    $("start").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{draft.country=b.dataset.c;draft.home=null;showSetup(1.5)});
+    $("nx").onclick=()=>showSetup(2);return;
+  }
   if(step===2){
     setupCard(`<h2>Pick two traits</h2><p class="sub">${draft.migrate?"New in Japa Life: traits, dreams and the japa lottery. ":""}They change how you play.</p>
       ${TRAITS.map(t=>`<button class="pickc ${draft.traits.includes(t.id)?"on":""}" data-t="${t.id}"><b>${t.n}</b><span>${t.d}</span></button>`).join("")}
@@ -2202,9 +2374,9 @@ function showSetup(step){
     $("start").querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{draft.rel=b.dataset.r;showSetup(35)});
     $("nx").onclick=()=>showSetup(36);$("bk").onclick=()=>showSetup(3);
   } else if(step===36){
-    draft.home=draft.home||"ryelane";
-    setupCard(`<h2>Where in London?</h2><p class="sub">Your home, church and local high street. You can travel everywhere by train.</p>
-      ${Object.keys(AREAS).filter(k=>ZONES[k]&&ZONES[k].places.some(p=>p.type==="home")).map(k=>`<button class="pickc ${draft.home===k?"on":""}" data-h="${k}"><b>${AREAS[k].area} <span style="font-weight:600;opacity:.7">${ZONES[k].code}</span></b><span>${AREAS[k].blurb} Rent ${AREAS[k].mult<1?Math.round((1-AREAS[k].mult)*100)+"% cheaper than Peckham":"is Peckham prices"}.</span></button>`).join("")}
+    draft.home=draft.home||(draft.country==="ca"?"brampton":"ryelane");
+    setupCard(`<h2>${draft.country==="ca"?"Where in Toronto?":"Where in London?"}</h2><p class="sub">Your home, church and local high street. You can travel everywhere by train.</p>
+      ${Object.keys(AREAS).filter(k=>ZONES[k]&&ZONES[k].places.some(p=>p.type==="home")&&(ZONES[k].country||"uk")===(draft.country||"uk")).map(k=>`<button class="pickc ${draft.home===k?"on":""}" data-h="${k}"><b>${AREAS[k].area} <span style="font-weight:600;opacity:.7">${ZONES[k].code}</span></b><span>${AREAS[k].blurb} Rent ${draft.country==="ca"?(AREAS[k].mult>1?"is downtown prices, ouch":Math.round((1-AREAS[k].mult/1.3)*100)+"% cheaper than downtown"):(AREAS[k].mult<1?Math.round((1-AREAS[k].mult)*100)+"% cheaper than Peckham":"is Peckham prices")}.</span></button>`).join("")}
       <button class="primary" id="nx">Take the japa lottery</button><button class="close" id="bk">Back</button>`);
     $("start").querySelectorAll("[data-h]").forEach(b=>b.onclick=()=>{draft.home=b.dataset.h;showSetup(36)});
     $("nx").onclick=()=>showSetup(4);$("bk").onclick=()=>showSetup(35);
@@ -2214,15 +2386,15 @@ function showSetup(step){
     setupCard(`<h2 style="text-align:center">The japa lottery</h2><p class="sub" style="text-align:center">You don’t choose how you land in London.</p>
       <div class="lot-e" id="le">✈️</div><div class="lot" id="lt">…</div><div id="after"></div>`);
     const keys=Object.keys(ROUTES);let n=0;const total=step===4.5||matchMedia("(prefers-reduced-motion: reduce)").matches?0:16;
-    const tick=()=>{if(n<total){const k=keys[n%keys.length];$("le").textContent=ROUTES[k].em;$("lt").textContent=ROUTES[k].name;n++;setTimeout(tick,60+n*9);return}
-      const R0=ROUTES[res];$("le").textContent=R0.em;$("lt").textContent=R0.name;
-      const pnote=draft.rel&&draft.rel!=="single"?((res==="student"||res==="care")?`<br>💔 Dependants rules: your ${draft.rel} stays in Nigeria for now. Long distance it is.`:`<br>❤️ Your ${draft.rel} came with you to London.`):"";
-      $("after").innerHTML=`<p style="text-align:center">${R0.blurb}</p><div class="result">${R0.perk}${pnote}<br>Home: ${R0.home}, ${AREAS[draft.home||"ryelane"].area}. ${R0.rent?`Rent £${R0.rent}/week.`:`£${R0.houseFee}/week to Mum.`}${draft.migrate?"":`<br>Starting cash: £${R0.cash}.`}</div>
+    const tick=()=>{if(n<total){const k=keys[n%keys.length];const rk=routeFor(draft.country||"uk",k);$("le").textContent=rk.em;$("lt").textContent=rk.name;n++;setTimeout(tick,60+n*9);return}
+      const R0=routeFor(draft.country||"uk",res);$("le").textContent=R0.em;$("lt").textContent=R0.name;
+      const pnote=draft.rel&&draft.rel!=="single"?((res==="student"||res==="care")?`<br>💔 Your ${draft.rel} stays in Nigeria for now. Long distance it is.`:`<br>❤️ Your ${draft.rel} came with you to ${draft.country==="ca"?"Canada":"London"}.`):"";
+      $("after").innerHTML=`<p style="text-align:center">${R0.blurb}</p><div class="result">${R0.perk}${pnote}<br>Home: ${R0.home}, ${AREAS[draft.home||(draft.country==="ca"?"brampton":"ryelane")].area}. ${R0.rent?`Rent £${R0.rent}/week.`:`£${R0.houseFee}/week to Mum.`}${draft.migrate?"":`<br>Starting cash: £${R0.cash}.`}</div>
         <button class="primary" id="go2">Land in London ✈️</button><button class="close" id="shl">Share my result</button>`;
       $("shl").onclick=()=>{const after=$("after"),keep=after.innerHTML;showCard(makeCard("lottery",{em:R0.em,name:R0.name,home:R0.home,player:draft.name||"I"}),`I took the japa lottery in Japa Life and got ${R0.em} ${R0.name} 😭 What did you get?`,after);$("cardBack").onclick=()=>{showSetup(4.5)}};
       $("go2").onclick=()=>{
-        if(draft.migrate){const s=draft.migrate;if(!s.homeZone)s.homeZone="ryelane";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
-        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||"ryelane");s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
+        if(draft.migrate){const s=draft.migrate;if(!s.homeZone)s.homeZone="ryelane";s.country=s.country||"uk";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
+        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||(draft.country==="ca"?"brampton":"ryelane"));s.country=draft.country||"uk";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0,s.country);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
     tick();
   }
 }
@@ -2235,7 +2407,7 @@ function begin(state,isNew){
   const zid=ZONES[S.zone]?S.zone:"ryelane";
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
-  if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} 🇬🇧</h2><p class="sub">You just landed. Here’s how life works.</p>
+  if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} ${isCA()?"🇨🇦":"🇬🇧"}</h2><p class="sub">You just landed. Here’s how life works.</p>
     <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);
 }
