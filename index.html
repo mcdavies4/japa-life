@@ -7,7 +7,7 @@
 <meta name="description" content="Naija life in London, free in your browser. Work shifts, pay rent on Saturday, attend owambes, keep Mum happy and chase your japa dream with real players on Rye Lane.">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Abroad Life: Japa Life edition">
-<meta property="og:description" content="Life after you japa. Pick where you're from and where you're going. Shifts, rent, owambe, Mum's calls. Play free with real people.">
+<meta property="og:description" content="Life after you japa. Owambe Night every evening at 8 PM UK time: dance, spray money, top the board. Play free with real people.">
 <meta property="og:image" content="https://japa-life.pages.dev/og.png">
 <meta property="og:url" content="https://japa-life.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -153,6 +153,13 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 .jcard{border-radius:12px;padding:10px 12px;margin:10px 0;background:rgba(45,49,146,.08)}.jcard.ok{background:rgba(14,122,75,.12)}
 .jcard b{display:block;font-size:15px}.jcard span{font-size:13px;opacity:.85}
 .jed{display:inline-block;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:rgba(244,196,48,.25);margin:-2px 0 6px}
+#party{position:fixed;right:14px;bottom:calc(env(safe-area-inset-bottom,0px) + 160px);z-index:2;display:none;flex-direction:column;gap:8px}
+#party button{width:64px;height:64px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;touch-action:manipulation;user-select:none;-webkit-user-select:none}
+#party button span{font-size:24px;line-height:1.1}#party button.on{background:var(--yellow);color:#1C1B3A}
+#pSpray{background:#0E7A4B!important;color:#fff!important}#pSpray:active{transform:scale(.94)}
+.chip.live{background:#E5487A!important;color:#fff;animation:livep 1.4s ease-in-out infinite}.chip.board{background:rgba(28,27,58,.82)!important;color:#fff}
+@keyframes livep{50%{box-shadow:0 0 0 6px rgba(229,72,122,.25)}}
+@media (prefers-reduced-motion: reduce){.chip.live{animation:none}}
 .pickc{display:block;width:100%;text-align:left;border:2px solid var(--glass-line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
 .pickc.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
 .pickc b{display:block;font-size:15px}.pickc span{font-size:13px;opacity:.8}
@@ -184,6 +191,7 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 </div>
 <div id="joy" class="glass" aria-label="Movement joystick"><div class="knob" id="knob"></div></div>
 <button id="act"></button>
+<div id="party"><button class="glass" id="pDance"><span>💃🏾</span>Dance</button><button class="glass" id="pSpray"><span>💸</span>Spray</button><button class="glass" id="pMusic"><span>🔊</span>Music</button></div>
 <nav id="nav" class="glass">
   <button id="nHome"><span class="i">🏠</span>Go home</button>
   <button id="nMap"><span class="i">🗺️</span>Map</button>
@@ -510,6 +518,9 @@ function trip2(a,b,mode){const A=(AREAS[a]||AREAS.ryelane).pos,B=(AREAS[b]||AREA
   if(mode==="uber"){const hr=S?hour():12,surge=(hr>=22||hr<5)?1.6:(hr>=17&&hr<19)?1.3:1;return{mins:Math.round(10+d*2.6),fare:Math.round((6+d*3.2)*surge*100)/100,d,surge}}
   return{mins:Math.round(15+d*4),fare:Math.round((2.8+d*.12)*100)/100,d}}
 function slotZ(zone,i){return -zone.L+6+i*10}
+ZONES.owambe={name:"Royal Owambe Hall",area:"Owambe Night",L:13,traffic:false,road:"#5A3E2B",npcs:0,code:"",hall:true,places:[],left:[],right:[],stalls:[],
+  exits:[{id:"exit-owambe",to:"woolwich",name:"Back outside",end:-1}]};
+AREAS.owambe=Object.assign({},AREAS.woolwich,{area:"Owambe Night",blurb:"The party. Every night at 8 PM UK time."});
 Object.entries(ZONES).forEach(([zid,z])=>{
   z.id=zid;
   z.places.forEach(p=>{p.kind="place";p.zone=zid;if(p.slot!==undefined){p.z=slotZ(z,p.slot);p.x=p.side*5.4}});
@@ -681,7 +692,7 @@ function signMat(text,bg,size){return own(new THREE.MeshBasicMaterial({map:textT
 function clearZone(){
   if(!root)return;
   root.traverse(o=>{if(o.geometry&&!o.geometry.userData.keep)o.geometry.dispose();if(o.material&&o.material.userData&&o.material.userData.own){if(o.material.map)o.material.map.dispose();o.material.dispose()}});
-  scene.remove(root);root=null;npcs.length=0;cars.length=0;net.players.clear();
+  scene.remove(root);root=null;npcs.length=0;cars.length=0;net.players.clear();notes.length=0;
 }
 /* ---------- London look: helpers ---------- */
 const zoneAnims=[];
@@ -693,7 +704,7 @@ function mergeStatic(group){
     const pos=new Float32Array(n*3),nor=new Float32Array(n*3),uv=new Float32Array(n*2);let o3=0,o2=0;
     parts.forEach(g=>{pos.set(g.attributes.position.array,o3);nor.set(g.attributes.normal.array,o3);if(g.attributes.uv)uv.set(g.attributes.uv.array,o2);o3+=g.attributes.position.count*3;o2+=g.attributes.position.count*2;g.dispose()});
     const geo=new THREE.BufferGeometry();geo.setAttribute("position",new THREE.BufferAttribute(pos,3));geo.setAttribute("normal",new THREE.BufferAttribute(nor,3));geo.setAttribute("uv",new THREE.BufferAttribute(uv,2));
-    const mm=new THREE.Mesh(geo,material);mm.castShadow=!(material.isMeshBasicMaterial||material.transparent);mm.receiveShadow=true;group.add(mm);
+    const mm=new THREE.Mesh(geo,material);mm.castShadow=!(material.isMeshBasicMaterial||material.transparent||material.userData.noCast);mm.receiveShadow=true;group.add(mm);
   });
   kill.forEach(o=>{o.parent.remove(o);o.geometry.dispose()});
 }
@@ -708,6 +719,153 @@ function skyMat(c){const m=new THREE.MeshBasicMaterial({color:c,fog:false});m.us
 function flatText(text,w,h,x,z,ry,color){const t=textTex(text,"rgba(0,0,0,0)",color||"#F2F2F2",512,128,72);const p=new THREE.Mesh(new THREE.PlaneGeometry(w,h),own(new THREE.MeshBasicMaterial({map:t,transparent:true})));
   p.rotation.x=-Math.PI/2;p.rotation.z=ry||0;p.position.set(x,.06,z);root.add(p);return p}
 
+/* ================= Owambe Night: one live party every night =================
+   Real time: 8:00-8:20 PM UK (Europe/London). Everyone online lands in the same hall (room "owambe-1").
+   Outside that window the hall is open for practice with NPC guests. Add ?owambe=live to the URL to test live mode. */
+const OWAMBE={hour:20,mins:20};
+const CELEBS=[["Mr & Mrs Adeyemi","Wedding reception"],["Aunty Ngozi","ILR party 🇬🇧"],["Baby Tolu","Naming ceremony"],["Chief Okafor","70th birthday"],["Dr Funmi","Graduation party"],["The Bello family","House warming"],["Uncle Segun","Retirement party"],["Kemi & Tunde","Engagement party"]];
+const ASOEBI=[["#C9A227","#6B2D8C"],["#0E7A4B","#F4C430"],["#C2304F","#F2EEE4"],["#2D3192","#E85A1A"],["#E5487A","#1C1B3A"],["#3BA3D9","#C9A227"],["#7A1F2B","#E8C46A"]];
+const BIGMEN=[["Chief Adewale",.3],["Aunty Bisi",.22],["Alhaji Musa",.15]];
+const MC_LINES=["Ehen! Where my people dey?!","Make una spray the celebrant! Money no dey finish!","DJ, abeg turn am up!","Who get money for this hall? Show yourself!","Aunties, the dance floor is calling you!","Na {top} dey lead! Who go challenge am?","Celebrant, dance! Your people are here!","Owambe no dey tire us!","If you no dey dance, why you come?","{me}, I see you o! Spray am!","Jollof is coming. Nobody should leave!","Japa people, una well done! Una dey try!"];
+const FORCE_LIVE=/[?&]owambe=live/.test(location.search);
+const P={on:false,dancing:false,mine:0,unlogged:0,board:[],t0:0,muted:false,mc:null,mcH:{bubble:null,bubbleT:0},mcT:4,liveN:0,liveAt:0,wasLive:false,lastBeat:-1,tiles:[],spk:[],cones:[],sprayT:null,funT:0};
+try{P.muted=localStorage.getItem("japa_music")==="off"}catch(e){}
+function ukParts(){try{const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe/London",hour:"numeric",minute:"numeric",hourCycle:"h23",year:"numeric",month:"numeric",day:"numeric"}).formatToParts(new Date());const g=k=>+f.find(p=>p.type===k).value;return{h:g("hour"),m:g("minute"),s:new Date().getSeconds(),d:g("day"),mo:g("month"),y:g("year")}}catch(e){const d=new Date();return{h:(d.getUTCHours()+1)%24,m:d.getUTCMinutes(),s:d.getUTCSeconds(),d:d.getUTCDate(),mo:d.getUTCMonth()+1,y:d.getUTCFullYear()}}}
+function partyPhase(){if(FORCE_LIVE)return{live:true,left:OWAMBE.mins,el:(Date.now()-(P.t0||Date.now()))/1000};const u=ukParts(),t=u.h*60+u.m-OWAMBE.hour*60+u.s/60;
+  if(t>=0&&t<OWAMBE.mins)return{live:true,left:OWAMBE.mins-t,el:t*60};if(t>=-15&&t<0)return{soon:true,in:Math.ceil(-t)};return{next:t<0?-t:24*60-t}}
+function nightIdx(){const u=ukParts();return Math.floor(Date.UTC(u.y,u.mo-1,u.d)/864e5)}
+function tonight(){const i=nightIdx();return{celeb:CELEBS[i%CELEBS.length],colors:ASOEBI[i%ASOEBI.length]}}
+function boardRows(){const ph=partyPhase(),el=ph.live?ph.el:(Date.now()-P.t0)/1000;
+  const rows=BIGMEN.map(([n,r])=>[n,Math.floor(el*r/5)*5]);
+  const real=ph.live&&net.id?P.board.slice():[];if(!real.some(r=>r[0]===S.name)&&P.mine>0)real.push([S.name,P.mine]);
+  return rows.concat(real.map(r=>[r[0]===S.name?r[0]+" (you)":r[0],r[1]])).filter(r=>r[1]>0).sort((a,b)=>b[1]-a[1]).slice(0,3)}
+function liveCount(ph){if(!STATS_URL||!(ph.live||ph.soon)||Date.now()-P.liveAt<45000)return;P.liveAt=Date.now();
+  fetch(STATS_URL+"/live").then(r=>r.json()).then(j=>{P.liveN=j.party|0}).catch(()=>{})}
+/* --- party music: a small afrobeats loop made with WebAudio (no files to download) --- */
+const AU={ctx:null,master:null,noise:null,next:0,step:0,timer:null,bpm:104};
+function noiseBuf(c){const b=c.createBuffer(1,c.sampleRate,c.sampleRate),d=b.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;return b}
+function env(g,t,a,peak,dec){g.gain.setValueAtTime(0.0001,t);g.gain.exponentialRampToValueAtTime(peak,t+a);g.gain.exponentialRampToValueAtTime(0.0001,t+a+dec)}
+function hit(t,type,f1,f2,peak,dec,filt){const c=AU.ctx,o=c.createOscillator(),g=c.createGain();o.type=type;o.frequency.setValueAtTime(f1,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dec*.6);
+  let n=o;if(filt){const f=c.createBiquadFilter();f.type="lowpass";f.frequency.value=filt;o.connect(f);n=f}n.connect(g);g.connect(AU.master);env(g,t,.004,peak,dec);o.start(t);o.stop(t+dec+.05)}
+function noiseHit(t,type,freq,peak,dec,q){const c=AU.ctx,s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain();s.buffer=AU.noise;f.type=type;f.frequency.value=freq;if(q)f.Q.value=q;s.connect(f);f.connect(g);g.connect(AU.master);env(g,t,.002,peak,dec);s.start(t,Math.random()*.5);s.stop(t+dec+.05)}
+const ROOTS=[110,87.31,130.81,98];// Am F C G (log drum, one octave up for phone speakers)
+function playStep(st,t){const bar=Math.floor(st/16)%4,s=st%16,r=ROOTS[bar];
+  if(s===0||s===8)hit(t,"sine",150,42,1,.32);else if(s===3||s===11)hit(t,"sine",130,42,.45,.22);
+  if(s===4||s===12){noiseHit(t,"bandpass",1500,.5,.12,1.2);noiseHit(t+.012,"bandpass",1700,.35,.1,1.2)}
+  if(s===6||s===10||s===14||s===2&&bar%2)hit(t,"triangle",1800,0,.12,.04);
+  noiseHit(t,"highpass",7500,s%2?.12:.05,.05);
+  const ld={0:1,3:1,6:1.189,10:1.498,13:1.335}[s];if(ld)hit(t,"sine",r*ld*1.5,r*ld,.42,.3,900);
+  if(s===14||s===6&&bar===3)[1,1.26,1.5].forEach(k=>hit(t,"sawtooth",r*4*k,0,.035,.16,1600))}
+function schedule(){const c=AU.ctx,spb=60/AU.bpm/4;while(AU.next<c.currentTime+.12){const sw=AU.step%2?spb*.12:0;playStep(AU.step%64,AU.next+sw);AU.next+=spb;AU.step++}}
+function musicStart(){if(P.muted||AU.timer)return;try{AU.ctx=AU.ctx||new(window.AudioContext||window.webkitAudioContext)()}catch(e){return}const c=AU.ctx;if(c.resume)c.resume();
+  if(!AU.master){AU.master=c.createGain();AU.master.gain.value=.45;const comp=c.createDynamicsCompressor();AU.master.connect(comp);comp.connect(c.destination);AU.noise=noiseBuf(c)}
+  AU.next=c.currentTime+.08;AU.step=0;AU.timer=setInterval(schedule,25)}
+function musicStop(){if(AU.timer){clearInterval(AU.timer);AU.timer=null}}
+addEventListener("visibilitychange",()=>{if(!P.on)return;if(document.hidden)musicStop();else musicStart()});
+function beatNow(){return (AU.timer&&AU.ctx?AU.ctx.currentTime:performance.now()/1000)*AU.bpm/60}
+/* --- dancing + money spray --- */
+function danceAnim(p,dt){const u=p.userData;u.phase+=dt*10.9;const s=Math.sin(u.phase),c=Math.cos(u.phase*.5);if(u.style===undefined)u.style=Math.floor(Math.random()*3);
+  if(u.style===0){u.armL.rotation.x=-2.5+s*.35;u.armR.rotation.x=-2.5-s*.35;u.armL.rotation.z=-.35;u.armR.rotation.z=.35}
+  else if(u.style===1){u.armL.rotation.x=-1.1+s*.8;u.armR.rotation.x=-1.1-s*.8;u.armL.rotation.z=u.armR.rotation.z=0}
+  else{u.armL.rotation.x=-.5;u.armL.rotation.z=-.5*Math.abs(s);u.armR.rotation.x=-2+s*.6;u.armR.rotation.z=.2}
+  u.legL.rotation.x=Math.max(0,s)*.45;u.legR.rotation.x=Math.max(0,-s)*.45;
+  const ny=Math.abs(s)*.1;p.position.y+=ny-(u.dy||0);u.dy=ny;p.rotation.z=c*.08;u.dz=1}
+const notes=[];let noteGeo=null;const NOTE_M=[];
+function noteMats(){if(NOTE_M.length)return NOTE_M;noteGeo=new THREE.PlaneGeometry(.34,.17);noteGeo.userData.keep=1;
+  [["#3E9150","#2B6B3A"],["#7B4FA0","#55357A"],["#E0873A","#B0631F"]].forEach(([a,b])=>{const[c,x]=cvs(64,32);x.fillStyle=a;x.fillRect(0,0,64,32);x.strokeStyle=b;x.lineWidth=3;x.strokeRect(2,2,60,28);x.fillStyle=b;x.beginPath();x.arc(32,16,8,0,7);x.fill();x.fillStyle="#fff";x.font="700 12px sans-serif";x.textAlign="center";x.fillText(isCA()?"$":"£",32,20);
+    NOTE_M.push(new THREE.MeshLambertMaterial({map:new THREE.CanvasTexture(c),side:THREE.DoubleSide}))});return NOTE_M}
+function sprayFx(mesh,count){if(!root)return;const M=noteMats();for(let i=0;i<count;i++){const m=new THREE.Mesh(noteGeo,M[Math.floor(Math.random()*M.length)]);
+  m.position.set(mesh.position.x,2.4,mesh.position.z);m.userData={v:new THREE.Vector3((Math.random()-.5)*3,2.2+Math.random()*2.2,(Math.random()-.5)*3),sp:new THREE.Vector3(Math.random()*8,Math.random()*8,0),g:false};root.add(m);notes.push(m)}
+  while(notes.length>240){const o=notes.shift();o.parent&&o.parent.remove(o)}}
+function notesTick(dt){for(const n of notes){const u=n.userData;if(u.g)continue;u.v.y-=dt*5;u.v.multiplyScalar(1-dt*1.6);n.position.addScaledVector(u.v,dt);n.rotation.x+=u.sp.x*dt;n.rotation.y+=u.sp.y*dt;
+  if(n.position.y<.24){n.position.y=.2+Math.random()*.03;n.rotation.set(-Math.PI/2,0,Math.random()*6);u.g=true}}}
+function spray(){if(!P.on)return;if(S.m<5){toast("You don broke 😭 Nothing left to spray");stopSpray();return}
+  const ph=partyPhase();S.m=Math.round((S.m-5)*100)/100;P.mine+=5;P.unlogged+=5;sprayFx(player,6);netSend({t:"fx",k:"spray",n:5,live:ph.live?1:0});
+  if(P.mine%50===0){add("f",4);resp(1)}if(P.mine===100)mcSay(`${S.name}, you don show us money! 🙌🏾`);P.funT=0;updateHUD()}
+function startSpray(e){if(e)e.preventDefault();spray();clearInterval(P.sprayT);P.sprayT=setInterval(spray,220)}
+function stopSpray(){clearInterval(P.sprayT);P.sprayT=null}
+function setDance(on){P.dancing=on;$("pDance").classList.toggle("on",on);netSend({t:"fx",k:on?"dance":"stop"});if(!on)animatePerson(player,0,0)}
+function mcSay(text){if(P.mc)bubble(P.mc,text,P.mcH)}
+/* --- the hall --- */
+function woodMat(){return texMat("wood",()=>{const[c,x]=cvs(256,256),r=seeded(11);for(let i=0;i<8;i++){x.fillStyle=shade("#8A5A36",.85+r()*.3);x.fillRect(0,i*32,256,31);x.fillStyle="rgba(0,0,0,.25)";x.fillRect(0,i*32+31,256,1);x.fillRect(Math.floor(r()*256),i*32,2,31)}noise(x,256,256,2500,.1,true,r);return rtex(c)})}
+function hallMat(c,noCast){const m=own(new THREE.MeshLambertMaterial({color:c}));if(noCast)m.userData.noCast=1;return m}
+function buildHall(zone,rnd){const T=tonight(),[c1,c2]=T.colors,L=zone.L;P.tiles=[];P.spk=[];P.cones=[];
+  tbx(16,.1,42,woodMat(),0,-.03,-5,3);
+  const wall=plasterMat("#F2E6CF").clone();wall.userData={noCast:1};
+  tbx(.4,7.5,42,wall,-7.7,3.75,-5);tbx(.4,7.5,42,wall,7.7,3.75,-5);tbx(16,7.5,.4,wall,0,3.75,16.2);tbx(16,7.5,.4,wall,0,3.75,-26.2);
+  box(16,.3,42,hallMat("#2A1E3A",1),0,7.6,-5);
+  const band=hallMat(c2,1);for(const q of[-1,1])box(.1,1.2,42,band,q*7.45,.6,-5);box(16,1.2,.1,band,0,.6,15.95);
+  const gold=hallMat("#C9A227",1);for(const q of[-1,1]){box(.12,.18,42,gold,q*7.44,1.25,-5);box(.12,.18,42,gold,q*7.44,6.9,-5)}
+  // fabric drapes on the walls and swoops under the ceiling
+  for(let z=-24;z<=14;z+=3)for(const q of[-1,1]){const d=box(.05,5.4,1.3,stripeMat(k3(z)?c1:"#F7F3EA",k3(z)?"#F7F3EA":c1,6,true),q*7.4,4.2,z)}
+  function k3(z){return Math.round(z/3)%2===0}
+  for(let z=-22;z<=12;z+=4){const sw=box(15,.05,1.4,stripeMat(c1,"#F7F3EA",8),0,7.2,z);sw.material.userData.noCast=1}
+  // dance floor: 4 colour groups that flash on the beat
+  const TC=["#E5487A","#F4C430","#3BA3D9","#0E7A4B"];for(let i=0;i<4;i++){const m=own(new THREE.MeshLambertMaterial({color:TC[i],emissive:new THREE.Color(TC[i]).multiplyScalar(.15)}));m.userData.base=new THREE.Color(TC[i]);P.tiles.push(m)}
+  for(let ix=-3;ix<=3;ix++)for(let iz=0;iz<9;iz++)box(.96,.07,.96,P.tiles[((ix+3)+iz*2)%4],ix,.03,iz);
+  // stage, banner, thrones, DJ, MC
+  box(13,1,4.4,"#3A2A1F",0,.5,14);box(13,.04,4.4,"#8E1B2E",0,1.02,14);for(let x=-6;x<=6;x+=.6)box(.06,1,.06,gold,x,.5,11.8);
+  const banner=new THREE.Mesh(new THREE.PlaneGeometry(10,2.2),own(new THREE.MeshBasicMaterial({map:(()=>{const[c,x]=cvs(1024,224);x.fillStyle="#1C1B3A";x.fillRect(0,0,1024,224);x.strokeStyle=c2;x.lineWidth=10;x.strokeRect(8,8,1008,208);
+    x.fillStyle="#F4D27A";x.textAlign="center";x.font='800 76px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.fillText(T.celeb[0],512,104,960);x.font='600 46px "Figtree",system-ui,sans-serif';x.fillStyle="#FFFFFF";x.fillText(`${T.celeb[1]} · Owambe Night`,512,172,960);return new THREE.CanvasTexture(c)})()})));
+  banner.position.set(0,4.6,15.9);banner.rotation.y=Math.PI;root.add(banner);
+  for(const q of[-1,1]){box(1.1,1.6,.9,gold,q*1.3,1.8,14.8);box(1,.2,.9,"#8E1B2E",q*1.3,1.5,14.7)}
+  box(2.4,1,1,"#1C1B3A",4.2,1.5,13.6);box(.8,.05,.5,"#B9BCC4",4.2,2.03,13.5);
+  for(const q of[-1,1]){const g=new THREE.Group();g.position.set(q*6,1,13);root.add(g);box(1.3,2.6,1.1,"#15151A",0,1.3,0,g);const cn=new THREE.Mesh(new THREE.CircleGeometry(.42,16),mat("#3A3A44"));cn.position.set(0,1.8,-.56);cn.rotation.y=Math.PI;g.add(cn);const cs=cn.clone();cs.scale.setScalar(.55);cs.position.y=.7;g.add(cs);P.spk.push(cn,cs)}
+  // chandeliers + light cones
+  const bulb=own(new THREE.MeshLambertMaterial({color:0xFFF0C0,emissive:0xFFD27A}));
+  for(const z of[-16,-6,4]){stmesh(new THREE.CylinderGeometry(.15,.9,.7,10),gold,0,6.9,z);for(let a=0;a<8;a++)box(.14,.14,.14,bulb,Math.cos(a/8*6.28)*.85,6.45,z+Math.sin(a/8*6.28)*.85)}
+  for(let z=-24;z<=14;z+=1.5)for(const q of[-1,1])box(.1,.1,.1,bulb,q*7.3,6.5+Math.sin(z)*.15,z);
+  ["#E5487A","#F4C430","#3BA3D9","#C9A227"].forEach((c,i)=>{const cone=new THREE.Mesh(new THREE.ConeGeometry(1.6,6.5,16,1,true),own(new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:.13,blending:THREE.AdditiveBlending,depthWrite:false,side:THREE.DoubleSide})));
+    cone.position.set((i-1.5)*2.4,4,4);root.add(cone);P.cones.push(cone)});
+  // round tables with white cloth and gold chairs
+  const cloth=hallMat("#F7F3EA"),tcol=hallMat(c1);
+  for(let z=-22;z<=7;z+=5.5)for(const q of[-1,1]){const x=q*5.4;stmesh(new THREE.CylinderGeometry(1,1,.06,16),cloth,x,.78,z);stmesh(new THREE.CylinderGeometry(1.02,1.1,.72,16,1,true),cloth,x,.4,z);stmesh(new THREE.SphereGeometry(.2,8,6),tcol,x,.95,z);
+    for(let a=0;a<6;a++){const ang=a/6*6.28;box(.42,.5,.42,gold,x+Math.cos(ang)*1.45,.25,z+Math.sin(ang)*1.45);box(.42,.6,.08,gold,x+Math.cos(ang)*1.68,.75,z+Math.sin(ang)*1.68).rotation.y=-ang+Math.PI/2}}
+  // balloon arch over the way out
+  for(let a=0;a<=20;a++){const ang=a/20*Math.PI,x=Math.cos(ang)*6.2,y=Math.sin(ang)*5.2+.3;stmesh(new THREE.SphereGeometry(.42,10,8),[c1,"#F7F3EA",c2][a%3],x,y,-21.6)}
+  plane(3.6,.8,own(new THREE.MeshBasicMaterial({map:textTex("EXIT  ➜  Back outside","#1C1B3A","#F4C430",640,128,54)})),0,3.2,-21.55,0);
+}
+function spawnGuests(zone){const T=tonight(),[c1,c2]=T.colors;
+  const mk=(x,z,ry,i)=>{const p=makePerson(pick(SKINS),i%2?c1:c2,i%3?"#1C1B3A":c1,i%2?3:4,root);p.position.set(x,.18,z);p.rotation.y=ry;return p};
+  for(let i=0;i<14;i++){const p=mk(-3+Math.random()*6,.5+Math.random()*7.5,Math.random()*6.28,i);zoneAnims.push({k:"dancer",g:p})}
+  for(let i=0;i<10;i++){const q=i%2?1:-1,z=-22+5.5*Math.floor(i/2),ang=Math.random()*6.28,p=mk(q*5.4+Math.cos(ang)*1.45,z+Math.sin(ang)*1.45,-ang-Math.PI/2,i+1);p.position.y=.45;p.userData.legL.rotation.x=p.userData.legR.rotation.x=-1.4}
+  const cel=[makePerson(SKINS[1],"#F2EEE4","#F2EEE4",3,root),makePerson(SKINS[2],"#F2EEE4","#F2EEE4",4,root)];cel.forEach((p,i)=>{p.position.set((i?1:-1)*1.3,1.2,13.3);p.rotation.y=Math.PI;zoneAnims.push({k:"dancer",g:p})});
+  P.mc=makePerson(SKINS[0],"#1C1B3A","#1C1B3A",4,root);P.mc.position.set(-2.8,1.18,12.6);P.mc.rotation.y=Math.PI;P.mc.userData.armR.rotation.x=-1.9;
+  const dj=makePerson(SKINS[3],"#E5487A","#1C1B3A",0,root);dj.position.set(4.2,1.18,14.4);dj.rotation.y=Math.PI;zoneAnims.push({k:"dancer",g:dj})}
+function partyTick(dt){const b=beatNow(),beat=Math.floor(b),f=b-beat;
+  if(beat!==P.lastBeat){P.lastBeat=beat;P.tiles.forEach((m,i)=>{const on=(beat+i)%4===0;m.emissive.copy(m.userData.base).multiplyScalar(on?.85:.12)})}
+  const pulse=1+Math.max(0,1-f*4)*.18;P.spk.forEach(s=>s.scale.setScalar((s.userData.base||(s.userData.base=s.scale.x))*pulse));
+  P.cones.forEach((c,i)=>{const t=performance.now()/1000+i*1.7;c.rotation.z=Math.sin(t*.8)*.5;c.rotation.x=Math.cos(t*.6)*.4});
+  notesTick(dt);
+  if((P.mcT-=dt)<=0){P.mcT=9+Math.random()*6;const br=boardRows(),top=br[0]?br[0][0].replace(" (you)",""):"Chief";mcSay(pick(MC_LINES).replace("{top}",top).replace("{me}",S.name))}
+  if(P.mcH.bubble&&(P.mcH.bubbleT-=dt)<=0){P.mc.remove(P.mcH.bubble);P.mcH.bubble.material.map.dispose();P.mcH.bubble.material.dispose();P.mcH.bubble=null}
+  P.funT+=dt;if(P.funT>8){P.funT=0;add("f",P.dancing?3:1);if(P.dancing)add("e",-1)}
+  if(P.unlogged>=50){addTx("Spraying at Owambe Night",-P.unlogged);P.unlogged=0}
+  const ph=partyPhase();if(P.wasLive&&!ph.live){P.wasLive=false;partyEnded()}if(ph.live)P.wasLive=true}
+function joinOwambe(){if(!S||busy)return;if(D.on){toast("Finish your delivery shift first");return}
+  const ph=partyPhase();if(!ZONES[S.zone].hall){S.owFrom=S.zone;S.owPos={x:player.position.x,z:player.position.z}}
+  ZONES.owambe.country=S.country||"uk";ZONES.owambe.exits[0].to=S.owFrom||hz();
+  busy=true;closeSheet();const fade=$("fade");fade.innerHTML=`🎉<b>Owambe Night</b><small>${esc(tonight().celeb[0])} · ${esc(tonight().celeb[1])}</small>`;fade.classList.add("on");
+  setTimeout(()=>{P.on=true;P.mine=0;P.unlogged=0;P.board=[];P.t0=Date.now();P.wasLive=ph.live;enterZone("owambe",{x:0,z:-5},0);
+    $("party").style.display="flex";$("pMusic").classList.toggle("on",!P.muted);$("pMusic").querySelector("span").textContent=P.muted?"🔇":"🔊";musicStart();
+    setTimeout(()=>{fade.classList.remove("on");busy=false;mcSay(ph.live?`Welcome ${S.name}! The party don start!`:`Welcome ${S.name}! Practise your moves. Live at 8!`)},300);
+    track("owambe",{k:ph.live?"join_live":"join_practice"})},700)}
+function leaveOwambe(){if(!P.on||busy)return;stopSpray();if(P.dancing)setDance(false);musicStop();
+  if(P.unlogged){addTx("Spraying at Owambe Night",-P.unlogged);P.unlogged=0}
+  P.on=false;$("party").style.display="none";const back=ZONES[S.owFrom]?S.owFrom:hz(),pos=S.owPos||{x:0,z:0};
+  busy=true;const fade=$("fade");fade.innerHTML=`🚶🏾<b>Back to ${ZONES[back].area}</b><small>${P.mine?`You sprayed ${gbp(P.mine)} tonight`:"Your legs are tired. Good party."}</small>`;fade.classList.add("on");
+  setTimeout(()=>{enterZone(back,pos,Math.PI);setTimeout(()=>{fade.classList.remove("on");busy=false},250)},700)}
+function partyEnded(){const br=boardRows(),me=br.findIndex(r=>r[0].endsWith("(you)"));if(me===0){S.flags=S.flags||{};S.flags.chairman=true;resp(10)}
+  track("owambe",{k:me===0?"won":"ended"});
+  openSheet(`<h2>🎉 Owambe Night is over</h2><p class="sub">${esc(tonight().celeb[0])} · ${esc(tonight().celeb[1])}</p>
+    <div class="result">${br.map((r,i)=>`${["👑","🥈","🥉"][i]} <b>${esc(r[0])}</b> sprayed ${gbp(r[1])}`).join("<br>")}<br><br>${me===0?`You are <b>${S.look&&S.look.hair===2?"Chairlady":"Chairman"} of the Night</b>! +10 Respect.`:P.mine?`You sprayed ${gbp(P.mine)}. The aunties noticed.`:"You danced. That counts too."}</div>
+    <button class="primary" id="owc">Share my night</button><button class="close" id="cl">Keep dancing</button>`);
+  $("cl").onclick=closeSheet;$("owc").onclick=()=>{const c=makeCard("owambe",{player:S.name,rows:br,mine:P.mine,won:me===0});showCard(c,`I was at Owambe Night in Abroad Life${P.mine?` and sprayed ${gbp(P.mine)}`:""} 💃🏾 Every night at 8 PM UK time. Come and dance.`)}}
+setTimeout(()=>{
+$("pDance").onclick=()=>setDance(!P.dancing);
+$("pSpray").addEventListener("pointerdown",startSpray);["pointerup","pointerleave","pointercancel"].forEach(ev=>$("pSpray").addEventListener(ev,stopSpray));
+$("pMusic").onclick=()=>{P.muted=!P.muted;try{localStorage.setItem("japa_music",P.muted?"off":"on")}catch(e){}$("pMusic").classList.toggle("on",!P.muted);$("pMusic").querySelector("span").textContent=P.muted?"🔇":"🔊";if(P.muted)musicStop();else musicStart()};
+},0);
 const FLAGM={};function flagMat(c){if(!FLAGM[c])FLAGM[c]=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});return FLAGM[c]}
 /* ================= billboards (sellable ad slots) =================
    Each zone has 2 rooftop billboards, each with 2 faces = 4 slots.
@@ -761,6 +919,7 @@ function buildZone(zid){
   const STOCK=["#C9B48A","#BFA77C","#B59B70","#D2C39E"],REDB=["#9A4A3A","#8C3F31","#A85A44"],STUCCO=["#EDE6D8","#E4DCCB","#F2EEE4"];
   const SIGN=["#2D3192","#0E7A4B","#E5487A","#1C1B3A","#C2304F","#B5835A"];
   const woolwich=zone.area==="Woolwich";
+  if(zone.hall){buildHall(zone,rnd)}else{
   // street, pavements, kerbs
   tbx(8,.04,2*L+240,roadMat(zone.road),0,.02,0,4);
   if(zone.traffic){if(zone.country==="ca"){for(const q of[-.12,.12])box(.1,.05,2*L+120,"#F2C81B",q,.05,0)}else{for(let z=-L;z<L;z+=6)box(.25,.05,2.5,"#E8E8EE",0,.05,z);
@@ -900,6 +1059,7 @@ function buildZone(zid){
     for(let bz=-L+14;bz<L-8;bz+=16){if(boards.some(b=>{const d=bz-b.m.position.z;return Math.abs(d)<12}))continue;for(let k=0;k<26;k++){const t=k/25,x=-6.6+t*13.2,y=6.9-.5*(1-Math.pow(2*t-1,2));const m=new THREE.Mesh(tri.clone(),flagMat(FL[k%FL.length]));m.position.set(x,y,bz);m.rotation.y=(k%2)*.2-.1;m.userData.st=1;root.add(m)}
       for(let k=0;k<6;k++){const x0=-6.6+k*2.2,x1=x0+2.2,y0=6.9-.5*(1-Math.pow(x0/6.6,2)),y1=6.9-.5*(1-Math.pow(x1/6.6,2));const sg=box(2.25,.03,.03,"#333",(x0+x1)/2,(y0+y1)/2,bz);sg.rotation.z=Math.atan2(y1-y0,2.2)}}
     tri.dispose()}
+  }
   // spot markers + labels
   BUILDING=false;
   spots().forEach(p=>{
@@ -910,6 +1070,7 @@ function buildZone(zid){
     ring.rotation.x=-Math.PI/2;ring.position.set(p.x,.2,p.z);root.add(ring);p.ring=ring;
   });
   mergeStatic(root);
+  if(zone.hall){spawnGuests(zone)}else
   spawnNPCs(zone);if(zone.traffic)spawnTraffic(zone);spawnPigeons(zone);
   if(zone.bridge!==undefined)spawnTrain(zone);
   if(zone.tram)spawnTram(zone);
@@ -932,6 +1093,7 @@ function spawnTram(zone){
   bakePart(g);g.position.set(0,0,-zone.L-14);zoneAnims.push({k:"tram",g,dir:1,wait:4,L:zone.L})}
 function animZone(dt){
   zoneAnims.forEach(a=>{
+    if(a.k==="dancer"){danceAnim(a.g,dt);return}
     if(a.k==="pigeon"){const g=a.g;a.t+=dt;
       if(a.fly>0){a.fly-=dt;g.position.y+=dt*4;g.position.x+=Math.sin(g.rotation.y)*dt*5;g.position.z+=Math.cos(g.rotation.y)*dt*5;if(a.fly<=0){g.position.copy(a.home);g.visible=true}else if(g.position.y>12)g.visible=false;return}
       g.children[1].position.y=.36+(Math.sin(a.t*6)>.7?-.08:0);
@@ -976,6 +1138,8 @@ function makePerson(skin,shirt,pants,hair,parent){
   const H="#17110C";
   if(hair===0){const c=pm(psph(.3,16,8,.5),H,0,2.13,-.02,g,1,.9,1);c.rotation.x=-.28}
   if(hair===1){pm(psph(.4,14,10),H,0,2.27,-.1,g,1,.95,.88)}
+  if(hair===3){pm(psph(.34,12,8),shirt,0,2.3,-.04,g,1.2,.62,1.05).rotation.x=-.25;const f=pm(psph(.32,12,6,.5),shirt,0,2.42,-.18,g,1.45,.95,.32);f.rotation.x=-.7}
+  if(hair===4){const c=pm(pcyl(.25,.29,.3,12),shirt,0,2.33,-.02,g);c.rotation.z=.28;c.rotation.x=-.1}
   if(hair===2){const c=pm(psph(.3,16,8,.5),H,0,2.13,-.02,g,1,.9,1);c.rotation.x=-.28;pm(pcyl(.2,.25,.75,10),H,0,1.86,-.17,g,1,1,.6);for(const x of[-.25,.25])pm(pcyl(.05,.045,.62,6),H,x,1.86,-.04,g)}
   const key=[skin,shirt,pants,hair].join("|");
   [["b",g],["l",legL],["r",legR],["al",armL],["ar",armR]].forEach(([k,grp])=>bakePart(grp,key+k));
@@ -990,7 +1154,7 @@ function bakePart(grp,key){const kids=grp.children.filter(o=>o.isMesh&&o.materia
     const out=new THREE.BufferGeometry();out.setAttribute("position",new THREE.BufferAttribute(pos,3));out.setAttribute("normal",new THREE.BufferAttribute(nor,3));out.setAttribute("color",new THREE.BufferAttribute(col,3));out.computeBoundingSphere();return out};const geo=key?pg("p"+key,build):build();
   kids.forEach(o=>{grp.remove(o);if(!key)o.geometry.dispose()});const m=new THREE.Mesh(geo,personMat);m.castShadow=true;grp.add(m)}
 function animatePerson(p,speed,dt){
-  const u=p.userData;u.phase+=dt*speed*2.2;const a=speed>.05?Math.sin(u.phase)*.6:0;
+  const u=p.userData;if(u.dy){p.position.y-=u.dy;u.dy=0}if(u.dz){u.armL.rotation.z=u.armR.rotation.z=0;p.rotation.z=0;u.dz=0}u.phase+=dt*speed*2.2;const a=speed>.05?Math.sin(u.phase)*.6:0;
   u.legL.rotation.x=a;u.legR.rotation.x=-a;u.armL.rotation.x=-a*.8;u.armR.rotation.x=a*.8;
 }
 let player=null;const npcs=[],cars=[];
@@ -1085,12 +1249,19 @@ function updateHUD(){
   {const ch=curChapter(),li=lvInfo(),dn=ch.goals.filter(g=>S.goals[g.id]).length;$("chapbar").innerHTML=`<span class="ct">📋 Ch ${S.chapter}${ch.soon?"":` · ${dn}/${ch.goals.length}`}</span><span class="lv">⭐ ${li.L}</span>`}
   const D=DREAMS[S.dream];if(D){const pr=progress();$("dreambar").innerHTML=`<span>${D.em}</span><div class="b"><i style="width:${pr*100}%"></i></div><span>${Math.floor(pr*100)}%</span>`}
 }
+let chipsHTML="";function setChips(h){if(h===chipsHTML)return true;chipsHTML=h;$("chips").innerHTML=h;return false}
 function updateChips(){
+  if(P.on){const ph=partyPhase(),b=boardRows();
+    if(setChips(`<button class="chip glass ${ph.live?"live":"board"}" data-leave="1">${ph.live?`🔴 LIVE · ${Math.max(1,Math.ceil(ph.left))} min left`:"🎉 Practice · live 8 PM UK"}</button>`+
+      b.map((r,i)=>`<button class="chip glass board">${["👑","🥈","🥉"][i]||"•"} ${esc(r[0])} ${gbp(r[1])}</button>`).join("")+`<button class="chip glass">💸 You: ${gbp(P.mine)}</button>`))return;
+    const lb=$("chips").querySelector("[data-leave]");if(lb)lb.onclick=()=>toast(ph.live?"Spray to top the board. Walk out the back to leave.":"Owambe Night goes live with real players at 8 PM UK time. Walk out the back to leave.");return}
   const px=player.position.x,pz=player.position.z;
   const list=spots().map(p=>({p,d:Math.hypot(p.x-px,p.z-pz)})).sort((a,b)=>a.d-b.d);
   const bk=S.booked?`<button class="chip glass" data-bk="1" style="border:2px solid var(--yellow)">📌 ${S.booked.c==="care"?"Care shift":S.booked.c==="warehouse"?"Warehouse shift":"Till shift"} ${timeStr(S.booked.start*60)}</button>`:"";
-  $("chips").innerHTML=bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("");
+  const ph=partyPhase(),pc=ph.live||ph.soon?`<button class="chip glass live" data-ow="1">🎉 ${ph.live?"Owambe Night LIVE":`Owambe in ${ph.in} min`}${P.liveN?` · ${P.liveN} there`:""} · Join</button>`:"";liveCount(ph);
+  if(setChips(pc+bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("")))return;
   $("chips").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>goTo(b.dataset.go));
+  const ow=$("chips").querySelector("[data-ow]");if(ow)ow.onclick=joinOwambe;
   const bb=$("chips").querySelector("[data-bk]");if(bb)bb.onclick=()=>{const t=S.booked.c==="care"?"care":S.booked.c==="warehouse"?"warehouse":"work";const sp=spots().find(p=>p.type===t);if(sp)goTo(sp.id);else toast("Your booked shift is in another area. Take the train or bus.")};
 }
 function goTo(id){const p=spots().find(x=>x.id===id);if(!p)return;autoTarget={x:p.x,z:p.z+.01};toast(`Walking to ${p.kind==="exit"?p.name:p.short}…`)}
@@ -1174,7 +1345,7 @@ function enterZone(zid,pos,yaw,instant){
   updateHUD();updateChips();save();netJoin(zid);
 }
 function travel(to,how,fromId){
-  if(busy)return;busy=true;closeSheet();track("travel",{how});
+  if(busy)return;if(ZONES[S.zone]&&ZONES[S.zone].hall&&how==="walk")return leaveOwambe();busy=true;closeSheet();track("travel",{how});
   const fade=$("fade");const z=ZONES[to];
   const line=how==="bus"?pick(BUS_LINES):how==="uber"?pick(UBER_LINES):"";
   fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:how==="bus"?`🚌<b>Bus to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="uber"?`🚖<b>Uber to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="drive"?`🚗<b>Driving to ${z.area}</b><small style="max-width:80vw;text-align:center">${pick(["Someone cut you up on the South Circular. You said nothing. Growth.","Afrobeats on full, windows down, in October. Brave.","You found a parking space first time. Miracle."])}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
@@ -1477,7 +1648,8 @@ function actionsFor(type){
     {e:"🥫",n:"Garri, egusi and palm oil",s:"£10 for 3 meals",ok:open&&S.m>=10,why:closedWhy(type,"Not enough money"),run:()=>{money(-10,"Naija Food Store");S.groceries+=3;advance(15);return `Proper Naija shopping. ${S.groceries} meals at home.`}},
     {e:"🥤",n:"Malt and chin chin",s:"£3, +15 Hunger, +8 Fun",ok:open&&S.m>=3,why:closedWhy(type,"Not enough money"),run:()=>{money(-3,"Malt and chin chin");advance(10);add("h",15);add("f",8);return "Ice cold malt. Childhood in a bottle."}}
   ];
-  if(type==="hall"){const party=(w===5&&h>=18)||(w===6&&h<2);return [
+  if(type==="hall"){const party=(w===5&&h>=18)||(w===6&&h<2),ph=partyPhase();return [
+    {e:"🎉",n:ph.live?"Owambe Night is LIVE":"Owambe Night",s:ph.live?"Real players dancing now. Spray, dance, top the board.":"Practise with the aunties now. Live with real players every night, 8 PM UK time.",ok:true,run:()=>{closeSheet();setTimeout(joinOwambe,60);return null}},
     {e:"💃🏾",n:"Join the owambe",s:"£20 to spray, 4 hours, +40 Fun, +35 Hunger",ok:party&&S.m>=20&&n.e>=20,why:!party?"Next owambe: Saturday from 6 PM":S.m<20?"You can’t come to owambe without spraying money":"Too tired to dance",
       run:()=>{money(-20,"Spraying money at owambe");advance(240);add("f",40);add("h",35);add("e",-25);F().owambe=true;resp(6);if(F().asoebi){F().asoebi=false;add("f",15);resp(4);return "You arrived in matching aso ebi. The celebrant’s mother hugged you. Aunties nodded. You were seated at the family table. Jollof, small chops, and you sprayed crisp fivers. Legendary."}return "Jollof, small chops, and you sprayed the couple with crisp fivers. An aunty pulled you to the dance floor. Legendary."}},
     {e:"👀",n:"Peek inside",s:"5 min",ok:true,run:()=>{advance(5);return party?"The DJ is playing Wizkid and the aunties are in full gele. Go in!":"Empty hall. Chairs stacked, a forgotten gele on the stage. Come back Saturday night."}}
@@ -1967,6 +2139,11 @@ function makeCard(kind,d){track("card",{kind});
     x.textAlign="left";x.font='600 34px Figtree, sans-serif';let y=780;d.goals.slice(0,8).forEach(g=>{x.fillText("✅ "+g,140,y);y+=46});x.textAlign="left";return c}
   if(kind==="ilr"||kind==="home"){const{c,x}=cardBase(kind==="ilr"?"SETTLED":"NEW HOMEOWNER",kind==="ilr"?"Indefinite Leave to Remain":`${d.area}, London`);
     x.font="200px sans-serif";x.textAlign="center";x.fillText(kind==="ilr"?"🇬🇧":"🏡",540,500);stamp(x,540,850,260,kind==="ilr"?"UK VISAS":"KEYS COLLECTED",kind==="ilr"?"SETTLED":"HOME",d.player.toUpperCase().slice(0,16),kind==="ilr"?"#0E7A4B":"#E5487A");x.textAlign="left";return c}
+  if(kind==="owambe"){const{c,x}=cardBase("OWAMBE NIGHT",`${tonight().celeb[0]} · ${tonight().celeb[1]}`);
+    x.font="190px sans-serif";x.textAlign="center";x.fillText("💃🏾",540,470);x.fillStyle="#FFFFFF";x.fillRect(90,560,900,420);x.textAlign="left";
+    d.rows.forEach((r,i)=>{x.fillStyle="#1C1B3A";x.font='800 54px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(`${["👑","🥈","🥉"][i]} ${r[0]}`.slice(0,26),130,660+i*110);x.fillStyle="#0E7A4B";x.textAlign="right";x.fillText(gbp(r[1]),950,660+i*110);x.textAlign="left"});
+    x.fillStyle="#F4C430";x.font='800 46px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(d.won?`${d.player}: Chairman of the Night`:`${d.player} sprayed ${gbp(d.mine)}`,90,1080);
+    x.fillStyle="#FFFFFF";x.font='600 34px Figtree, sans-serif';x.fillText("Every night, 8 PM UK time. Come and dance.",90,1140);return c}
   if(kind==="ijgb"){const{c,x}=cardBase("BOARDING PASS","Detty December");
     x.fillStyle="#FFFFFF";x.fillRect(70,280,940,700);x.fillStyle="#1C1B3A";x.font='800 130px "Bricolage Grotesque", Figtree, sans-serif';x.fillText("LHR",110,470);x.fillText("LOS",720,470);
     x.font="90px sans-serif";x.fillText("✈️",470,450);x.font='700 38px Figtree, sans-serif';x.fillText(`Passenger: ${d.player}`,110,580);x.fillText(`Trip: ${d.kind}`,110,640);x.fillText("Luggage: 2 x Ghana Must Go",110,700);x.fillText("Seat: wherever Aunty hasn’t sat",110,760);
@@ -2340,6 +2517,7 @@ function lighting(){
    sun.color.setHex(0xFFF1DC);if(t<1)sun.color.lerp(tmpC.setHex(0xFFB27A),1-t);if(t<.3)sun.color.setHex(0x9FB4FF)}
   skyMats.forEach(m=>m.color.copy(m.userData.base).lerp(skyC,.55).multiplyScalar(.35+.65*Math.max(t,.15)));
   setRain(!!wet,snowy);if(snowy)skyC.lerp(tmpC.set(0xE8ECF2),.35),scene.background=skyC,scene.fog.color.copy(skyC);
+  if(S&&ZONES[S.zone]&&ZONES[S.zone].hall){scene.background=tmpC.setHex(0x1A1030);scene.fog.color.setHex(0x1A1030);document.body.style.background="#1A1030";sun.intensity=.22;hemi.intensity=.95}
   const night=t<.45;if(night!==lastNight){lastNight=night;winMat.emissive.setHex(night?0x6a5420:0);lampMat.emissive.setHex(night?0xffd27a:0)}
 }
 
@@ -2370,7 +2548,7 @@ function addRemote(p){
   mesh.position.set(p.x,.18,p.z);mesh.rotation.y=p.ry;mesh.userData.rid=p.id;
   const tag=new THREE.Sprite(own(new THREE.SpriteMaterial({map:textTex(p.name,"rgba(28,27,58,.8)","#FFFFFF",384,84,44,true),depthTest:false})));
   tag.scale.set(1.9,.42,1);tag.position.set(0,2.75,0);tag.renderOrder=6;mesh.add(tag);
-  net.players.set(p.id,{mesh,name:p.name,tx:p.x,tz:p.z,ry:p.ry,mv:0,bubble:null,bubbleT:0});
+  net.players.set(p.id,{mesh,name:p.name,tx:p.x,tz:p.z,ry:p.ry,mv:0,bubble:null,bubbleT:0,dance:!!p.a});
 }
 function removeRemote(id){const r=net.players.get(id);if(!r)return;if(r.mesh.parent)r.mesh.parent.remove(r.mesh);
   r.mesh.traverse(o=>{if(o.geometry&&!o.geometry.userData.keep)o.geometry.dispose();if(o.material&&o.material.userData&&o.material.userData.own){if(o.material.map)o.material.map.dispose();o.material.dispose()}});
@@ -2385,16 +2563,18 @@ const selfBubble={bubble:null,bubbleT:0};
 function chatLog(name,text){const el=$("chatlog");const d=document.createElement("div");d.innerHTML=`<b>${esc(name)}</b> ${esc(text)}`;el.appendChild(d);
   while(el.children.length>4)el.removeChild(el.firstChild);setTimeout(()=>{d.style.opacity="0";setTimeout(()=>d.remove(),700)},9000)}
 function netMsg(m){
-  if(m.t==="welcome"){net.id=m.id;[...net.players.keys()].forEach(removeRemote);m.players.forEach(addRemote);netStatus();if(m.players.length)toast(`${m.players.length} ${m.players.length===1?"person is":"people are"} on ${Z().name} right now`)}
+  if(m.t==="welcome"){net.id=m.id;if(P.on&&P.dancing)setTimeout(()=>netSend({t:"fx",k:"dance"}),300);[...net.players.keys()].forEach(removeRemote);m.players.forEach(addRemote);netStatus();if(m.players.length)toast(`${m.players.length} ${m.players.length===1?"person is":"people are"} on ${Z().name} right now`)}
   else if(m.t==="join"){addRemote(m.p);netStatus();chatLog(m.p.name,"arrived")}
   else if(m.t==="leave"){const r=net.players.get(m.id);removeRemote(m.id);netStatus();if(r)chatLog(r.name,"left")}
   else if(m.t==="s"){m.u.forEach(([id,x,z,ry,mv])=>{const r=net.players.get(id);if(r){r.tx=x;r.tz=z;r.ry=ry;r.mv=mv}})}
+  else if(m.t==="fx"){const r=net.players.get(m.id);if(!r)return;if(m.k==="dance")r.dance=true;else if(m.k==="stop")r.dance=false;else if(m.k==="spray"&&P.on)sprayFx(r.mesh,3)}
+  else if(m.t==="board"){P.board=Array.isArray(m.top)?m.top:[];if(P.on)updateChips()}
   else if(m.t==="chat"){const r=net.players.get(m.id);if(!r||net.muted.has(r.name))return;bubble(r.mesh,m.text,r);chatLog(r.name,m.text)}
 }
 function netTick(dt,moving){
   net.players.forEach(r=>{const p=r.mesh.position,k=Math.min(1,dt*10);const dx=r.tx-p.x,dz=r.tz-p.z;p.x+=dx*k;p.z+=dz*k;
     let d=r.ry-r.mesh.rotation.y;d=Math.atan2(Math.sin(d),Math.cos(d));r.mesh.rotation.y+=d*k;
-    animatePerson(r.mesh,r.mv||Math.hypot(dx,dz)>.05?5:0,dt);
+    const rm=r.mv||Math.hypot(dx,dz)>.05;if(r.dance&&!rm)danceAnim(r.mesh,dt);else animatePerson(r.mesh,rm?5:0,dt);
     if(r.bubble&&(r.bubbleT-=dt)<=0){r.mesh.remove(r.bubble);r.bubble.material.map.dispose();r.bubble.material.dispose();r.bubble=null}});
   if(selfBubble.bubble&&(selfBubble.bubbleT-=dt)<=0){player.remove(selfBubble.bubble);selfBubble.bubble.material.map.dispose();selfBubble.bubble.material.dispose();selfBubble.bubble=null}
   net.lastSend-=dt;
@@ -2443,7 +2623,8 @@ function tick(){
       const target=Math.atan2(mx,mz);let diff=target-player.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));player.rotation.y+=diff*Math.min(1,dt*12);
       let cd=target-camYaw;cd=Math.atan2(Math.sin(cd),Math.cos(cd));if(autoTarget||Math.abs(cd)<2.3)camYaw+=cd*Math.min(1,dt*(autoTarget?2.5:1.6));
     }
-    if(!D.on)animatePerson(player,speed,dt);
+    if(!D.on){if(P.on&&P.dancing&&speed===0)danceAnim(player,dt);else animatePerson(player,speed,dt)}
+    if(P.on)partyTick(dt);
     netTick(dt,speed>0);
     deliveryTick(dt);
     alertTick(dt);eventTick(dt);goalTick(dt);
@@ -2586,7 +2767,7 @@ function begin(state,isNew){
   S=state;$("start").style.display="none";if(preview){preview.parent.remove(preview);preview=null}
   player=makePerson(SKINS[S.look.skin],SHIRTS[S.look.shirt],"#1C1B3A",S.look.hair,scene);
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
-  const zid=ZONES[S.zone]?S.zone:"ryelane";
+  let zid=ZONES[S.zone]?S.zone:"ryelane";if(ZONES[zid].hall){zid=ZONES[S.owFrom]?S.owFrom:hz();S.pos=S.owPos||{x:0,z:0}}
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{kind:`${S.origin||"ng"}-${S.country||"uk"}`,route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} ${isCA()?"🇨🇦":"🇬🇧"}</h2><p class="sub">You just landed. Here’s how life works.</p>
@@ -2604,7 +2785,7 @@ function boot(){
 const fontReady=document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]):Promise.resolve();
 fontReady.then(boot);
 addEventListener("visibilitychange",()=>{if(document.hidden)save()});
-if(location.search.includes("debug"))window.__jl={yaw:(v)=>{camYaw=v},tp:(z,x)=>{player.position.x=x;player.position.z=z},get S(){return S},get player(){return player},D,lvl,progress,checkDream,forceAlert:()=>{alertT=0},enter:(z)=>enterZone(z,{x:0,z:0},Math.PI),zones:()=>Object.keys(ZONES),info:()=>({calls:renderer.info.render.calls,tris:renderer.info.render.triangles,npcs:npcs.length}),advance:(m)=>advance(m)};
+if(location.search.includes("debug"))window.__jl={yaw:(v)=>{camYaw=v},tp:(z,x)=>{player.position.x=x;player.position.z=z},get S(){return S},get player(){return player},D,lvl,progress,checkDream,forceAlert:()=>{alertT=0},enter:(z)=>enterZone(z,{x:0,z:0},Math.PI),zones:()=>Object.keys(ZONES),P,joinOwambe,leaveOwambe,spray,info:()=>({calls:renderer.info.render.calls,tris:renderer.info.render.triangles,npcs:npcs.length}),advance:(m)=>advance(m)};
 })();
 </script>
 

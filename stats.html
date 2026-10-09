@@ -93,6 +93,7 @@ async function load(){
     <div class="card" style="margin-bottom:12px"><h2>Players per day</h2><div class="chart">${chart(days,by.players||{})}</div></div>
     <div class="two">
       ${bars({"Started a life":sum("ev:new_player"),"Finished Chapter 1":sum("chapter_done:n:1"),"Finished Chapter 2":sum("chapter_done:n:2"),"Finished Chapter 3":sum("chapter_done:n:3"),"Finished Chapter 4":sum("chapter_done:n:4")},"Progress funnel (14 days)")}
+      ${bars(group("owambe:k:"),"🎉 Owambe Night (joins, wins)")}
       ${bars(group("vote:what:"),"🗳️ Votes for the next journey (origin-destination)")}
       ${bars(group("new_player:kind:"),"Journeys started")}
       ${bars(group("new_player:route:"),"Japa lottery results")}
