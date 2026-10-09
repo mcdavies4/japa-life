@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Can I Afford to Japa?</title>
+<meta name="description" content="Real 2026 visa fees, rent and tax for the UK and Canada. See your first year abroad month by month, in naira. Free, from Abroad Life.">
+<meta property="og:title" content="Can I afford to japa?">
+<meta property="og:description" content="Real 2026 visa fees, rent and tax. See if your savings last your first year in London or Toronto.">
+<meta property="og:image" content="https://japa-life.pages.dev/og.png">
+<meta property="og:url" content="https://japa-life.pages.dev/calculator/">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="/icon-192.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Figtree:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1C1B3A;--muted:#5B5F7A;--line:rgba(28,27,58,.12);--card:#FFFFFF;--bg:#F4F1EA;--soft:#EDE8DC;
+  --green:#0E7A4B;--yellow:#F4C430;--pink:#E5487A;--indigo:#2D3192;--bad:#C2304F;--good-bg:rgba(14,122,75,.1);--bad-bg:rgba(194,48,79,.1)}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#F1F2F8;--muted:#A3A7C2;--line:rgba(255,255,255,.14);--card:#20203D;--bg:#14142A;--soft:#2A2A4C;--bad:#FF6F8E;--good-bg:rgba(61,203,138,.14);--bad-bg:rgba(255,111,142,.14)}}
+:root[data-theme="dark"]{--ink:#F1F2F8;--muted:#A3A7C2;--line:rgba(255,255,255,.14);--card:#20203D;--bg:#14142A;--soft:#2A2A4C;--bad:#FF6F8E;--good-bg:rgba(61,203,138,.14);--bad-bg:rgba(255,111,142,.14)}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,-apple-system,"Segoe UI",sans-serif;-webkit-tap-highlight-color:transparent}
+body{padding:0 16px calc(env(safe-area-inset-bottom,0px) + 40px)}
+.wrap{max-width:620px;margin:0 auto}
+h1,h2,.big{font-family:"Bricolage Grotesque","Figtree",sans-serif}
+.top{display:flex;align-items:center;justify-content:space-between;padding:18px 0 8px}
+.brand{display:inline-flex;gap:6px;align-items:center;font-weight:800;font-size:13px;text-decoration:none;color:var(--ink);background:var(--card);border:1px solid var(--line);padding:6px 12px;border-radius:999px}
+.hero{padding:12px 0 18px}
+.hero h1{font-size:clamp(34px,9vw,52px);line-height:1;margin:0 0 10px;letter-spacing:-.02em}
+.hero h1 em{font-style:normal;background:var(--yellow);color:#1C1B3A;border-radius:10px;padding:0 8px}
+.hero p{margin:0;color:var(--muted);font-size:16px;line-height:1.45}
+.card{background:var(--card);border:1px solid var(--line);border-radius:20px;padding:18px;margin-bottom:14px}
+.q{font-weight:800;font-size:15px;margin:0 0 8px}
+.q small{font-weight:600;color:var(--muted);font-size:13px;margin-left:4px}
+.sec+.sec{margin-top:18px}
+.seg{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.opt{appearance:none;border:2px solid var(--line);background:transparent;color:var(--ink);border-radius:14px;padding:10px 12px;text-align:left;font:inherit;cursor:pointer;min-height:48px}
+.opt b{display:block;font-size:15px}.opt span{display:block;font-size:12.5px;color:var(--muted);margin-top:2px}
+.opt.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}.opt.on span{color:#3a3a55}
+.opt:disabled{opacity:.45;cursor:not-allowed}
+.opt:focus-visible,.btn:focus-visible,input:focus-visible,summary:focus-visible{outline:3px solid var(--pink);outline-offset:2px}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+label.f{display:block;font-size:13px;font-weight:700;color:var(--muted);margin-bottom:6px}
+.inp{display:flex;align-items:center;border:2px solid var(--line);border-radius:14px;padding:0 12px;background:var(--bg);min-height:50px}
+.inp span{font-weight:800;color:var(--muted)}
+.inp input{flex:1;min-width:0;border:0;background:transparent;color:var(--ink);font:inherit;font-size:17px;font-weight:700;padding:12px 6px}
+.inp input:focus{outline:none}.inp:focus-within{border-color:var(--ink)}
+.step{display:flex;align-items:center;gap:8px}.step button{width:44px;height:44px;border-radius:12px;border:2px solid var(--line);background:transparent;color:var(--ink);font-size:20px;font-weight:800;cursor:pointer}
+.step output{min-width:26px;text-align:center;font-weight:800;font-size:18px}
+.note{font-size:13px;color:var(--muted);line-height:1.45;margin:8px 0 0}
+.warn{font-size:13px;line-height:1.45;margin:10px 0 0;padding:10px 12px;border-radius:12px;background:var(--bad-bg)}
+details{margin-top:14px}summary{cursor:pointer;font-weight:700;font-size:14px;color:var(--muted)}
+.btn{display:block;width:100%;border:0;border-radius:16px;padding:16px;font:inherit;font-size:17px;font-weight:800;cursor:pointer;text-align:center;text-decoration:none}
+.btn.go{background:var(--green);color:#fff}.btn.alt{background:transparent;border:2px solid var(--ink);color:var(--ink)}
+.btn.pink{background:var(--pink);color:#fff}
+#res{display:none}
+.verdict{border-radius:20px;padding:22px 18px;margin-bottom:14px;color:#fff;background:var(--indigo)}
+.verdict.ok{background:var(--green)}.verdict.bad{background:var(--bad)}.verdict.meh{background:#B5651D}
+.verdict .lab{font-size:13px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;opacity:.85}
+.verdict .big{font-size:clamp(30px,8vw,42px);line-height:1.05;margin:8px 0;font-weight:800}
+.verdict p{margin:0;font-size:15px;line-height:1.45;opacity:.95}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:12px 14px}
+.stat .k{font-size:12.5px;color:var(--muted);font-weight:700}.stat .v{font-family:"Bricolage Grotesque",sans-serif;font-size:22px;font-weight:800;margin-top:2px;font-variant-numeric:tabular-nums}
+.stat .s{font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:14px;font-variant-numeric:tabular-nums}
+td{padding:8px 0;border-bottom:1px solid var(--line);vertical-align:top}td:last-child{text-align:right;white-space:nowrap;padding-left:10px;font-weight:700}
+tr.tot td{border-bottom:0;font-weight:800;font-size:15px;padding-top:10px}
+td small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+.chart svg{width:100%;height:auto;display:block}
+.acts{display:grid;gap:10px;margin:14px 0}
+.src{font-size:12.5px;color:var(--muted);line-height:1.55}.src a{color:inherit}
+.foot{text-align:center;font-size:12.5px;color:var(--muted);margin-top:22px}
+#cardImg{width:100%;border-radius:16px;display:none;margin-top:10px}
+@media (max-width:420px){.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a class="brand" href="/">🌍 Abroad Life</a><span style="font-size:12px;color:var(--muted);font-weight:700">Figures checked Oct 2026</span></div>
+  <header class="hero">
+    <h1>Can I afford to <em>japa?</em></h1>
+    <p>Real 2026 visa fees, rent and tax. See your first year abroad, month by month, in naira.</p>
+  </header>
+
+  <form id="f" class="card" autocomplete="off" onsubmit="return false">
+    <div class="sec"><p class="q">Where are you going?</p><div class="seg" id="dest"></div></div>
+    <div class="sec"><p class="q">How are you going?</p><div class="seg" id="route"></div><div id="routeNote"></div></div>
+    <div class="sec"><p class="q">Who is coming?</p>
+      <div class="row">
+        <div><label class="f">Adults</label><div class="step"><button type="button" data-st="ad" data-d="-1" aria-label="Fewer adults">−</button><output id="adO">1</output><button type="button" data-st="ad" data-d="1" aria-label="More adults">+</button></div></div>
+        <div><label class="f">Children</label><div class="step"><button type="button" data-st="ki" data-d="-1" aria-label="Fewer children">−</button><output id="kiO">0</output><button type="button" data-st="ki" data-d="1" aria-label="More children">+</button></div></div>
+      </div><div id="famNote"></div></div>
+    <div class="sec"><p class="q">Where will you live?</p><div class="seg" id="area"></div></div>
+    <div class="sec"><p class="q">What kind of home?</p><div class="seg" id="home"></div></div>
+    <div class="sec"><p class="q">Your money</p>
+      <div class="row">
+        <div><label class="f" for="sav">Savings you’ll take</label><div class="inp"><span>₦</span><input id="sav" inputmode="numeric" value="15,000,000"></div></div>
+        <div><label class="f" for="sal" id="salL">Your salary (per year)</label><div class="inp"><span class="cs">£</span><input id="sal" inputmode="numeric"></div></div>
+      </div>
+      <div class="row" style="margin-top:10px">
+        <div id="partW"><label class="f" for="part">Partner’s take-home (per month)</label><div class="inp"><span class="cs">£</span><input id="part" inputmode="numeric" value="0"></div></div>
+        <div id="tuiW"><label class="f" for="tui">Tuition (first year)</label><div class="inp"><span class="cs">£</span><input id="tui" inputmode="numeric"></div></div>
+        <div><label class="f" for="sendh">Send home (per month)</label><div class="inp"><span class="cs">£</span><input id="sendh" inputmode="numeric" value="100"></div></div>
+      </div>
+      <details><summary>Exchange rates and arrival month</summary>
+        <div class="row" style="margin-top:10px">
+          <div><label class="f" for="fxg">£1 in naira</label><div class="inp"><span>₦</span><input id="fxg" inputmode="numeric" value="1,758"></div></div>
+          <div><label class="f" for="fxc">CA$1 in naira</label><div class="inp"><span>₦</span><input id="fxc" inputmode="numeric" value="932"></div></div>
+        </div>
+        <div style="margin-top:10px"><label class="f" for="arr">Arrival month</label><div class="inp"><select id="arr" style="flex:1;border:0;background:transparent;color:var(--ink);font:inherit;font-weight:700;font-size:16px;padding:12px 4px"></select></div></div>
+      </details>
+    </div>
+    <div style="margin-top:20px"><button class="btn go" id="run" type="button">Run my first year</button></div>
+  </form>
+
+  <section id="res" aria-live="polite">
+    <div class="verdict" id="vd"><div class="lab" id="vdL"></div><div class="big" id="vdB"></div><p id="vdP"></p></div>
+    <div class="stats" id="stats"></div>
+    <div class="card chart"><p class="q">Your money, month by month <small id="chartSub"></small></p><div id="chart"></div></div>
+    <div class="card"><p class="q">Before you land</p><table id="upT"></table><div id="mustNote"></div></div>
+    <div class="card"><p class="q">Every month</p><table id="moT"></table><p class="note" id="moNote"></p></div>
+    <div class="acts">
+      <button class="btn pink" id="share" type="button">Share my result</button>
+      <img id="cardImg" alt="Your japa result card">
+      <a class="btn go" href="/?from=calc">Live it in the game: play Abroad Life →</a>
+      <button class="btn alt" id="again" type="button">Change my answers</button>
+    </div>
+    <div class="card src"><b>Where these numbers come from.</b> Visa and health surcharge fees: <a href="https://www.gov.uk/government/publications/visa-regulations-revised-table" target="_blank" rel="noopener">GOV.UK fee tables</a> (from 8 April 2026) and <a href="https://www.gov.uk/healthcare-immigration-application/how-much-pay" target="_blank" rel="noopener">Immigration Health Surcharge</a>. Canada: <a href="https://www.canada.ca/en/immigration-refugees-citizenship/services/application/check-processing-times/fees.html" target="_blank" rel="noopener">IRCC fees</a> (from 30 April 2026) and proof of funds (from 1 September 2026). Rents are typical newcomer prices (ONS and Door Insight data, adjusted for rooms and smaller flats). Tax uses 2026 UK and Ontario rates, simplified. This is an estimate to help you plan, not immigration or financial advice. Always confirm fees on GOV.UK or IRCC before you pay anything.</div>
+  </section>
+  <p class="foot">Made by Abroad Life · <a href="/" style="color:inherit">Play the game</a></p>
+</div>
+
+<script>
+(function(){"use strict";
+const STATS_URL="https://japa-life-realtime.azubuikedavies.workers.dev";
+const $=id=>document.getElementById(id);
+const num=v=>+(String(v).replace(/[^0-9.]/g,""))||0;
+const comma=n=>Math.round(n).toLocaleString("en-GB");
+
+/* ===== 2026 figures (checked October 2026) ===== */
+const UK={cur:"£",
+  routes:{
+    student:{name:"Student (Master’s)",d:"1-year taught course",visa:558,ihs:776,ihsYears:1.5,tuition:18000,famOK:false,work:"part",startM:2},
+    skilled:{name:"Skilled Worker",d:"Job offer, £41,700+",visa:819,ihs:1035,ihsYears:3,salary:41700,famOK:true,mustShow:1270,startM:2},
+    nurse:{name:"Nurse (Health & Care)",d:"NHS Band 5, no IHS",visa:324,ihs:0,ihsYears:3,salary:31000,famOK:true,mustShow:1270,startM:2,nmc:1400},
+    care:{name:"Care worker",d:"Closed to new applicants",closed:true}},
+  areas:{peckham:{n:"Peckham",d:"South London",rent:[950,1750,2250],ldn:1},woolwich:{n:"Woolwich",d:"South-east London",rent:[850,1550,1950],ldn:1},barking:{n:"Barking",d:"East London",rent:[800,1400,1700],ldn:1},
+    croydon:{n:"Croydon",d:"South London",rent:[780,1300,1600],ldn:1},edmonton:{n:"Edmonton",d:"North London",rent:[800,1400,1750],ldn:1},manchester:{n:"Manchester",d:"Outside London",rent:[650,1100,1350],ldn:0},birmingham:{n:"Birmingham",d:"Outside London",rent:[600,950,1200],ldn:0}}};
+const CA={cur:"$",
+  routes:{
+    study:{name:"Study permit",d:"College diploma",visa:150,bio:85,tuition:18000,famOK:false,work:"part",startM:3,pof:23448,pofFam:6318},
+    pr:{name:"Express Entry (PR)",d:"Land as a permanent resident",salary:55000,famOK:true,startM:3,pr:true}},
+  areas:{toronto:{n:"Toronto",d:"Downtown and midtown",rent:[1150,2262,2930]},brampton:{n:"Brampton",d:"Peel Region",rent:[950,1800,2450]},scarborough:{n:"Scarborough",d:"East Toronto",rent:[950,1950,2500]}}};
+const PR_POF=[15263,19001,23360,28362,32250];
+const HOMES=[["Room in a shared house","Bills usually included"],["1-bedroom flat","Your own space"],["2-bedroom flat","Room for the family"]];
+
+const st={dest:"uk",route:"nurse",ad:1,ki:0,area:"croydon",home:0};
+try{Object.assign(st,JSON.parse(localStorage.getItem("japa_calc")||"{}"))}catch(e){}
+const C=()=>st.dest==="uk"?UK:CA, R=()=>C().routes[st.route], A=()=>C().areas[st.area];
+
+function seg(el,items,cur,on){$(el).innerHTML=items.map(([k,n,d,dis])=>`<button type="button" class="opt ${k===cur?"on":""}" data-k="${k}" ${dis?"disabled":""} aria-pressed="${k===cur}"><b>${n}</b>${d?`<span>${d}</span>`:""}</button>`).join("");
+  $(el).querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{on(b.dataset.k);render()})}
+function render(){
+  if(!C().routes[st.route]||C().routes[st.route].closed)st.route=Object.keys(C().routes)[0];
+  if(!C().areas[st.area])st.area=Object.keys(C().areas)[0];
+  const r=R();if(!r.famOK){st.ki=0;st.ad=1}
+  seg("dest",[["uk","🇬🇧 United Kingdom","London, Manchester, Birmingham"],["ca","🇨🇦 Canada","Toronto, Brampton, Scarborough"]],st.dest,k=>{st.dest=k;st.route=k==="uk"?"nurse":"pr";st.area=k==="uk"?"croydon":"brampton";setDefaults(true)});
+  seg("route",Object.entries(C().routes).map(([k,v])=>[k,v.name,v.d,v.closed]),st.route,k=>{st.route=k;setDefaults(true)});
+  $("routeNote").innerHTML=st.dest==="uk"?`<p class="warn">Care worker visas closed to people applying from outside the UK on 22 July 2025. Nurses and other registered health roles can still come on the Health and Care visa.</p>`:"";
+  seg("area",Object.entries(C().areas).map(([k,v])=>[k,v.n,v.d]),st.area,k=>st.area=k);
+  seg("home",HOMES.map((h,i)=>[String(i),h[0],`${C().cur}${comma(A().rent[i])}/month`]),String(st.home),k=>st.home=+k);
+  $("adO").value=st.ad;$("kiO").value=st.ki;
+  $("famNote").innerHTML=!r.famOK?`<p class="note">${st.dest==="uk"?"Since January 2024, students on taught Master’s courses can’t bring their partner or children.":"College students’ partners usually can’t get an open work permit, so this assumes you go alone."}</p>`:"";
+  document.querySelectorAll(".cs").forEach(e=>e.textContent=C().cur);
+  $("partW").style.display=r.famOK&&st.ad>1?"":"none";$("tuiW").style.display=r.tuition?"":"none";
+  $("salL").textContent=r.work==="part"?"Part-time pay (per month)":"Your salary (per year)";
+  try{localStorage.setItem("japa_calc",JSON.stringify(st))}catch(e){}
+}
+function setDefaults(force){const r=R();
+  if(force||!$("sal").value)$("sal").value=comma(r.work==="part"?(st.dest==="uk"?20*12.71*52/12:24*17.6*52/12):r.salary);
+  if(r.tuition&&(force||!$("tui").value))$("tui").value=comma(r.tuition);
+  $("sendh").value=comma(st.dest==="uk"?100:150);}
+document.querySelectorAll("[data-st]").forEach(b=>b.onclick=()=>{const k=b.dataset.st,d=+b.dataset.d,r=R();if(!r.famOK){render();return}
+  st[k]=Math.max(k==="ad"?1:0,Math.min(k==="ad"?2:4,st[k]+d));if(st.ad+st.ki>=3&&st.home===0)st.home=2;else if(st.ad+st.ki===2&&st.home===0)st.home=1;render()});
+["sav","sal","part","tui","sendh","fxg","fxc"].forEach(id=>$(id).addEventListener("blur",e=>{const v=num(e.target.value);e.target.value=v?comma(v):"0"}));
+const MON=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+(function(){const now=new Date(2026,9,1),sel=$("arr");for(let i=1;i<=12;i++){const d=new Date(now.getFullYear(),now.getMonth()+i,1);const o=document.createElement("option");o.value=`${d.getFullYear()}-${d.getMonth()}`;o.textContent=`${MON[d.getMonth()]} ${d.getFullYear()}`;sel.appendChild(o)}})();
+
+/* ===== tax ===== */
+function ukNet(S){const tax=Math.max(0,Math.min(S,50270)-12570)*.2+Math.max(0,S-50270)*.4,ni=Math.max(0,Math.min(S,50270)-12570)*.08+Math.max(0,S-50270)*.02,pen=Math.max(0,Math.min(S,50270)-6240)*.05;return{net:(S-tax-ni-pen)/12,tax,ni,pen}}
+function caNet(S){const fed=Math.max(0,Math.min(S,58523)*.14+Math.max(0,Math.min(S,117045)-58523)*.205+Math.max(0,S-117045)*.26-16452*.14),on=Math.max(0,Math.min(S,52886)*.0505+Math.max(0,S-52886)*.0915-12747*.0505),cpp=Math.max(0,Math.min(S,73200)-3500)*.0595,ei=Math.min(S,65700)*.0164;
+  return{net:(S-fed-on-cpp-ei)/12,tax:fed+on,ni:cpp+ei}}
+
+/* ===== the first-year model ===== */
+function model(){const uk=st.dest==="uk",r=R(),a=A(),fx=uk?num($("fxg").value)||1758:num($("fxc").value)||932,people=st.ad+st.ki;
+  const up=[],mo=[];let must=0;
+  if(uk){
+    up.push(["Visa application",r.visa*people,`£${comma(r.visa)} × ${people}`]);
+    if(r.ihs)up.push(["Immigration Health Surcharge",(r.ihs*st.ad+776*st.ki)*r.ihsYears,`${r.ihsYears} years, paid upfront`]);else up.push(["Immigration Health Surcharge",0,"Health and Care visa is exempt"]);
+    if(r.nmc)up.push(["NMC registration, CBT and OSCE",r.nmc,"Many NHS trusts pay this back"]);
+    if(r.tuition)up.push(["Tuition deposit (half)",num($("tui").value)/2,"Rest due in month 4"]);
+    up.push(["TB test",110*people,"Required from Nigeria"]);
+    up.push(["Flights Lagos → London",650*people,"One way, estimate"]);
+    must=r.tuition?(a.ldn?13347:10224)+num($("tui").value)/2:(r.mustShow?r.mustShow+(st.ad>1?285:0)+(st.ki?315+200*(st.ki-1):0):0);
+  }else{
+    if(r.pr){up.push(["PR processing fees",990*st.ad+270*st.ki,"From 30 April 2026"]);up.push(["Right of PR fee",600*st.ad,"Per adult"]);up.push(["Biometrics",Math.min(170,85*people),""]);
+      up.push(["IELTS, WES and medicals",330*st.ad+300+300*people,"Tests and paperwork"]);must=PR_POF[Math.min(4,people-1)]}
+    else{up.push(["Study permit + biometrics",r.visa+r.bio,""]);up.push(["IELTS and medical",630,""]);up.push(["Tuition (first semester)",num($("tui").value)/2,"Rest due in month 5"]);must=r.pof+r.pofFam*(people-1)+num($("tui").value)/2}
+    up.push(["Flights Lagos → Toronto",1600*people,"One way, estimate"]);up.push(["Winter clothes",400*people,"You will need them"]);
+  }
+  const rent=a.rent[st.home],room=st.home===0;
+  up.push(["First rent + deposit",uk?rent*(1+1.15):rent*2,uk?"Month 1 + 5 weeks’ deposit":"First and last month"]);
+  up.push(["Setting up",uk?400+150*people:600+200*people,"Duvet, pots, SIM, first shop"]);
+  // monthly
+  mo.push(["Rent",rent]);
+  if(!room){mo.push([uk?"Energy, water, broadband":"Utilities and internet",uk?(st.home===1?190:230):160]);
+    if(uk&&r.work!=="part")mo.push(["Council tax",Math.round((a.ldn?165:175)*(st.ad===1?.75:1))])}
+  if(!uk)mo.push(["Tenant insurance",25]);
+  mo.push(["Transport",uk?(a.ldn?165:75)*st.ad:(st.area==="toronto"?156:128)*st.ad]);
+  mo.push(["Food",(uk?260:420)*st.ad+(uk?150:220)*st.ki]);
+  mo.push(["Phone",(uk?15:45)*st.ad]);
+  if(st.ki)mo.push(["Children: school, clothes",(uk?60:80)*st.ki]);
+  mo.push(["Owambe, church, small enjoyment",uk?50:70]);
+  const send=num($("sendh").value);if(send)mo.push(["Send home",send]);
+  const monthly=mo.reduce((s,x)=>s+x[1],0);
+  // income
+  let inc=0,incNote="";
+  if(r.work==="part"){inc=num($("sal").value);incNote="Part-time, 20 hrs a week in term"}else{const t=(uk?ukNet:caNet)(num($("sal").value));inc=t.net;incNote=uk?"After tax, NI and 5% pension":"After tax, CPP and EI"}
+  const partner=r.famOK&&st.ad>1?num($("part").value):0;
+  const ccb=!uk&&r.pr?st.ki*350:0;
+  const upTotal=up.reduce((s,x)=>s+x[1],0),start=num($("sav").value)/fx;
+  // simulate 12 months
+  const [ay,am]=$("arr").value.split("-").map(Number),bal=[start-upTotal];let b=start-upTotal,broke=-1;
+  for(let m=1;m<=12;m++){const mi=(am+m-1)%12,winter=[10,11,0,1].includes(mi)&&!room?(uk?45:60):0;
+    let got=m>=r.startM?inc+partner+ccb:(m>=2?partner:0);let out=monthly+winter;
+    if(r.tuition&&m===(uk?4:5))out+=num($("tui").value)/2;
+    b+=got-out;bal.push(b);if(b<0&&broke<0)broke=m}
+  return{uk,fx,up,mo,must,monthly,inc,incNote,partner,ccb,upTotal,start,bal,broke,ay,am,r,a,people,cur:C().cur}}
+
+const money=(v,cur)=>(v<0?"−":"")+cur+comma(Math.abs(v));
+function naira(v){const a=Math.abs(v),s=v<0?"−₦":"₦";if(a>=1e9)return s+(a/1e9).toFixed(2).replace(/\.?0+$/,"")+"bn";if(a>=1e6)return s+(a/1e6).toFixed(1).replace(/\.0$/,"")+"m";if(a>=1e3)return s+Math.round(a/1e3)+"k";return s+Math.round(a)}
+function monthName(o,m){const d=new Date(o.ay,o.am+m-1,1);return `${MON[d.getMonth()]} ${d.getFullYear()}`}
+let last=null;
+function run(){const o=model();last=o;const end=o.bal[12],need=o.upTotal+o.must-o.start;
+  let cls,lab,big,p;
+  if(need>0){cls="bad";lab="Not yet";big=`You need ${naira(need*o.fx)} more`;p=`That’s before you can even apply. ${o.uk?"The Home Office":"IRCC"} wants to see ${money(o.must,o.cur)} (${naira(o.must*o.fx)}) in your account on top of the ${money(o.upTotal,o.cur)} it costs to get there.`}
+  else if(o.broke>0){cls="bad";lab="Your money runs out";big=`Broke by ${monthName(o,o.broke)} 😭`;p=`You land with ${naira((o.start-o.upTotal)*o.fx)} left and your costs beat your income. Try a cheaper area or a room, or save ${naira(-Math.min(...o.bal)*o.fx)} more.`}
+  else if(end<o.monthly){cls="meh";lab="You’ll survive. Just about.";big=`${naira(end*o.fx)} left after year one`;p=`That’s less than one month of costs. One emergency (a deposit, a flight home, a job gap) and you’re in trouble.`}
+  else{cls="ok";lab="You can afford it";big=`${naira(end*o.fx)} left after year one 🎉`;p=`That’s ${money(end,o.cur)}, or about ${Math.floor(end/o.monthly)} months of costs saved. Mum will be proud.`}
+  $("vd").className="verdict "+cls;$("vdL").textContent=lab;$("vdB").textContent=big;$("vdP").textContent=p;
+  const net=o.inc+o.partner+o.ccb;
+  $("stats").innerHTML=[["Cost to get there",money(o.upTotal,o.cur),naira(o.upTotal*o.fx)],["Every month",money(o.monthly,o.cur),naira(o.monthly*o.fx)],["Money in each month",money(net,o.cur),o.r.startM>1?`from month ${o.r.startM}`:""],["After 12 months",money(o.bal[12],o.cur),naira(o.bal[12]*o.fx)]]
+    .map(([k,v,s])=>`<div class="stat"><div class="k">${k}</div><div class="v">${v}</div><div class="s">${s}</div></div>`).join("");
+  const row=([n,v,s])=>`<tr><td>${n}${s?`<small>${s}</small>`:""}</td><td>${money(v,o.cur)}</td></tr>`;
+  $("upT").innerHTML=o.up.map(row).join("")+`<tr class="tot"><td>Total</td><td>${money(o.upTotal,o.cur)}<small>${naira(o.upTotal*o.fx)}</small></td></tr>`;
+  $("mustNote").innerHTML=o.must?`<p class="note">You also need to <b>show ${money(o.must,o.cur)}</b> (${naira(o.must*o.fx)}) in your account ${o.uk?"for 28 days":"when you apply"}. ${o.r.tuition?"That’s living costs plus the tuition you still owe. ":""}You keep this money, but it has to be there.</p>`:"";
+  $("moT").innerHTML=o.mo.map(([n,v])=>row([n,v])).join("")+`<tr class="tot"><td>Total</td><td>${money(o.monthly,o.cur)}<small>${naira(o.monthly*o.fx)}</small></td></tr>`;
+  $("moNote").innerHTML=`Income: ${money(o.inc,o.cur)} a month (${o.incNote})${o.partner?`, plus ${money(o.partner,o.cur)} from your partner`:""}${o.ccb?`, plus about ${money(o.ccb,o.cur)} Canada Child Benefit`:""}. First pay arrives in month ${o.r.startM}${o.uk?"":" (finding work without ‘Canadian experience’ takes time)"}. ${o.uk?"Visa holders can’t claim benefits (no recourse to public funds). ":""}Childcare for under-5s is not included.`;
+  chart(o);$("chartSub").textContent=`from ${monthName(o,1)}`;
+  $("res").style.display="block";$("f").style.display="none";$("cardImg").style.display="none";window.scrollTo({top:0,behavior:"smooth"});
+  track("calc",{k:st.route,kind:st.dest,home:st.area,result:need>0?"cant":o.broke>0?"broke":end<o.monthly?"just":"ok"});
+}
+function chart(o){const W=600,H=280,pl=8,pr=8,pt=24,pb=40,vals=o.bal,mx=Math.max(0,...vals),mn=Math.min(0,...vals),sp=(mx-mn)||1;
+  const x=i=>pl+i*(W-pl-pr)/12,y=v=>pt+(mx-v)/sp*(H-pt-pb);
+  const pts=vals.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(" ");
+  const css=getComputedStyle(document.documentElement),good=css.getPropertyValue("--green").trim()||"#0E7A4B",bad=css.getPropertyValue("--bad").trim()||"#C2304F",ink=css.getPropertyValue("--muted").trim();
+  const dots=vals.map((v,i)=>`<circle cx="${x(i)}" cy="${y(v)}" r="${i===12?5:3}" fill="${v<0?bad:good}"><title>${i?monthName(o,i):"Landing day"}: ${money(v,o.cur)} (${naira(v*o.fx)})</title></circle>`).join("");
+  const labs=vals.map((v,i)=>i%3===0||i===12?`<text x="${x(i)}" y="${H-8}" font-size="22" text-anchor="${i===0?"start":i===12?"end":"middle"}" fill="${ink}">${i?MON[(o.am+i-1)%12]:"Land"}</text>`:"").join("");
+  $("chart").innerHTML=`<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Balance over 12 months, ending at ${money(vals[12],o.cur)}">
+    <line x1="${pl}" x2="${W-pr}" y1="${y(0)}" y2="${y(0)}" stroke="${ink}" stroke-dasharray="4 4" stroke-width="1"/>
+    <text x="${W-pr}" y="${y(0)-8}" font-size="20" text-anchor="end" fill="${ink}">₦0</text>
+    <polyline points="${pts}" fill="none" stroke="${vals[12]<0||o.broke>0?bad:good}" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>${dots}${labs}</svg>`}
+
+/* ===== share card ===== */
+function card(o){const c=document.createElement("canvas");c.width=1080;c.height=1350;const x=c.getContext("2d");
+  const g=x.createLinearGradient(0,0,0,1350);g.addColorStop(0,"#2D3192");g.addColorStop(1,"#1C1B3A");x.fillStyle=g;x.fillRect(0,0,1080,1350);
+  x.fillStyle="#F4C430";x.fillRect(0,0,1080,16);x.fillStyle="#FFFFFF";x.font='800 46px "Bricolage Grotesque",sans-serif';x.fillText("CAN I AFFORD TO JAPA?",70,110);
+  x.font='600 36px Figtree,sans-serif';x.fillStyle="#C9CBEF";x.fillText(`🇳🇬 → ${o.uk?"🇬🇧":"🇨🇦"}  ${o.r.name} · ${o.a.n} · ${st.ad} adult${st.ad>1?"s":""}${st.ki?` + ${st.ki} kid${st.ki>1?"s":""}`:""}`,70,175);
+  const v=$("vd").className.split(" ")[1];x.fillStyle=v==="ok"?"#0E7A4B":v==="meh"?"#B5651D":"#C2304F";x.beginPath();x.roundRect?x.roundRect(70,240,940,380,36):x.rect(70,240,940,380);x.fill();
+  x.fillStyle="#FFFFFF";x.font='800 32px Figtree,sans-serif';x.fillText($("vdL").textContent.toUpperCase(),110,310);
+  const big=$("vdB").textContent;let fs=96;x.font=`800 ${fs}px "Bricolage Grotesque",sans-serif`;while(x.measureText(big).width>860&&fs>48){fs-=4;x.font=`800 ${fs}px "Bricolage Grotesque",sans-serif`}
+  const words=big.split(" ");let line="",ly=420;for(const w of words){const t=line?line+" "+w:w;if(x.measureText(t).width>860){x.fillText(line,110,ly);line=w;ly+=fs+8}else line=t}x.fillText(line,110,ly);
+  const rows=[["Cost to get there",naira(o.upTotal*o.fx)],["Costs every month",naira(o.monthly*o.fx)],["Left after 12 months",naira(o.bal[12]*o.fx)]];
+  rows.forEach(([k,val],i)=>{const yy=720+i*120;x.fillStyle="rgba(255,255,255,.08)";x.fillRect(70,yy-70,940,100);x.fillStyle="#C9CBEF";x.font='600 36px Figtree,sans-serif';x.fillText(k,100,yy);x.fillStyle="#FFFFFF";x.font='800 46px "Bricolage Grotesque",sans-serif';x.textAlign="right";x.fillText(val,980,yy);x.textAlign="left"});
+  x.fillStyle="#F4C430";x.font='800 40px "Bricolage Grotesque",sans-serif';x.fillText("Check yours:",70,1170);x.fillStyle="#FFFFFF";x.font='700 40px Figtree,sans-serif';x.fillText("japa-life.pages.dev/calculator",70,1225);
+  x.fillStyle="#C9CBEF";x.font='600 26px Figtree,sans-serif';x.fillText("Real 2026 fees. Estimate only, not advice.",70,1290);return c}
+$("share").onclick=async()=>{if(!last)return;const c=card(last),text=`${$("vdB").textContent} in ${last.a.n} as a ${last.r.name.toLowerCase()} 😅 Check yours:`,url="https://japa-life.pages.dev/calculator/";
+  track("card",{kind:"calc"});
+  try{const blob=await new Promise(r=>c.toBlob(r,"image/png"));const file=new File([blob],"my-japa-result.png",{type:"image/png"});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:`${text} ${url}`});return}
+    if(navigator.share){await navigator.share({text,url});return}}catch(e){if(e&&e.name==="AbortError")return}
+  const img=$("cardImg");img.src=c.toDataURL("image/png");img.style.display="block";
+  try{await navigator.clipboard.writeText(`${text} ${url}`);$("share").textContent="Link copied. Long-press the image to save it"}catch(e){$("share").textContent="Long-press the image to save it"}};
+$("run").onclick=run;$("again").onclick=()=>{$("res").style.display="none";$("f").style.display="block";$("share").textContent="Share my result"};
+
+/* ===== anonymous usage stats (same as the game; respects the game's opt-out) ===== */
+function track(name,props){try{if(localStorage.getItem("japa_nostats")==="1")return;let u=localStorage.getItem("japa_uid");if(!u){u=Math.random().toString(36).slice(2,12);localStorage.setItem("japa_uid",u)}
+  const body=JSON.stringify({uid:u,name,props:props||{}});if(navigator.sendBeacon)navigator.sendBeacon(STATS_URL+"/e",new Blob([body],{type:"text/plain"}));else fetch(STATS_URL+"/e",{method:"POST",body,keepalive:true})}catch(e){}}
+setDefaults(false);render();track("calc_open",{});
+})();
+</script>
+</body>
+</html>

@@ -2678,7 +2678,7 @@ function showStart(){
     <div class="lbl">Skin tone</div><div class="sw">${SKINS.map((c,i)=>`<button data-skin="${i}" class="${draft.skin===i?"on":""}" style="background:${c}" aria-label="Skin ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Outfit</div><div class="sw">${SHIRTS.map((c,i)=>`<button data-shirt="${i}" class="${draft.shirt===i?"on":""}" style="background:${c};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)" aria-label="Outfit ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Hair</div><div class="sw pills">${HAIRS.map((h,i)=>`<button data-hair="${i}" class="${draft.hair===i?"on":""}">${h}</button>`).join("")}</div>
-    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start: 🇳🇬 → 🇬🇧 London</button><button class="close" id="qsca">⚡ Quick start: 🇳🇬 → 🇨🇦 Toronto</button><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
+    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start: 🇳🇬 → 🇬🇧 London</button><button class="close" id="qsca">⚡ Quick start: 🇳🇬 → 🇨🇦 Toronto</button><a class="close" href="/calculator/" style="box-sizing:border-box;display:block;text-align:center;text-decoration:none;color:inherit">🧮 Can I afford to japa? Real 2026 costs</a><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
   const nm=$("nm");nm.oninput=()=>draft.name=nm.value;
   st.querySelectorAll("[data-skin]").forEach(b=>b.onclick=()=>{draft.skin=+b.dataset.skin;showStart()});
   st.querySelectorAll("[data-shirt]").forEach(b=>b.onclick=()=>{draft.shirt=+b.dataset.shirt;showStart()});
