@@ -104,6 +104,8 @@ async function load(){
       ${bars(group("milestone:what:"),"Life milestones")}
       ${bars(group("biz:type:"),"Side businesses started")}
       ${bars({"Installed as app":sum("ev:install"),"Delivery shifts":sum("ev:delivery")},"Other")}
+      ${bars({"Billboard views":sum("ev:ad_view"),"Billboard taps":sum("ev:ad_click"),"Clicked through to brand":sum("ev:ad_visit")},"Billboards (14 days)")}
+      ${bars(group("ad_view:k:"),"Billboard views by slot")}
     </div>`;
   $("#out").onclick=()=>{try{localStorage.removeItem("japa_stats_key")}catch(e){}key="";login()};
 }
