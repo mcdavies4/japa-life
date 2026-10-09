@@ -6,8 +6,8 @@
 <title>Abroad Life: Japa Life edition</title>
 <meta name="description" content="Naija life in London, free in your browser. Work shifts, pay rent on Saturday, attend owambes, keep Mum happy and chase your japa dream with real players on Rye Lane.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Abroad Life: Japa Life edition">
-<meta property="og:description" content="Life after you japa. Owambe Night every evening at 8 PM UK time: dance, spray money, top the board. Play free with real people.">
+<meta property="og:title" content="Abroad Life">
+<meta property="og:description" content="Life after you japa: Nigerian and Ghanaian life in London and Toronto. Owambe Night every evening at 8 PM UK time. Play free with real people.">
 <meta property="og:image" content="https://japa-life.pages.dev/og.png">
 <meta property="og:url" content="https://japa-life.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -507,8 +507,8 @@ const ZONES={
    A "pack" = origin + destination. Ready packs are playable; the rest collect votes.
    To launch a pack: add its content, then add "xx-yy" to PACKS_READY. */
 const ORIGINS={
-  ng:{name:"Nigeria",flag:"🇳🇬",cur:"₦",ed:"Japa Life",line:"Jollof, owambe, ‘have you eaten?’, and Mum on WhatsApp at 6am"},
-  gh:{name:"Ghana",flag:"🇬🇭",cur:"GH₵",line:"Kenkey, Sunday service, Mum asking when you’re coming home"},
+  ng:{name:"Nigeria",flag:"🇳🇬",cur:"₦",ed:"Japa Life",city:"Lagos",air:"LOS",fx:{uk:1760,ca:990},line:"Jollof, owambe, ‘have you eaten?’, and Mum on WhatsApp at 6am"},
+  gh:{name:"Ghana",flag:"🇬🇭",cur:"GH₵",ed:"Ghana edition",city:"Accra",air:"ACC",fx:{uk:15.59},line:"Kenkey, Sunday service, Mum asking when you’re coming home"},
   ke:{name:"Kenya",flag:"🇰🇪",cur:"KSh",line:"Chai, M-Pesa home, and the group chat from Nairobi"},
   za:{name:"South Africa",flag:"🇿🇦",cur:"R",line:"Braai withdrawal, load-shedding jokes, Ma on the phone"},
   zw:{name:"Zimbabwe",flag:"🇿🇼",cur:"US$",line:"Sadza cravings, care-home shifts, sending money to Harare"},
@@ -526,7 +526,7 @@ const DESTS={
   au:{name:"Australia",flag:"🇦🇺",city:"Sydney",line:"PR points, beach on weekends, Mum calling at 3am her time."},
   ae:{name:"UAE",flag:"🇦🇪",city:"Dubai",line:"Tax-free salary, 45°C, and visa tied to your job."},
   nl:{name:"Netherlands",flag:"🇳🇱",city:"Amsterdam",line:"Bikes everywhere, tiny flats, and the 30% ruling."}};
-const PACKS_READY={"ng-uk":1,"ng-ca":1};
+const PACKS_READY={"ng-uk":1,"ng-ca":1,"gh-uk":1};
 function packReady(o,d){return !!PACKS_READY[`${o}-${d}`]}
 function myVotes(){try{return JSON.parse(localStorage.getItem("japa_votes")||"[]")}catch(e){return[]}}
 function castVote(o,d){const k=`${o}-${d}`,v=myVotes();if(v.includes(k))return false;v.push(k);try{localStorage.setItem("japa_votes",JSON.stringify(v))}catch(e){}track("vote",{what:k});return true}
@@ -566,6 +566,12 @@ Object.entries(ZONES).forEach(([zid,z])=>{
   z.station=z.places.find(p=>p.type==="station")||null;
 });
 
+const MUM_GH=[
+ "Me ba, have you eaten? Not bread o. Real food.","Your cousin Yaw has finished his master’s. I’m just saying.","Call me when you’re free. It’s nothing. (It’s something.)",
+ "Wear a jacket. The radio says London cold can enter your bones.","Pastor asked about you. I said you’re fine. Are you fine?","Auntie Akosua’s daughter is getting married in December. Bring kente.",
+ "Don’t forget your vitamins. And your mother.","Your father says hi. He’s sitting right here watching the news.","Chale, send pictures of your room. I want to see if it’s neat.",
+ "Did you go to church on Sunday? God is watching. So am I.","I’m sending shito with Uncle Kofi next month. Make space in your fridge.",
+ "Don’t let those Nigeri\u200bans tell you their jollof is better. We know the truth.","Remember the family funeral fund this month. Everyone can see the list.","Medaase for the money you sent. Grandma bought new cloth for church."];
 const MUM=[
  "Have you eaten? Don’t say yes if it’s bread.",
  "Your cousin Chidi has finished his master’s. Just saying.",
@@ -632,15 +638,25 @@ const FXR=1.8;
 const gbp=n=>{if(isCA()){const v=Math.abs(n)*FXR;return (n<0?"−$":"$")+(v>=1000?Math.round(v).toLocaleString():v.toFixed(2).replace(/\.00$/,""))}return (n<0?"−£":"£")+Math.abs(n).toFixed(2).replace(/\.00$/,"")};
 /* Naira: starts at official rates (7 Oct 2026: £1 ≈ ₦1,760, C$1 ≈ ₦990) and drifts daily. */
 const FX_BASE={uk:1760,ca:990};
-function fxRate(){const c=(S&&S.country)||"uk";return (S&&S.fx&&S.fx[c])||FX_BASE[c]}
+function fxKey(){const c=(S&&S.country)||"uk",o=(S&&S.origin)||"ng";return o==="ng"?c:o+"-"+c}
+function fxBase(){const c=(S&&S.country)||"uk",o=ORIGINS[(S&&S.origin)||"ng"]||ORIGINS.ng;return (o.fx&&o.fx[c])||FX_BASE[c]}
+function fxRate(){return (S&&S.fx&&S.fx[fxKey()])||fxBase()}
 function fmtN(v){const a=Math.abs(v),cs=(ORIGINS[(S&&S.origin)||"ng"]||ORIGINS.ng).cur||"₦",s=v<0?"−"+cs:cs;if(a>=1e9)return s+(a/1e9).toFixed(2).replace(/\.?0+$/,"")+"bn";if(a>=1e6)return s+(a/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,"")+"m";if(a>=1e4)return s+Math.round(a/1e3)+"k";return s+Math.round(a).toLocaleString()}
 function ngn(units){return units*(isCA()?FXR:1)*fxRate()}
 function nn(units){return fmtN(ngn(units))}
-function fxNewDay(d){if(!S)return;S.fx=S.fx||{};const c=S.country||"uk",b=FX_BASE[c];let r=S.fx[c]||b;const prev=r;
+function fxNewDay(d){if(!S)return;S.fx=S.fx||{};const c=fxKey(),b=fxBase();let r=S.fx[c]||b;const prev=r;
   r*=1+(Math.random()-.5)*.03;if(Math.random()<.04)r*=Math.random()<.6?1.06:.95;r=Math.max(b*.85,Math.min(b*1.2,r));S.fx[c]=Math.round(r*100)/100;
   S.fxPrev=prev;const ch=(r-prev)/prev;
   if(ch>.04)S.evq.push("fx_up");else if(ch<-.04)addMsg("Cousin Ifeanyi",`Naira has gained small. ${isCA()?"C$1":"£1"} is now ₦${Math.round(r).toLocaleString()}. Your money will buy less this week o.`)}
-function cur(s){if(!isCA()||s==null)return s;return String(s).replace(/(−)?£(\d[\d,]*(?:\.\d+)?)/g,(m,neg,num)=>{const v=parseFloat(num.replace(/,/g,""))*FXR;return (neg||"")+"$"+(v>=100?Math.round(v).toLocaleString():v.toFixed(2).replace(/\.00$/,""))})}
+function isGH(){return S?S.origin==="gh":draft&&draft.origin==="gh"}
+const GH_WORDS=[[/Japa Life/g,"Abroad Life"],[/Japa Level/g,"Abroad Level"],[/[Tt]he japa lottery/g,m=>m[0]+"he travel lottery"],[/Japa lottery/g,"Travel lottery"],[/japa lottery/g,"travel lottery"],
+  [/Nigerians/g,"Ghanaians"],[/Nigerian/g,"Ghanaian"],[/Nigeria/g,"Ghana"],[/Naija/g,"Ghana"],[/NAIJA/g,"GHANA"],[/Naira/g,"Cedi"],[/naira/g,"cedis"],[/₦/g,"GH₵"],
+  [/Lagos/g,"Accra"],[/LAGOS/g,"ACCRA"],[/\bLOS\b/g,"ACC"],[/Lekki/g,"East Legon"],[/Ikeja/g,"Osu"],[/Apapa/g,"Tema"],[/danfo/g,"trotro"],[/Chicken Republic/g,"Papaye"],
+  [/Mama Put/g,"Chop Bar"],[/MAMA PUT/g,"CHOP BAR"],[/Puff-puff/g,"Bofrot"],[/puff-puff/g,"bofrot"],[/PUFF-PUFF/g,"BOFROT"],[/Suya/g,"Chichinga"],[/suya/g,"chichinga"],[/SUYA/g,"CHICHINGA"],
+  [/egusi/g,"palm nut soup"],[/\bamala\b/g,"banku"],[/\beba\b/g,"kenkey"],[/pepper soup/g,"light soup"],[/Wizkid/g,"highlife"],[/aso-ebi|aso ebi/g,"matching kente"],[/\bgele\b/g,"duku"],
+  [/Ifeanyi/g,"Kwame"],[/Ngozi/g,"Akosua"],[/Emeka/g,"Kofi"],[/Chidi/g,"Yaw"],[/Kunle/g,"Kwesi"],[/Kelechi/g,"Kojo"],[/Badmus/g,"Mensah"],[/Folake/g,"Esi"],[/Okafor/g,"Owusu"],[/Adeyemi/g,"Asante"],[/Bisi\b/g,"Abena"],[/Adewale/g,"Nana"],[/Seyi/g,"Efua"]];
+function locGH(t){let x=String(t);for(const[a,b]of GH_WORDS)x=x.replace(a,b);return x}
+function cur(s){if(s==null)return s;if(isGH())s=locGH(s);if(!isCA())return s;return String(s).replace(/(−)?£(\d[\d,]*(?:\.\d+)?)/g,(m,neg,num)=>{const v=parseFloat(num.replace(/,/g,""))*FXR;return (neg||"")+"$"+(v>=100?Math.round(v).toLocaleString():v.toFixed(2).replace(/\.00$/,""))})}
 function day(){return Math.floor(S.T/1440)}
 function mod(){return Math.floor(S.T%1440)}
 function dow(){return day()%7}
@@ -1143,9 +1159,9 @@ function openPack(){const dt=dettyInit(),kg=packKg(),cap=dt.bags*23,over=Math.ma
   $("bag2").onclick=()=>{dt.bags=dt.bags>1?1:2;openPack()};
   $("chk").onclick=()=>{const items=PACK.filter(p=>dt.bag[p.id]&&!dt.paid[p.id]);if(buy)money(-buy,"Christmas shopping for Lagos");items.forEach(p=>dt.paid[p.id]=true);if(fee)money(-fee,over?"Overweight baggage fee":"Extra bag");
     dt.checked=true;dtick("checkin");closeSheet();sfx.pay();toast(over?`Checked in. The agent sighed at the ${over} kg extra. Gate B32!`:"Bag checked in ✅ Head to Gate B32 at the end of the hall.")}}
-function boardFlight(){const dt=S.detty;busy=true;const fade=$("fade");fade.innerHTML=`✈️<b>${isCA()?"YYZ":"LHR"} → LOS</b><small>Jollof rice on board. The man next to you has already started clapping.</small>`;fade.classList.add("on");
+function boardFlight(){const dt=S.detty;busy=true;const fade=$("fade");fade.innerHTML=`✈️<b>${isCA()?"YYZ":"LHR"} → ${origin().air||"LOS"}</b><small>Jollof rice on board. The man next to you has already started clapping.</small>`;fade.classList.add("on");
   setTimeout(()=>{fade.classList.remove("on");busy=false;
-    openSheet(`<h2>🇳🇬 Welcome to Lagos!</h2><p class="sub">32°C. The heat hugged you at the airport door. How detty are you going?</p>
+    openSheet(`<h2>${origin().flag} Welcome to ${origin().city||"Lagos"}!</h2><p class="sub">32°C. The heat hugged you at the airport door. How detty are you going?</p>
       <div class="list"><button class="opt" id="tc"><span class="e">🏡</span><div><b>Family Christmas</b><span>${gbp(150)} · rice, goat meat, church, 40 relatives</span></div></button>
       <button class="opt" id="tf" ${S.m>=700?"":"disabled"}><span class="e">🎤</span><div><b>Full Detty December</b><span>${S.m>=700?`${gbp(700)} · concerts, beach clubs, owambes, traffic`:"You need "+gbp(700)}</span></div></button></div>`);
     $("tc").onclick=()=>finishTrip("family",150);const tf=$("tf");if(tf)tf.onclick=()=>finishTrip("full",700)},2600)}
@@ -1178,15 +1194,15 @@ function buildAirport(zone){
   for(let z=-24;z<=12;z+=3)for(const q of[-1,1])box(.12,4.2,.12,"#7B8794",q*7.4,4.2,z);
   // departures board
   const db=new THREE.Mesh(new THREE.PlaneGeometry(9,3.2),own(new THREE.MeshBasicMaterial({map:(()=>{const[c,x]=cvs(1024,364);x.fillStyle="#0E1726";x.fillRect(0,0,1024,364);x.fillStyle="#F4C430";x.font='800 40px Figtree,sans-serif';x.fillText("DEPARTURES",30,52);
-    const rows=[["21:40","LAGOS","LOS","B32","BOARDING"],["21:55","ACCRA","ACC","B30","GO TO GATE"],["22:10","ABUJA","ABV","B36","CHECK-IN OPEN"],["22:30","NAIROBI","NBO","A14","ON TIME"],["23:05","JOHANNESBURG","JNB","C04","ON TIME"]];
+    const rows=isGH()?[["21:40","ACCRA","ACC","B32","BOARDING"],["21:55","LAGOS","LOS","B30","GO TO GATE"],["22:10","ABUJA","ABV","B36","CHECK-IN OPEN"],["22:30","NAIROBI","NBO","A14","ON TIME"],["23:05","JOHANNESBURG","JNB","C04","ON TIME"]]:[["21:40","LAGOS","LOS","B32","BOARDING"],["21:55","ACCRA","ACC","B30","GO TO GATE"],["22:10","ABUJA","ABV","B36","CHECK-IN OPEN"],["22:30","NAIROBI","NBO","A14","ON TIME"],["23:05","JOHANNESBURG","JNB","C04","ON TIME"]];
     rows.forEach((r,i)=>{const y=110+i*52;x.fillStyle=i===0?"#3DCB8A":"#E8ECF2";x.font='700 34px "Courier New",monospace';x.fillText(r[0],30,y);x.fillText(r[1],170,y);x.fillText(r[2],560,y);x.fillText(r[3],680,y);x.fillStyle=i===0?"#3DCB8A":"#F4C430";x.fillText(r[4],790,y)});return new THREE.CanvasTexture(c)})()})));
   db.position.set(0,5.4,15.95);db.rotation.y=Math.PI;root.add(db);
   // check-in desks on the left with LOS screens
-  for(let z=-4;z<=6;z+=3.4){box(1.2,1.1,2.6,"#2D3192",-6.2,.55,z);box(1.25,.08,2.65,"#D8DCE2",-6.2,1.12,z);const sc=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.7),own(new THREE.MeshBasicMaterial({map:textTex("LOS · Lagos","#0E1726","#3DCB8A",512,160,64)})));sc.position.set(-7.4,3,z);sc.rotation.y=Math.PI/2;root.add(sc)}
+  for(let z=-4;z<=6;z+=3.4){box(1.2,1.1,2.6,"#2D3192",-6.2,.55,z);box(1.25,.08,2.65,"#D8DCE2",-6.2,1.12,z);const sc=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.7),own(new THREE.MeshBasicMaterial({map:textTex(`${origin().air||"LOS"} · ${origin().city||"Lagos"}`,"#0E1726","#3DCB8A",512,160,64)})));sc.position.set(-7.4,3,z);sc.rotation.y=Math.PI/2;root.add(sc)}
   // queue barriers
   for(let z=-6;z<=6;z+=2)for(const x of[-3.4,-2]){box(.08,1,.08,"#9AA3AD",x,.5,z);box(.12,.05,.12,"#4A5568",x,.02,z)}for(let z=-6;z<6;z+=2)for(const x of[-3.4,-2])box(.03,.06,2,"#2D3192",x,.92,z+1);
   // gate sign
-  plane(3.4,.8,own(new THREE.MeshBasicMaterial({map:textTex("🛫 Gate B32 · Lagos","#F4C430","#1C1B3A",640,150,58)})),0,3.6,12.5,Math.PI);
+  plane(3.4,.8,own(new THREE.MeshBasicMaterial({map:textTex(`🛫 Gate B32 · ${origin().city||"Lagos"}`,"#F4C430","#1C1B3A",640,150,58)})),0,3.6,12.5,Math.PI);
   box(4.6,.9,.6,"#4A5568",0,.45,12.2);
   plane(3.6,.8,own(new THREE.MeshBasicMaterial({map:textTex("EXIT  ➜  Taxis and trains","#1C1B3A","#F4C430",640,128,50)})),0,3.4,-21.55,0)}
 function gmgBag(){return texMat("gmg",()=>{const[c,x]=cvs(64,64);x.fillStyle="#F2F2F2";x.fillRect(0,0,64,64);x.fillStyle="#C2304F";for(let i=0;i<64;i+=16){x.fillRect(i,0,8,64)}x.fillStyle="rgba(45,49,146,.75)";for(let i=0;i<64;i+=16){x.fillRect(0,i,64,8)}return rtex(c)})}
@@ -1222,7 +1238,7 @@ function adFor(id,k){if(ADS[id])return Object.assign({id},ADS[id]);if(id==="ryel
 function posterTex(ad){const[c,x]=cvs(1024,384);x.fillStyle=ad.bg||"#1C1B3A";x.fillRect(0,0,1024,384);const fg=ad.fg||"#FFFFFF";
   x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(880,40,240,0,7);x.fill();
   x.font='120px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textBaseline="middle";x.fillText(ad.em||"",36,140);
-  x.fillStyle=fg;x.font='800 64px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.textAlign="left";x.font='800 72px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.fillText(ad.brand,190,128,800);
+  x.fillStyle=fg;x.font='800 64px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.textAlign="left";x.font='800 72px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.fillText(cur(ad.brand),190,128,800);
   x.font='600 38px "Figtree",system-ui,sans-serif';x.globalAlpha=.92;x.font='600 44px "Figtree",system-ui,sans-serif';x.fillText(cur(ad.line),44,272,940);x.globalAlpha=1;
   x.fillStyle="rgba(0,0,0,.35)";x.fillRect(936,336,72,32);x.fillStyle="#FFF";x.font='700 20px system-ui,sans-serif';x.textAlign="center";x.fillText("AD",972,353);
   const t=new THREE.CanvasTexture(c);t.anisotropy=4;
@@ -1289,7 +1305,7 @@ function buildZone(zid){
     for(let i=0;i<n;i++){
       const z=slotZ(zone,i),place=activePlaces(zone).find(p=>p.side===side&&p.slot===i);
       const lmk=(LANDMARKS[zid]||[]).find(l=>!l.end&&l.side===side&&l.slot===i);if(lmk){buildLandmark(lmk,side,z,zone);continue}
-      const type=place?place.type:null,name=place?place.name:names[i];
+      const type=place?place.type:null,name=cur(place?place.name:names[i]);
       const nearBridge=zone.bridge!==undefined&&Math.abs(z-zone.bridge)<8;
       const floors=type==="church"||type==="hall"?2:nearBridge?1:1+Math.floor(rnd()*3);
       const h=type==="church"?13:4+3*floors,w=9.6,d=10;
@@ -1409,7 +1425,7 @@ function buildZone(zid){
   // spot markers + labels
   BUILDING=false;
   spots().forEach(p=>{
-    const lab=p.kind==="exit"?`→ ${p.name}`:`${p.emoji} ${p.short}`;
+    const lab=cur(p.kind==="exit"?`→ ${p.name}`:`${p.emoji} ${p.short}`);
     const sp=new THREE.Sprite(own(new THREE.SpriteMaterial({map:textTex(lab,p.kind==="exit"?"rgba(244,196,48,.96)":"rgba(255,255,255,.95)","#1C1B3A",512,112,50,true),depthTest:false})));
     sp.scale.set(3.6,.8,1);sp.position.set(p.x,3.4,p.z);sp.renderOrder=5;root.add(sp);p.label=sp;
     const ring=new THREE.Mesh(new THREE.RingGeometry(.7,1,32),own(new THREE.MeshBasicMaterial({color:p.kind==="exit"?0xffffff:0xF4C430,transparent:true,opacity:.9,side:THREE.DoubleSide})));
@@ -1605,8 +1621,8 @@ function updateChips(){
   const px=player.position.x,pz=player.position.z;
   const list=spots().map(p=>({p,d:Math.hypot(p.x-px,p.z-pz)})).sort((a,b)=>a.d-b.d);
   const bk=S.booked?`<button class="chip glass" data-bk="1" style="border:2px solid var(--yellow)">📌 ${S.booked.c==="care"?"Care shift":S.booked.c==="warehouse"?"Warehouse shift":"Till shift"} ${timeStr(S.booked.start*60)}</button>`:"";
-  const ph=partyPhase(),pc=ph.live||ph.soon?`<button class="chip glass live" data-ow="1">🎉 ${ph.live?"Owambe Night LIVE":`Owambe in ${ph.in} min`}${P.liveN?` · ${P.liveN} there`:""} · Join</button>`:"";liveCount(ph);const dsn=S.zone==="airport"?"off":dettyState(),dch=dsn==="on"&&!(S.detty&&S.detty.flown)?`<button class="chip glass xmas" data-detty="1">🎄 Detty December · Fly to Lagos</button>`:dsn==="soon"?`<button class="chip glass xmas" data-detty="1">🎄 Detty December in ${dettyDays()} days</button>`:"";
-  if(setChips(pc+dch+bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("")))return;
+  const ph=partyPhase(),pc=ph.live||ph.soon?`<button class="chip glass live" data-ow="1">🎉 ${ph.live?"Owambe Night LIVE":`Owambe in ${ph.in} min`}${P.liveN?` · ${P.liveN} there`:""} · Join</button>`:"";liveCount(ph);const dsn=S.zone==="airport"?"off":dettyState(),dch=dsn==="on"&&!(S.detty&&S.detty.flown)?`<button class="chip glass xmas" data-detty="1">🎄 Detty December · Fly to ${origin().city||"Lagos"}</button>`:dsn==="soon"?`<button class="chip glass xmas" data-detty="1">🎄 Detty December in ${dettyDays()} days</button>`:"";
+  if(setChips(pc+dch+bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${cur(p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short)} · ${Math.round(d)} m</button>`).join("")))return;
   $("chips").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>goTo(b.dataset.go));
   const ow=$("chips").querySelector("[data-ow]");if(ow)ow.onclick=joinOwambe;
   const dc=$("chips").querySelector("[data-detty]");if(dc)dc.onclick=()=>dettyState()==="on"?openDetty():toast(`🎄 Detty December starts 1 December. Start saving for that flight!`);
@@ -1655,7 +1671,7 @@ function newDay(d){
     if(S.m<0){S.n.f=clamp(S.n.f-20);S.credit=Math.max(0,(S.credit||0)-40)}else{S.flags.firstRent=true;S.credit=Math.min(999,(S.credit||0)+6+(F().cbCard?3:0))}}
   if(has("pet")&&Math.random()<.25){money(10,"Gift from Mum");addMsg("Mum","I sent you £10. Buy yourself something. Not suya.")}
   if(w===4){if(rentNow())addMsg("Landlord",`Reminder: rent of £${rentNow()} is due tomorrow (Saturday).`);addMsg("Aunty Bisi","Owambe at Royal Owambe Hall, Woolwich, tomorrow from 6 PM. Aso ebi optional. Attendance compulsory.")}
-  addMsg("Mum",pick(MUM));
+  addMsg("Mum",pick(isGH()?MUM_GH:MUM));
   if(w===6)addMsg("Abundant Grace","Sunday service today, 9 AM to 1 PM. Free jollof after. Come with your friends!");
   if(F().niDue&&d>=F().niDue&&!F().ni){F().ni=true;addMsg("HMRC","Your National Insurance number has arrived by post: QQ 12 34 56 C.")}
   if(F().addrDue&&d>=F().addrDue&&!F().addr){F().addr=true;addMsg("Landlord","Letter attached confirming you live at Flat 3B. Rent is still due Saturday.")}
@@ -2340,6 +2356,17 @@ function fxEvents(){LE.push(
  {id:"fx_up",forced:1,from:"Mum",av:"💱",t:()=>`Have you seen the news? Naira has fallen again! ${isCA()?"C$1":"£1"} is now ₦${Math.round(fxRate()).toLocaleString()}. If you send £100 now, we’ll get ${nn(100)}.`,c:[
   ["Send £100 while the rate is good",{m:-100,sent:1,f:6},"Mum received it within minutes. She has already priced three bags of rice and a new generator."],
   ["Save it for your dream instead",{f:2},"Mum: ‘Okay o. Your dream is also our dream.’ The guilt is free of charge."]]});}
+function ghEvents(){LE.push(
+ {id:"funeral_gh",cond:()=>isGH(),from:"Family WhatsApp",av:"⚫",t:()=>"Uncle Kwabena’s funeral is in Kumasi next month. The family has shared the contribution list, and everyone can see who has paid.",c:[
+  ["Pay your share (£200)",{m:-200,f:-5,rs:8},"Your name is on the list in bold. Grandma called to bless you."],
+  ["Send £50 and a long voice note",{m:-50,rs:1},"You sent a four-minute voice note about the cost of living in London. Auntie replied with one 👍🏾."],
+  ["Mute the group",{f:5,rs:-6},"Peace. Until Mum called asking why your name is not on the list. 😬"]]},
+ {id:"gh_independence",cond:()=>isGH(),from:"Ghana Union UK",av:"🇬🇭",t:()=>"Ghana Independence party in Peckham this weekend! Red, gold and green everywhere, highlife until late.",c:[
+  ["Go in kente (£25)",{m:-25,f:25,rs:3},"You danced azonto with an uncle who is 70 and stronger than you. Ayekoo!"],["Watch the livestream at home",{f:6},"You watched from bed and still sang the anthem with your hand on your chest."]]},
+ {id:"shito",cond:()=>isGH(),from:"Mum",av:"🫙",t:()=>"I’ve sent you two jars of shito with Auntie Esi. She lands at Heathrow on Thursday. Don’t make her wait.",c:[
+  ["Go to Heathrow to collect it (£12)",{m:-12,f:10},"Auntie Esi also gave you kenkey, gari and a lecture about marriage. Worth it."],["Ask her to post it",{m:-6,f:-3},"It arrived three weeks later. One jar had leaked. Your post office will never be the same."]]},
+ {id:"jollof_war",from:"Coworker",av:"🍛",t:()=>isGH()?"Your Nigeri\u200ban coworker says Ghana jollof is ‘just rice with tomato’. The whole break room is watching.":"Your Ghanaian coworker says Naija jollof is ‘party rice for people who fear flavour’. The whole break room is watching.",c:[
+  ["Defend your jollof with your life",{f:12,rs:2},"Forty minutes of debate. Someone called HR. You won. Probably."],["Suggest a cook-off on Friday (£15)",{m:-15,f:10},"Both pots were empty in ten minutes. Nobody will admit who won."],["Say both are nice",{f:-5,rs:-2},"Traitor. Even your own Mum would not defend you."]]});}
 function caEvents(){LE.push(
  {id:"canexp",cond:()=>isCA(),from:"Recruiter",av:"📋",t:()=>"Great CV! Very impressive. Just one question: do you have Canadian experience?",c:[
   ["‘How do I get it if nobody hires me?’",{f:-5},"‘That’s a great question!’ She did not answer it. She wished you luck."],
@@ -2502,7 +2529,7 @@ function makeCard(kind,d){track("card",{kind});
     x.fillStyle="#F4C430";x.font='800 46px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(d.won?`${d.player}: Chairman of the Night`:`${d.player} sprayed ${gbp(d.mine)}`,90,1080);
     x.fillStyle="#FFFFFF";x.font='600 34px Figtree, sans-serif';x.fillText("Every night, 8 PM UK time. Come and dance.",90,1140);return c}
   if(kind==="ijgb"){const{c,x}=cardBase("BOARDING PASS","Detty December");
-    x.fillStyle="#FFFFFF";x.fillRect(70,280,940,700);x.fillStyle="#1C1B3A";x.font='800 130px "Bricolage Grotesque", Figtree, sans-serif';x.fillText("LHR",110,470);x.fillText("LOS",720,470);
+    x.fillStyle="#FFFFFF";x.fillRect(70,280,940,700);x.fillStyle="#1C1B3A";x.font='800 130px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(isCA()?"YYZ":"LHR",110,470);x.fillText(origin().air||"LOS",720,470);
     x.font="90px sans-serif";x.fillText("✈️",470,450);x.font='700 38px Figtree, sans-serif';x.fillText(`Passenger: ${d.player}`,110,580);x.fillText(`Trip: ${d.kind}`,110,640);x.fillText("Luggage: 2 x Ghana Must Go",110,700);x.fillText("Seat: wherever Aunty hasn’t sat",110,760);
     stamp(x,800,1060,170,"OFFICIAL","IJGB","I JUST GOT BACK","#E5487A");return c}
 }
@@ -2705,7 +2732,7 @@ const LE=[
  {id:"heating",cond:()=>!isCA(),from:"British Gas",av:"🔥",t:()=>"Your energy bill is ready. It’s more than your rent in Lagos was for a year.",c:[
   ["Pay it and wear three jumpers",{m:-40,f:-5},"You can see your breath indoors. Very British experience."],["Pay it and keep the heating on",{m:-70,f:5},"Warm. Poor. Warm."]]}
 ];
-ch4Events();caEvents();fxEvents();
+ch4Events();caEvents();fxEvents();ghEvents();
 function evById(id){return LE.find(e=>e.id===id)}
 function pickAuto(){const ok=LE.filter(e=>!e.forced&&(!e.once||!S.seen[e.id])&&(!e.cond||e.cond()));return ok.length?pick(ok):null}
 function fxChips(fx){return Object.entries(fx).filter(([k,v])=>k!=="sent"&&v).map(([k,v])=>{const L={m:"",f:"Fun",e:"Energy",h:"Hunger",love:"Love",rep:"Rating",rs:"Respect"}[k];
@@ -3015,7 +3042,7 @@ function tick(){
     let np=null,best=99;spots().forEach(p=>{const d=Math.hypot(p.x-player.position.x,p.z-player.position.z);if(p.label)p.label.visible=d>5&&!PH.on;if(d<(p.kind==="exit"?3.2:2.6)&&d<best){best=d;np=p}});
     if(D.on)np=null;
     if(np!==nearPlace){nearPlace=np;const a=$("act");
-      if(np){a.innerHTML=np.type==="busstop"?`Catch a bus<small>£1.75 anywhere in London</small>`:np.kind==="exit"?`Walk to ${np.name}<small>${ZONES[np.to].area}</small>`:np.type==="station"?`Enter station<small>Trains across London</small>`:`Enter ${np.short}<small>${isOpen(np.type)?"Open now":"Closed now"}</small>`;a.style.display="block"}
+      if(np){a.innerHTML=np.type==="busstop"?`Catch a bus<small>£1.75 anywhere in London</small>`:np.kind==="exit"?`Walk to ${np.name}<small>${ZONES[np.to].area}</small>`:np.type==="station"?`Enter station<small>Trains across London</small>`:`Enter ${cur(np.short)}<small>${isOpen(np.type)?"Open now":"Closed now"}</small>`;a.style.display="block"}
       else a.style.display="none"}
     if(PH.on){const a=player.rotation.y+PH.ang;camPos.set(Math.max(-6.4,Math.min(6.4,player.position.x+Math.sin(a)*5)),2.5,player.position.z+Math.cos(a)*5);camera.position.lerp(camPos,Math.min(1,dt*4));
       camLook.set(player.position.x,1.7,player.position.z);camera.lookAt(camLook)}else{
@@ -3053,32 +3080,33 @@ function showStart(){
   if(saved&&!draft.editing){
     const z=ZONES[saved.zone]||ZONES.ryelane;
     st.innerHTML=`<div class="card"><div class="band" style="height:30px;background:var(--indigo)"></div><div class="in" style="padding:18px">
-      <h1>Abroad Life</h1><p class="sub">${origin().flag} ${esc(origin().ed||"")} · Welcome back, ${esc(saved.name)}. You’re on ${z.name}, ${z.area}.</p>
+      <h1>Abroad Life</h1><p class="sub">${(ORIGINS[saved.origin]||ORIGINS.ng).flag} ${esc((ORIGINS[saved.origin]||ORIGINS.ng).ed||"")} · Welcome back, ${esc(saved.name)}. You’re on ${z.name}, ${z.area}.</p>
       <button class="primary" id="cont">Continue</button><button class="close" id="nw">Start a new life</button>${STATS_URL?`<button class="close" id="rest2" style="border:0;color:var(--muted)">☁️ Continue with a save code</button>`:""}</div></div>`;
     const r2=$("rest2");if(r2)r2.onclick=()=>restoreFlow(()=>{draft.editing=false;showStart()});
     $("cont").onclick=()=>begin(saved);$("nw").onclick=()=>{draft.editing=true;showStart()};return;
   }
   if(!draft.full){
     st.innerHTML=`<div class="card"><div style="height:30px;background:var(--indigo)"></div><div style="padding:18px 18px 20px">
-      <h1>Abroad Life</h1><p class="sub">Life after you japa. Shifts, rent on Saturday, owambe, and Mum on WhatsApp. Play free with real people.</p>${dettyState()==="on"?`<div class="sp" style="color:#B91C1C">🎄 Detty December is on: fly to Lagos in the game!</div>`:""}<div class="sp" id="sp"></div>
+      <h1>Abroad Life</h1><p class="sub">Life after you japa. Shifts, rent on Saturday, owambe, and Mum on WhatsApp. Play free with real people.</p>${dettyState()==="on"?`<div class="sp" style="color:#B91C1C">🎄 Detty December is on: fly home for Christmas in the game!</div>`:""}<div class="sp" id="sp"></div>
       <button class="primary big-play" id="play">▶ Play now</button>
       <button class="close" id="playca">🇨🇦 Play in Toronto instead</button>
+      <button class="close" id="playgh">🇬🇭 Play as a Ghanaian in London</button>
       <button class="close" id="full">🎨 Create my own character</button>
       <a class="close" href="/calculator/" style="box-sizing:border-box;display:block;text-align:center;text-decoration:none;color:inherit">🧮 Can I afford to japa? Real 2026 costs</a>
       <button class="close" id="rest">☁️ Continue with a save code</button>
       <button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button><p class="sub" style="text-align:center;margin:6px 0 0;font-size:12px">Chat is for ages 13+. Be kind. · <a href="/privacy/" style="color:inherit">Privacy</a></p></div></div>`;
     $("rest").onclick=()=>restoreFlow(showStart);
-    const fast=c=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;sfx.arrive();draft.fast=true;draft.country=c;draft.origin="ng";
-      draft.name=pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo","Seun","Ifeoma"]);draft.migrate=null;
+    const fast=(c,o)=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;sfx.arrive();draft.fast=true;draft.country=c;draft.origin=o||"ng";
+      draft.name=pick(o==="gh"?["Kofi","Ama","Kwame","Akosua","Yaw","Abena","Kojo","Efua","Kwabena","Adwoa","Kwesi","Esi"]:["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo","Seun","Ifeoma"]);draft.migrate=null;
       draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);
       draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.home=c==="ca"?pick(["queen","brampton","scarborough"]):pick(["ryelane","ryelane","woolwich","barking","croydon","edmonton"]);
-      track("quick_play",{kind:c});showSetup(4)};
-    $("play").onclick=()=>fast("uk");$("playca").onclick=()=>fast("ca");$("full").onclick=()=>{draft.full=true;showStart()};
+      track("quick_play",{kind:(o||"ng")+"-"+c});showSetup(4)};
+    $("play").onclick=()=>fast("uk");$("playca").onclick=()=>fast("ca");$("playgh").onclick=()=>fast("uk","gh");$("full").onclick=()=>{draft.full=true;showStart()};
     $("ins").onclick=()=>{$("start").style.display="none";installApp();const t=setInterval(()=>{if(!uiOpen){clearInterval(t);$("start").style.display="flex"}},300)};
     fetchLive(true).then(L=>{const el=$("sp");if(!el)return;const bits=[];if(L.online>=3)bits.push(`🟢 ${L.online.toLocaleString()} online now`);if(L.total>=100)bits.push(`${L.total.toLocaleString()} people have played`);el.textContent=bits.join(" · ")});
     previewPlayer();return}
   st.innerHTML=`<div class="card"><div style="height:30px;background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' fill='%232D3192'/%3E%3Ccircle cx='14' cy='14' r='9' fill='%23F4C430'/%3E%3Ccircle cx='14' cy='14' r='5' fill='%23E5487A'/%3E%3C/svg%3E&quot;)"></div>
-    <div style="padding:16px 18px 18px"><h1>Abroad Life</h1><p class="sub">Life after you japa. Pick where you’re from and where you’re going. Work shifts, pay rent, keep Mum happy.</p><div class="jed">🇳🇬 Japa Life edition is live · 🗳️ vote for the next country</div>
+    <div style="padding:16px 18px 18px"><h1>Abroad Life</h1><p class="sub">Life after you japa. Pick where you’re from and where you’re going. Work shifts, pay rent, keep Mum happy.</p><div class="jed">🇳🇬 Nigeria and 🇬🇭 Ghana are live · 🗳️ vote for the next country</div>
     <div class="lbl">Nickname</div><input type="text" id="nm" maxlength="16" placeholder="e.g. Tobi" value="${esc(draft.name)}" autocomplete="off">
     <div class="lbl">Skin tone</div><div class="sw">${SKINS.map((c,i)=>`<button data-skin="${i}" class="${draft.skin===i?"on":""}" style="background:${c}" aria-label="Skin ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Outfit</div><div class="sw">${SHIRTS.map((c,i)=>`<button data-shirt="${i}" class="${draft.shirt===i?"on":""}" style="background:${c};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)" aria-label="Outfit ${i+1}"></button>`).join("")}</div>
@@ -3099,7 +3127,7 @@ function showStart(){
   $("ins").onclick=()=>{$("start").style.display="none";installApp();const t=setInterval(()=>{if(!uiOpen){clearInterval(t);$("start").style.display="flex"}},300)};
   previewPlayer();
 }
-function setupCard(inner){$("start").style.display="flex";if(draft.country==="ca")inner=String(inner).replace(/£(\d[\d,]*)/g,(m,n)=>"$"+Math.round(parseFloat(n.replace(/,/g,""))*FXR).toLocaleString());$("start").innerHTML=`<div class="card" style="max-height:88vh;overflow:auto"><div style="height:30px;background:var(--indigo)"></div><div style="padding:16px 18px 18px">${inner}</div></div>`}
+function setupCard(inner){$("start").style.display="flex";if(draft.origin==="gh")inner=locGH(String(inner));if(draft.country==="ca")inner=String(inner).replace(/£(\d[\d,]*)/g,(m,n)=>"$"+Math.round(parseFloat(n.replace(/,/g,""))*FXR).toLocaleString());$("start").innerHTML=`<div class="card" style="max-height:88vh;overflow:auto"><div style="height:30px;background:var(--indigo)"></div><div style="padding:16px 18px 18px">${inner}</div></div>`}
 function showSetup(step){
   draft.traits=draft.traits||[];
   if(step===1.5){
