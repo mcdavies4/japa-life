@@ -587,6 +587,24 @@ function migrate(s){if(!s.zone)s.zone="ryelane";if(!s.origin)s.origin="ng";if(s.
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
   if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;if(!s.kids)s.kids=[];if(s.parents===undefined)s.parents=null;if(s.preg===undefined)s.preg=null;if(!s.country)s.country="uk";if(s.xp&&s.xp.warehouse===undefined)s.xp.warehouse=0;s.v=9;return s}
+const CLOUD={busy:false,last:0};
+function cloudSave(force){if(!STATS_URL||!S||!S.cloud||CLOUD.busy)return;if(!force&&Date.now()-CLOUD.last<120000)return;CLOUD.busy=true;CLOUD.last=Date.now();
+  try{S.pos={x:player.position.x,z:player.position.z}}catch(e){}
+  fetch(STATS_URL+"/save",{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({code:S.cloud.code||"",data:JSON.stringify(S)})}).then(r=>r.json()).then(j=>{
+    if(j.code&&S.cloud.code!==j.code){const first=!S.cloud.code;S.cloud.code=j.code;save();if(first)track("cloud",{k:"new"})}S.cloud.at=Date.now()}).catch(()=>{}).finally(()=>{CLOUD.busy=false})}
+addEventListener("visibilitychange",()=>{if(document.hidden&&S&&S.cloud&&S.cloud.code&&STATS_URL&&navigator.sendBeacon){try{navigator.sendBeacon(STATS_URL+"/save",new Blob([JSON.stringify({code:S.cloud.code,data:JSON.stringify(S)})],{type:"text/plain"}))}catch(e){}}});
+function showCode(){const c=S.cloud&&S.cloud.code;openSheet(`<h2>☁️ Your save code</h2><p class="sub">Your life is backed up. Use this code to carry on from any phone or computer.</p>
+  <div style="font-family:'Bricolage Grotesque',sans-serif;font-size:34px;font-weight:800;text-align:center;letter-spacing:.06em;padding:14px;border:2px dashed var(--ink);border-radius:14px;margin:6px 0 10px">${c?esc(c):"Saving…"}</div>
+  <div class="result">Screenshot it or write it down. On a new phone: open Abroad Life → <b>Continue with a save code</b>. Use one device at a time, or the newest save wins.</div>
+  ${c?`<button class="primary" id="cp">Copy code</button>`:""}<button class="close" id="cl">Done</button>`);$("cl").onclick=closeSheet;
+  const cp=$("cp");if(cp)cp.onclick=()=>{try{navigator.clipboard.writeText(c);toast("Code copied")}catch(e){toast(c)}};if(!c)cloudSave(true)}
+function restoreFlow(back){setupCard(`<h2>☁️ Continue with a save code</h2><p class="sub">Type the code from Phone → Settings on your other device.</p>
+  <input type="text" id="rc" maxlength="12" placeholder="e.g. K7QM2-XP9FD" autocomplete="off" autocapitalize="characters" style="text-transform:uppercase;letter-spacing:.06em;font-size:20px;font-weight:800">
+  <p class="sub" id="rerr" style="color:var(--bad);min-height:18px"></p><button class="primary" id="rgo">Continue my life</button><button class="close" id="bk">Back</button>`);
+  $("bk").onclick=back;$("rgo").onclick=()=>{const code=$("rc").value.trim();if(!STATS_URL){$("rerr").textContent="Cloud saves work on the live game.";return}$("rgo").textContent="Loading…";
+    fetch(STATS_URL+"/load",{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({code})}).then(r=>r.json()).then(j=>{if(!j.data)throw new Error(j.error||"Not found");
+      const st=migrate(JSON.parse(j.data));st.cloud={code:j.code};try{localStorage.setItem(KEY,JSON.stringify(st))}catch(e){}track("cloud",{k:"restore"});begin(st,false);toast(`☁️ Welcome back, ${st.name}!`)})
+    .catch(e=>{$("rerr").textContent=String(e.message||"Couldn’t load that code");$("rgo").textContent="Continue my life"})}}
 function save(){if(!S||!player)return;try{S.pos={x:player.position.x,z:player.position.z};localStorage.setItem(KEY,JSON.stringify(S))}catch(e){}}
 function load(){try{const r=localStorage.getItem(KEY);return r?migrate(JSON.parse(r)):null}catch(e){return null}}
 const clamp=v=>Math.max(0,Math.min(100,v));
@@ -2537,7 +2555,7 @@ function openPhone(){
     <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">${isCA()?"Toronto area":"London"}</h2>
     ${(isCA()?[["queen","Queen Street West"],["brampton","Main Street"],["scarborough","Eglinton Ave East"]]:[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])]).map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
-  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><button class="close" id="look">✏️ Change name and look</button><button class="close" id="sfxb">🔊 Sounds and vibration: ${SFX.on?"On":"Off"}</button><button class="close" id="gfx">✨ Graphics: ${GFX.shadows?"High (shadows on)":"Fast (shadows off)"}</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
+  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button>${STATS_URL?`<button class="close" id="cloudb">☁️ Cloud save${S.cloud&&S.cloud.code?`: ${esc(S.cloud.code)}`:""}</button>`:""}<button class="close" id="look">✏️ Change name and look</button><button class="close" id="sfxb">🔊 Sounds and vibration: ${SFX.on?"On":"Off"}</button><button class="close" id="gfx">✨ Graphics: ${GFX.shadows?"High (shadows on)":"Fast (shadows off)"}</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game. <a href="/privacy/" target="_blank" rel="noopener" style="color:inherit">Privacy</a></p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
@@ -2549,7 +2567,7 @@ function openPhone(){
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
   const mv=$("mv");if(mv)mv.onclick=openMove;
   const sb=$("sfxb");if(sb)sb.onclick=()=>{SFX.on=!SFX.on;try{localStorage.setItem("japa_sfx",SFX.on?"on":"off")}catch(e){}if(SFX.on)sfx.ping();openPhone()};
-  const lk=$("look");if(lk)lk.onclick=openLook;
+  const lk=$("look");if(lk)lk.onclick=openLook;const cb=$("cloudb");if(cb)cb.onclick=showCode;
   const gfx=$("gfx");if(gfx)gfx.onclick=()=>{GFX.auto=false;setShadows(!GFX.shadows,true);openPhone()};
   const stt=$("stt");if(stt)stt.onclick=()=>{try{localStorage.setItem("japa_nostats",statsOn()?"1":"0")}catch(e){}toast(statsOn()?"Usage stats on. Thank you!":"Usage stats off.");openPhone()};
   const rs=$("reset");if(rs)rs.onclick=()=>{if(confirm("Start over? This life will be gone.")){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}};
@@ -2600,11 +2618,12 @@ function netJoin(zone,shard){
   net.zone=zone;net.shard=shard;net.id=null;
   let ws;try{ws=new WebSocket(`${REALTIME_URL}/room/${zone}-${shard}`)}catch(e){return}
   net.ws=ws;netStatus();
-  ws.onopen=()=>{net.retry=0;ws.send(JSON.stringify({t:"join",name:S.name,look:S.look,x:player.position.x,z:player.position.z,ry:player.rotation.y}))};
+  ws.onopen=()=>{net.retry=0;ws.send(JSON.stringify({t:"join",uid:anonId(),name:S.name,look:S.look,x:player.position.x,z:player.position.z,ry:player.rotation.y}))};
   ws.onmessage=ev=>{let m;try{m=JSON.parse(ev.data)}catch(e){return}netMsg(m)};
   ws.onclose=ev=>{if(net.ws!==ws)return;net.ws=null;net.id=null;
     [...net.players.keys()].forEach(removeRemote);
     if(ev.code===4001&&shard<20)return netJoin(zone,shard+1);
+    if(ev.code===4003){net.kicked=zone;netStatus();return}
     netStatus();const wait=Math.min(30000,2000*Math.pow(2,net.retry++));setTimeout(()=>{if(!net.ws&&S&&S.zone===zone)netJoin(zone,shard)},wait)};
 }
 function netSend(o){if(net.ws&&net.ws.readyState===1)net.ws.send(JSON.stringify(o))}
@@ -2634,6 +2653,8 @@ function netMsg(m){
   else if(m.t==="leave"){const r=net.players.get(m.id);removeRemote(m.id);netStatus();if(r)chatLog(r.name,"left")}
   else if(m.t==="s"){m.u.forEach(([id,x,z,ry,mv])=>{const r=net.players.get(id);if(r){r.tx=x;r.tz=z;r.ry=ry;r.mv=mv}})}
   else if(m.t==="fx"){const r=net.players.get(m.id);if(!r)return;if(m.k==="dance")r.dance=true;else if(m.k==="stop")r.dance=false;else if(m.k==="spray"&&P.on)sprayFx(r.mesh,3)}
+  else if(m.t==="kicked"){openSheet(`<h2>You’ve been removed</h2><p class="sub">Several players reported you on this street. You can’t chat here for an hour.</p><div class="result">Abroad Life is for everyone. No insults, no sexual messages, no begging for money, no scams.</div><button class="primary" id="cl">I understand</button>`);$("cl").onclick=closeSheet}
+  else if(m.t==="reported"){toast("Thanks. We’ve logged your report.")}
   else if(m.t==="board"){P.board=Array.isArray(m.top)?m.top:[];if(P.on)updateChips()}
   else if(m.t==="chat"){const r=net.players.get(m.id);if(!r||net.muted.has(r.name))return;bubble(r.mesh,m.text,r);chatLog(r.name,m.text)}
 }
@@ -2674,11 +2695,14 @@ function openPlayer(id){
   const r=net.players.get(id);if(!r)return;const muted=net.muted.has(r.name);
   openSheet(`<h2>${esc(r.name)}</h2><p class="sub">On ${Z().name} with you right now.</p>
     <div class="list"><button class="opt" id="wave"><span class="e">👋🏾</span><div><b>Wave</b><span>Say hello</span></div></button>
-    <button class="opt" id="mute"><span class="e">${muted?"🔈":"🔇"}</span><div><b>${muted?"Unmute":"Mute"}</b><span>${muted?"See their messages again":"Hide their messages from you"}</span></div></button></div>
+    <button class="opt" id="mute"><span class="e">${muted?"🔈":"🚫"}</span><div><b>${muted?"Unblock":"Block"}</b><span>${muted?"See their messages again":"Hide their messages from you"}</span></div></button>
+    <button class="opt" id="rep"><span class="e">🚩</span><div><b>Report</b><span>Rude, sexual, spam or a scam</span></div></button></div>
     <button class="close" id="cl">Close</button>`);
   $("cl").onclick=closeSheet;
   $("wave").onclick=()=>{closeSheet();sendChat(`👋🏾 Hi ${r.name}!`)};
-  $("mute").onclick=()=>{muted?net.muted.delete(r.name):net.muted.add(r.name);try{localStorage.setItem("japa_muted",JSON.stringify([...net.muted]))}catch(e){}closeSheet();toast(muted?`${r.name} unmuted`:`${r.name} muted`)};
+  $("mute").onclick=()=>{muted?net.muted.delete(r.name):net.muted.add(r.name);try{localStorage.setItem("japa_muted",JSON.stringify([...net.muted]))}catch(e){}closeSheet();toast(muted?`${r.name} unblocked`:`${r.name} blocked`)};
+  $("rep").onclick=()=>{openSheet(`<h2>🚩 Report ${esc(r.name)}</h2><p class="sub">What happened? We’ll also block them for you.</p><div class="list">${[["abuse","😡","Insults or bullying"],["sexual","🔞","Sexual messages"],["scam","💸","Asking for money or a scam"],["spam","📢","Spam"],["other","❓","Something else"]].map(([k,e,t])=>`<button class="opt" data-rr="${k}"><span class="e">${e}</span><div><b>${t}</b></div></button>`).join("")}</div><button class="close" id="cl">Cancel</button>`);
+    $("cl").onclick=closeSheet;$("sheetIn").querySelectorAll("[data-rr]").forEach(b=>b.onclick=()=>{netSend({t:"report",id,reason:b.dataset.rr});net.muted.add(r.name);try{localStorage.setItem("japa_muted",JSON.stringify([...net.muted]))}catch(e){}if(r.bubble){r.mesh.remove(r.bubble);r.bubble=null}closeSheet();track("report",{k:b.dataset.rr})})};
 }
 
 /* ================= loop ================= */
@@ -2725,7 +2749,7 @@ function tick(){
     sun.target.position.set(player.position.x,0,player.position.z+6);sun.position.copy(sun.target.position).addScaledVector(sunDir,70);
     chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus();adTick();fetchLive()}
     if(GFX.auto&&GFX.shadows){GFX.n=(GFX.n||0)+1;GFX.t=(GFX.t||0)+dt;if(GFX.t>8){if(GFX.n/GFX.t<26){setShadows(false);toast("Graphics set to fast mode for your device")}GFX.auto=false}}
-    saveT-=dt;if(saveT<=0){saveT=5;save()}
+    saveT-=dt;if(saveT<=0){saveT=5;save();cloudSave()}
   } else if(root){
     const t=performance.now()/9000;camera.position.set(Math.sin(t)*3,8,-30+Math.cos(t)*8+40);camera.lookAt(0,2,-10);
   }
@@ -2754,7 +2778,8 @@ function showStart(){
     const z=ZONES[saved.zone]||ZONES.ryelane;
     st.innerHTML=`<div class="card"><div class="band" style="height:30px;background:var(--indigo)"></div><div class="in" style="padding:18px">
       <h1>Abroad Life</h1><p class="sub">${origin().flag} ${esc(origin().ed||"")} · Welcome back, ${esc(saved.name)}. You’re on ${z.name}, ${z.area}.</p>
-      <button class="primary" id="cont">Continue</button><button class="close" id="nw">Start a new life</button></div></div>`;
+      <button class="primary" id="cont">Continue</button><button class="close" id="nw">Start a new life</button>${STATS_URL?`<button class="close" id="rest2" style="border:0;color:var(--muted)">☁️ Continue with a save code</button>`:""}</div></div>`;
+    const r2=$("rest2");if(r2)r2.onclick=()=>restoreFlow(()=>{draft.editing=false;showStart()});
     $("cont").onclick=()=>begin(saved);$("nw").onclick=()=>{draft.editing=true;showStart()};return;
   }
   if(!draft.full){
@@ -2764,7 +2789,9 @@ function showStart(){
       <button class="close" id="playca">🇨🇦 Play in Toronto instead</button>
       <button class="close" id="full">🎨 Create my own character</button>
       <a class="close" href="/calculator/" style="box-sizing:border-box;display:block;text-align:center;text-decoration:none;color:inherit">🧮 Can I afford to japa? Real 2026 costs</a>
-      <button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
+      <button class="close" id="rest">☁️ Continue with a save code</button>
+      <button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button><p class="sub" style="text-align:center;margin:6px 0 0;font-size:12px">Chat is for ages 13+. Be kind. · <a href="/privacy/" style="color:inherit">Privacy</a></p></div></div>`;
+    $("rest").onclick=()=>restoreFlow(showStart);
     const fast=c=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;sfx.arrive();draft.fast=true;draft.country=c;draft.origin="ng";
       draft.name=pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo","Seun","Ifeoma"]);draft.migrate=null;
       draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);
@@ -2867,6 +2894,8 @@ function previewPlayer(){if(preview)preview.parent.remove(preview);const h=ZONES
 function begin(state,isNew){
   if(!state.route){draft.migrate=state;draft.name=state.name;draft.traits=[];draft.dream=null;draft.rel=null;$("start").style.display="flex";showSetup(2);return}
   S=state;$("start").style.display="none";if(preview){preview.parent.remove(preview);preview=null}
+  if(!S.cloud)S.cloud={code:""};setTimeout(()=>cloudSave(true),15000);
+  if(STATS_URL&&!S.flags.cloudTip)setTimeout(()=>{if(!S.flags.cloudTip&&S.cloud.code){S.flags.cloudTip=true;toast("☁️ Your life is backed up. Get your save code in Phone → Settings.")}},10*60000);
   player=makePerson(SKINS[S.look.skin],SHIRTS[S.look.shirt],"#1C1B3A",S.look.hair,scene);
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
   let zid=ZONES[S.zone]?S.zone:"ryelane";if(ZONES[zid].hall){zid=ZONES[S.owFrom]?S.owFrom:hz();S.pos=S.owPos||{x:0,z:0}}

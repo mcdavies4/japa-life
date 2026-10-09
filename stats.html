@@ -112,7 +112,10 @@ async function load(){
       ${bars({"Installed as app":sum("ev:install"),"Delivery shifts":sum("ev:delivery")},"Other")}
       ${bars({"Billboard views":sum("ev:ad_view"),"Billboard taps":sum("ev:ad_click"),"Clicked through to brand":sum("ev:ad_visit")},"Billboards (14 days)")}
       ${bars(group("ad_view:k:"),"Billboard views by slot")}
-    </div>`;
+      ${bars({"Cloud saves created":sum("cloud:k:new"),"Restored with a code":sum("cloud:k:restore"),"Photos taken":sum("card:kind:photo"),"Instant plays":sum("ev:quick_play")},"Saves and sharing")}
+    </div>
+    <div class="card" style="margin-top:14px"><div class="k">🚩 Player reports (last 30 days)</div>${(data.reports||[]).length?(data.reports||[]).map(r=>{let l=[];try{l=JSON.parse(r.lines||"[]")}catch(e){}
+      return `<div style="padding:10px 0;border-bottom:1px solid rgba(127,127,150,.25)"><b>${esc(r.who)}</b> reported by ${esc(r.by_name)} · <b>${esc(r.reason)}</b> · ${esc(r.room)} · ${new Date(r.ts).toLocaleString()}${l.length?`<div style="font-size:13px;opacity:.8;margin-top:4px">${l.map(x=>"“"+esc(x)+"”").join("<br>")}</div>`:""}</div>`}).join(""):`<p class="sub">No reports. 🎉</p>`}</div>`;
   $("#out").onclick=()=>{try{localStorage.removeItem("japa_stats_key")}catch(e){}key="";login()};
 }
 load();setInterval(()=>{if(key)load()},30000);
