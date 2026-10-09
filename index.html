@@ -50,8 +50,8 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .clock small{display:block;font-weight:600;color:var(--muted);font-size:12px}
 .cash{margin-left:auto;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:20px;font-variant-numeric:tabular-nums;text-align:right;line-height:1.05}
 .cash small{display:block;font-family:Figtree,sans-serif;font-size:11px;font-weight:700;color:var(--green)}
-.needs{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:6px;border-radius:14px;padding:7px 10px}
-.need{font-size:11px;font-weight:700;display:flex;flex-direction:column;gap:3px}
+.needs{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:6px;border-radius:14px;padding:6px 10px}
+.need{font-size:14px;font-weight:700;display:flex;flex-direction:row;align-items:center;gap:5px}.need .b{flex:1}
 .need .b{height:6px;border-radius:3px;background:rgba(127,127,150,.3);overflow:hidden}
 .need .b i{display:block;height:100%;border-radius:3px;transition:width .4s}
 .chips{display:flex;gap:6px;margin-top:8px;overflow-x:auto;pointer-events:auto;scrollbar-width:none;padding-bottom:2px}
@@ -122,14 +122,14 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 #chatlog div{background:rgba(28,27,58,.72);color:#fff;font-size:13px;padding:5px 10px;border-radius:10px;transition:opacity .6s}
 #chatlog b{color:#F4C430}
 .hrow{display:flex;gap:6px;margin-top:6px}.hrow>*{flex:1;min-width:0;margin-top:0!important}
-#chapbar{margin-top:6px;border-radius:14px;padding:6px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;width:100%;text-align:left;pointer-events:auto;color:var(--ink)}
+#chapbar{margin-top:6px;border-radius:14px;padding:4px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px;width:100%;text-align:left;pointer-events:auto;color:var(--ink)}
 #chapbar .lv{margin-left:auto;background:var(--indigo);color:#fff;border-radius:999px;padding:2px 8px;white-space:nowrap}
 #chapbar .ct{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .goal{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--glass-line)}
 .goal .ck{font-size:20px;line-height:1.2}.goal b{display:block;font-size:15px}.goal span{font-size:13px;color:var(--muted)}
 .goal.done b{text-decoration:line-through;opacity:.6}.goal button{margin-left:auto;border:2px solid var(--ink);border-radius:10px;padding:4px 10px;font-weight:800;font-size:13px;white-space:nowrap}
 .xpbar{height:10px;border-radius:5px;background:rgba(127,127,150,.3);overflow:hidden;margin:6px 0 4px}.xpbar i{display:block;height:100%;background:#2D3192;border-radius:5px}
-#dreambar{margin-top:6px;border-radius:14px;padding:6px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px}
+#dreambar{margin-top:6px;border-radius:14px;padding:4px 10px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:8px}
 #dreambar .b{flex:1;height:6px;border-radius:3px;background:rgba(127,127,150,.3);overflow:hidden}
 #dreambar .b i{display:block;height:100%;background:#2D3192;border-radius:3px}
 #mission{position:fixed;left:10px;right:10px;top:calc(env(safe-area-inset-top,0px) + 150px);z-index:3;border-radius:16px;padding:10px 12px;display:none;align-items:center;gap:10px}
@@ -160,6 +160,23 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 .chip.live{background:#E5487A!important;color:#fff;animation:livep 1.4s ease-in-out infinite}.chip.board{background:rgba(28,27,58,.82)!important;color:#fff}
 @keyframes livep{50%{box-shadow:0 0 0 6px rgba(229,72,122,.25)}}
 @media (prefers-reduced-motion: reduce){.chip.live{animation:none}}
+body.hmin .needs,body.hmin .hrow{display:none!important}
+.topbar{cursor:pointer}.topbar .tgl{font-size:11px;color:var(--muted);font-weight:800;margin-left:2px}
+#float{position:fixed;left:0;right:0;top:40%;z-index:6;pointer-events:none;text-align:center}
+#float div{display:inline-block;font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:30px;color:#fff;background:#0E7A4B;border-radius:999px;padding:4px 16px;box-shadow:0 6px 18px rgba(0,0,0,.25);animation:floatUp 1.3s ease-out forwards;position:absolute;left:50%;transform:translateX(-50%)}
+#float div.neg{background:#C2304F;font-size:24px}
+@keyframes floatUp{0%{opacity:0;margin-top:20px}15%{opacity:1;margin-top:0}100%{opacity:0;margin-top:-90px}}
+#arrive{position:fixed;left:0;right:0;top:34%;z-index:5;pointer-events:none;text-align:center;color:#fff;opacity:0;transition:opacity .5s;text-shadow:0 2px 14px rgba(0,0,0,.55)}
+#arrive.on{opacity:1}#arrive b{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:40px;line-height:1.05}#arrive span{font-weight:700;font-size:15px;letter-spacing:.08em;text-transform:uppercase}
+body.photo #hud,body.photo #joy,body.photo #nav,body.photo #act,body.photo #party,body.photo #chatlog,body.photo #mission,body.photo #alert,body.photo #chatbar{display:none!important}
+#photobar{position:fixed;left:10px;right:10px;bottom:calc(env(safe-area-inset-bottom,0px) + 14px);z-index:6;display:none;align-items:center;justify-content:space-between;gap:8px;border-radius:22px;padding:8px}
+body.photo #photobar{display:flex}
+#photobar button{flex:1;display:flex;flex-direction:column;align-items:center;font-size:11px;font-weight:800;padding:6px 2px;border-radius:14px}
+#photobar button span{font-size:22px}#photobar button.on{background:var(--yellow);color:#1C1B3A}
+#photobar #phSnap{flex:none;width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid var(--pink);font-size:26px;color:#1C1B3A}
+#flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7;transition:opacity .35s}
+.big-play{font-size:22px!important;padding:18px!important;box-shadow:0 6px 0 #0A5A37}
+.sp{font-size:13px;font-weight:700;color:var(--green);margin:-2px 0 10px}
 .pickc{display:block;width:100%;text-align:left;border:2px solid var(--glass-line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
 .pickc.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
 .pickc b{display:block;font-size:15px}.pickc span{font-size:13px;opacity:.8}
@@ -191,11 +208,14 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 </div>
 <div id="joy" class="glass" aria-label="Movement joystick"><div class="knob" id="knob"></div></div>
 <button id="act"></button>
+<div id="photobar" class="glass"><button id="phPose"><span>💃🏾</span>Dance</button><button id="phWave"><span>👋🏾</span>Wave</button><button id="phSnap" aria-label="Take photo">📸</button><button id="phTurn"><span>🔄</span>Angle</button><button id="phX"><span>✕</span>Close</button></div>
+<div id="float" aria-hidden="true"></div><div id="arrive" aria-hidden="true"></div><div id="flash"></div>
 <div id="party"><button class="glass" id="pDance"><span>💃🏾</span>Dance</button><button class="glass" id="pSpray"><span>💸</span>Spray</button><button class="glass" id="pMusic"><span>🔊</span>Music</button></div>
 <nav id="nav" class="glass">
   <button id="nHome"><span class="i">🏠</span>Go home</button>
   <button id="nMap"><span class="i">🗺️</span>Map</button>
   <button id="nChat"><span class="i">💬</span>Chat</button>
+  <button id="nPhoto"><span class="i">📸</span>Photo</button>
   <button id="nPhone"><span class="i">📱</span>Phone<span class="badge" id="badge">0</span></button>
 </nav>
 <form id="chatbar" class="glass" autocomplete="off"><input type="text" id="chatin" maxlength="120" placeholder="Say something to people nearby…" enterkeyhint="send"><button type="submit">Send</button></form>
@@ -866,6 +886,49 @@ $("pDance").onclick=()=>setDance(!P.dancing);
 $("pSpray").addEventListener("pointerdown",startSpray);["pointerup","pointerleave","pointercancel"].forEach(ev=>$("pSpray").addEventListener(ev,stopSpray));
 $("pMusic").onclick=()=>{P.muted=!P.muted;try{localStorage.setItem("japa_music",P.muted?"off":"on")}catch(e){}$("pMusic").classList.toggle("on",!P.muted);$("pMusic").querySelector("span").textContent=P.muted?"🔇":"🔊";if(P.muted)musicStop();else musicStart()};
 },0);
+/* ================= polish: sound, haptics, floating money, arrival cards, live counts, photo mode ================= */
+const SFX={on:true,g:null,stepT:0};try{SFX.on=localStorage.getItem("japa_sfx")!=="off"}catch(e){}
+function actx(){if(!AU.ctx){try{AU.ctx=new(window.AudioContext||window.webkitAudioContext)()}catch(e){return null}}const c=AU.ctx;if(c.state==="suspended"&&c.resume)c.resume();
+  if(!SFX.g){SFX.g=c.createGain();SFX.g.gain.value=.5;SFX.g.connect(c.destination)}if(!AU.noise)AU.noise=noiseBuf(c);return c}
+addEventListener("pointerdown",()=>actx(),{once:true});
+function tone(f,t0,dur,type,vol,f2){if(!SFX.on)return;const c=actx();if(!c)return;const o=c.createOscillator(),g=c.createGain(),t=c.currentTime+(t0||0);o.type=type||"sine";o.frequency.setValueAtTime(f,t);if(f2)o.frequency.exponentialRampToValueAtTime(f2,t+dur);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol||.2,t+.01);g.gain.exponentialRampToValueAtTime(.0001,t+dur);o.connect(g);g.connect(SFX.g);o.start(t);o.stop(t+dur+.05)}
+function thud(vol){if(!SFX.on)return;const c=actx();if(!c)return;const s=c.createBufferSource(),f=c.createBiquadFilter(),g=c.createGain(),t=c.currentTime;s.buffer=AU.noise;f.type="lowpass";f.frequency.value=520;s.connect(f);f.connect(g);g.connect(SFX.g);
+  g.gain.setValueAtTime(.0001,t);g.gain.exponentialRampToValueAtTime(vol,t+.005);g.gain.exponentialRampToValueAtTime(.0001,t+.07);s.start(t,Math.random()*.5);s.stop(t+.1)}
+const sfx={coin:()=>{tone(1318,0,.1,"square",.06);tone(1760,.08,.28,"square",.06)},ping:()=>{tone(880,0,.12,"sine",.22);tone(1320,.1,.2,"sine",.18)},
+  alert:()=>[784,988,1175].forEach((f,i)=>tone(f,i*.13,.14,"triangle",.2)),arrive:()=>{tone(523,0,.16,"triangle",.12);tone(784,.13,.32,"triangle",.12)},
+  snap:()=>{thud(.5);tone(2200,0,.05,"square",.05)},step:()=>thud(.13),pay:()=>{tone(1046,0,.08,"triangle",.15);tone(1318,.07,.08,"triangle",.15);tone(1568,.14,.3,"triangle",.15)}};
+function buzz(p){try{if(SFX.on&&navigator.vibrate)navigator.vibrate(p)}catch(e){}}
+function floatText(t,neg){const d=document.createElement("div");d.textContent=t;if(neg)d.className="neg";$("float").appendChild(d);setTimeout(()=>d.remove(),1400)}
+const coins=[];
+function coinBurst(n){if(!player)return;const m=mat("#F4C430");for(let i=0;i<n;i++){const c=new THREE.Mesh(pcyl(.13,.13,.035,12),m);c.position.set(player.position.x,2,player.position.z);
+  c.userData={v:new THREE.Vector3((Math.random()-.5)*3,3+Math.random()*2,(Math.random()-.5)*3),t:0};scene.add(c);coins.push(c)}}
+function coinsTick(dt){for(let i=coins.length-1;i>=0;i--){const c=coins[i],u=c.userData;u.t+=dt;u.v.y-=dt*12;c.position.addScaledVector(u.v,dt);c.rotation.x+=dt*9;c.rotation.z+=dt*6;if(c.position.y<.2){c.position.y=.2;u.v.set(0,0,0)}
+  if(u.t>1.1){scene.remove(c);coins.splice(i,1)}}}
+let arriveT=null;function arriveCard(z){const el=$("arrive");el.innerHTML=`<b>${esc(z.name)}</b><span>${esc(z.area)} · ${S?timeStr(mod()):""}</span>`;el.classList.add("on");clearTimeout(arriveT);arriveT=setTimeout(()=>el.classList.remove("on"),2200);sfx.arrive()}
+const LIVE={online:0,party:0,total:0,at:0};
+function fetchLive(force){if(!STATS_URL||(!force&&Date.now()-LIVE.at<60000))return Promise.resolve(LIVE);LIVE.at=Date.now();
+  return fetch(STATS_URL+"/live").then(r=>r.json()).then(j=>{LIVE.online=j.online|0;LIVE.party=j.party|0;LIVE.total=j.total|0;P.liveN=LIVE.party;return LIVE}).catch(()=>LIVE)}
+/* photo mode */
+const PH={on:false,ang:0,dance:false,wave:false};
+function photoOn(){if(!S||uiOpen||busy)return;if(D.on){toast("Finish your delivery first");return}PH.on=true;PH.ang=0;document.body.classList.add("photo");autoTarget=null;track("photo",{k:"open"})}
+function photoOff(){PH.on=false;PH.dance=PH.wave=false;$("phPose").classList.remove("on");$("phWave").classList.remove("on");document.body.classList.remove("photo");animatePerson(player,0,0)}
+function wavePose(p,dt){const u=p.userData;u.phase+=dt*8;u.armR.rotation.x=-2.7;u.armR.rotation.z=.35+Math.sin(u.phase)*.35;u.armL.rotation.x=0;u.dz=1}
+function snapPhoto(){sfx.snap();buzz(20);const fl=$("flash");fl.style.transition="none";fl.style.opacity=".9";requestAnimationFrame(()=>{fl.style.transition="opacity .45s";fl.style.opacity="0"});
+  renderer.render(scene,camera);const src=renderer.domElement,c=document.createElement("canvas");c.width=1080;c.height=1350;const x=c.getContext("2d");
+  const H=1350-150,sr=src.width/src.height,dr=1080/H;let sw=src.width,sh=src.height,sx=0,sy=0;if(sr>dr){sw=sh*dr;sx=(src.width-sw)/2}else{sh=sw/dr;sy=(src.height-sh)/2}
+  x.drawImage(src,sx,sy,sw,sh,0,0,1080,H);const g=x.createLinearGradient(0,H-160,0,H);g.addColorStop(0,"rgba(28,27,58,0)");g.addColorStop(1,"rgba(28,27,58,.55)");x.fillStyle=g;x.fillRect(0,H-160,1080,160);
+  x.fillStyle="#1C1B3A";x.fillRect(0,H,1080,150);x.fillStyle="#F4C430";x.fillRect(0,H,1080,8);
+  x.fillStyle="#FFFFFF";x.font='800 54px "Bricolage Grotesque",Figtree,sans-serif';x.fillText("Abroad Life",50,H+80);x.font='600 28px Figtree,sans-serif';x.fillStyle="#C9CBEF";x.fillText(`${S.name} · ${Z().name}, ${Z().area}`,50,H+122);
+  x.textAlign="right";x.fillStyle="#F4C430";x.font='800 32px Figtree,sans-serif';x.fillText("japa-life.pages.dev",1030,H+94);x.textAlign="left";
+  track("card",{kind:"photo"});setTimeout(()=>{photoOff();showCard(c,`${S.name} on ${Z().name}, ${Z().area} 📸 Play Abroad Life free:`)},380)}
+setTimeout(()=>{
+  $("nPhoto").onclick=photoOn;$("phX").onclick=photoOff;$("phSnap").onclick=snapPhoto;$("phTurn").onclick=()=>{PH.ang=(PH.ang+Math.PI/2)%(Math.PI*2)};
+  $("phPose").onclick=()=>{PH.dance=!PH.dance;PH.wave=false;$("phPose").classList.toggle("on",PH.dance);$("phWave").classList.remove("on");if(!PH.dance)animatePerson(player,0,0)};
+  $("phWave").onclick=()=>{PH.wave=!PH.wave;PH.dance=false;$("phWave").classList.toggle("on",PH.wave);$("phPose").classList.remove("on");if(!PH.wave)animatePerson(player,0,0)};
+  document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("#online"))return;const on=!document.body.classList.contains("hmin");document.body.classList.toggle("hmin",on);if(on)toast("Stats hidden. Tap the top bar to show them again.");try{localStorage.setItem("japa_hmin",on?"1":"0")}catch(x){}});
+  try{if(localStorage.getItem("japa_hmin")==="1")document.body.classList.add("hmin")}catch(e){}
+},0);
 const FLAGM={};function flagMat(c){if(!FLAGM[c])FLAGM[c]=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});return FLAGM[c]}
 /* ================= billboards (sellable ad slots) =================
    Each zone has 2 rooftop billboards, each with 2 faces = 4 slots.
@@ -1238,7 +1301,7 @@ function openSheet(html){$("sheetIn").innerHTML=cur(html);$("sheet").style.displ
 function closeSheet(){if(MG.active){const lb=MG.label;mgStop();toast(lb||"Shift abandoned. No pay.")}$("sheet").style.display="none";$("veil").style.display="none";uiOpen=false;save()}
 $("veil").onclick=()=>{if(!MG.active&&!S.dreamDone)closeSheet()};
 const NEEDS=[["h","🍲 Food","#E85A1A"],["e","⚡ Energy","#F4C430"],["y","🧼 Clean","#3BA3D9"],["f","😄 Fun","#E5487A"],["love","❤️ Love","#C2304F"]];
-$("needs").innerHTML=NEEDS.map(([k,l])=>`<div class="need"><span>${l}</span><div class="b"><i id="nb_${k}"></i></div></div>`).join("");
+$("needs").innerHTML=NEEDS.map(([k,l])=>`<div class="need" title="${l}" aria-label="${l}"><span>${l.split(" ")[0]}</span><div class="b"><i id="nb_${k}"></i></div></div>`).join("");
 function updateHUD(){
   const z=Z();
   $("clock").innerHTML=`${DAYS[dow()]} ${dateStr(day())}, ${timeStr(mod())}<small>${{rain:"🌧️",cloud:"☁️",sun:"☀️",snow:"❄️"}[S.weather||"cloud"]}${isCA()&&S.temp!==undefined?` ${S.temp}°C`:""} ${z.name}, ${z.area}</small>`;
@@ -1285,9 +1348,10 @@ $("nMap").onclick=()=>{phoneTab="map";openPhone()};
 $("nPhone").onclick=()=>{phoneTab=S.unread?"msgs":phoneTab==="map"?"msgs":phoneTab;openPhone()};
 
 /* ================= time & needs ================= */
-function addMsg(t,txt){S.msgs.unshift({t,d:day(),txt:cur(txt)});S.msgs=S.msgs.slice(0,40);S.unread++}
+function addMsg(t,txt){S.msgs.unshift({t,d:day(),txt:cur(txt)});S.msgs=S.msgs.slice(0,40);S.unread++;if(player){sfx.ping();buzz(15)}}
 function addTx(label,amt){S.tx.unshift({label,amt,d:day()});S.tx=S.tx.slice(0,20)}
-function money(amt,label){S.m=Math.round((S.m+amt)*100)/100;addTx(label,amt)}
+function money(amt,label){S.m=Math.round((S.m+amt)*100)/100;addTx(label,amt);
+  if(amt>=1){sfx.pay();floatText("+"+gbp(amt));coinBurst(Math.min(14,4+Math.floor(amt/20)));buzz(25)}else if(amt<=-20)floatText(gbp(amt),true)}
 function decay(mins,mode){
   const k=mode==="sleep"?.3:1,starving=S.n.h<=0?2.5:1;
   S.n.h=clamp(S.n.h-.05*mins*k);
@@ -1342,7 +1406,7 @@ function enterZone(zid,pos,yaw,instant){
   player.parent&&player.parent.remove(player);scene.add(player);
   player.position.set(pos.x,.18,pos.z);player.rotation.y=yaw;camYaw=yaw;autoTarget=null;
   const fx=Math.sin(yaw),fz=Math.cos(yaw);camera.position.set(pos.x-fx*9,6.4,pos.z-fz*9);
-  updateHUD();updateChips();save();netJoin(zid);
+  updateHUD();updateChips();save();netJoin(zid);if(!instant)setTimeout(()=>arriveCard(ZONES[zid]),300);
 }
 function travel(to,how,fromId){
   if(busy)return;if(ZONES[S.zone]&&ZONES[S.zone].hall&&how==="walk")return leaveOwambe();busy=true;closeSheet();track("travel",{how});
@@ -2415,7 +2479,7 @@ function alertTick(dt){
   const c=pick(opts),start=Math.min(22,Math.max(Math.ceil(h+1.5),h>=17?20:0));if(start>22)return;
   const night=start>=20,mult=night?1.5:r2(1.2+Math.random()*.2);
   alertLive={c,start,mult,d:day()};const where=isCA()?{care:"Maple Grove LTC, Scarborough",retail:"Maple Grocery, Brampton",warehouse:"Northline Fulfilment, Scarborough"}[c]:c==="care"?"Sunrise Care Home, Woolwich":"Kwik Cash & Carry, Rye Lane";
-  const el=$("alert");el.style.display="flex";
+  const el=$("alert");el.style.display="flex";sfx.alert();buzz([60,40,60]);
   el.innerHTML=`<span style="font-size:24px">📲</span><span class="m">ShiftNow: ${night?"Night":"Extra"} shift at ${where}, ${timeStr(start*60)}. +${Math.round((mult-1)*100)}% pay!<small id="alt">First come, first served · 20s</small></span><button class="grab" id="agrab">Grab</button><button id="aclose">✕</button>`;
   let left=20;const iv=setInterval(()=>{left--;const t=$("alt");if(t)t.textContent=`First come, first served · ${left}s`;if(left<=0)killAlert("Someone else grabbed it.")},1000);alertLive.iv=iv;
   $("agrab").onclick=()=>{const a=alertLive;S.booked={c:a.c,start:a.start,mult:a.mult,day:a.d};killAlert();addMsg("ShiftNow Agency",`Booked: ${CAREERS[a.c].name}, ${timeStr(a.start*60)} today. Don’t be late.`);toast(`📌 Shift booked for ${timeStr(a.start*60)}. Be there!`);save()};
@@ -2473,7 +2537,7 @@ function openPhone(){
     <button class="close" id="uber">🚖 Call an Uber</button><h2 style="font-size:20px;margin:16px 0 8px">${isCA()?"Toronto area":"London"}</h2>
     ${(isCA()?[["queen","Queen Street West"],["brampton","Main Street"],["scarborough","Eglinton Ave East"]]:[["ryelane","Rye Lane, Choumert Road, High Street"],["woolwich","Powis Street"],["barking","East Street"],["croydon","North End"],["edmonton","Fore Street"],...(S.chapter>=3?[["central","Northumberland Ave"]]:[])]).map(([k,d])=>{const here=AREAS[S.zone].area===AREAS[k].area;return `<div class="row"><span><b>${AREAS[k].area}${k===hz()?" 🏠":""}</b><br><small style="color:var(--muted)">${d}</small></span><span>${here?"📍 You’re here":`🚆 ${trip2(S.zone,k).mins} min`}</span></div>`}).join("")}
     ${COMING.map(([a,d])=>`<div class="row" style="opacity:.55"><span><b>${a}</b><br><small>${d}</small></span><span>Coming soon</span></div>`).join("")}`}
-  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><button class="close" id="gfx">✨ Graphics: ${GFX.shadows?"High (shadows on)":"Fast (shadows off)"}</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
+  if(phoneTab==="set")body=`<button class="primary" id="inst">📲 Install Japa Life as an app</button><button class="close" id="mv">🏠 Move to another area</button><button class="close" id="look">✏️ Change name and look</button><button class="close" id="sfxb">🔊 Sounds and vibration: ${SFX.on?"On":"Off"}</button><button class="close" id="gfx">✨ Graphics: ${GFX.shadows?"High (shadows on)":"Fast (shadows off)"}</button><button class="close" id="stt">📊 Anonymous usage stats: ${statsOn()?"On":"Off"}</button><p class="sub" style="margin-top:12px">Your life saves automatically on this device. Usage stats are anonymous (no names or personal details) and help improve the game.</p><button class="close" id="reset" style="border-color:var(--bad);color:var(--bad)">Start a new life</button>`;
   openSheet(`<h2>📱 ${esc(S.name)}’s phone</h2><div class="tabs">${tabs.map(([k,l])=>`<button data-t="${k}" class="${phoneTab===k?"on":""}">${l}${k==="msgs"&&S.unread?` (${S.unread})`:""}</button>`).join("")}</div>${body}
     <button class="close" id="cl">Close</button>${phoneTab!=="set"?`<button class="close" id="st" style="border:0;color:var(--muted);margin-top:0">Settings</button>`:""}`);
   $("cl").onclick=closeSheet;
@@ -2484,6 +2548,8 @@ function openPhone(){
   const ub=$("uber");if(ub)ub.onclick=()=>openTravel(null,"uber");
   const ib=$("inst");if(ib)ib.onclick=()=>{closeSheet();installApp()};
   const mv=$("mv");if(mv)mv.onclick=openMove;
+  const sb=$("sfxb");if(sb)sb.onclick=()=>{SFX.on=!SFX.on;try{localStorage.setItem("japa_sfx",SFX.on?"on":"off")}catch(e){}if(SFX.on)sfx.ping();openPhone()};
+  const lk=$("look");if(lk)lk.onclick=openLook;
   const gfx=$("gfx");if(gfx)gfx.onclick=()=>{GFX.auto=false;setShadows(!GFX.shadows,true);openPhone()};
   const stt=$("stt");if(stt)stt.onclick=()=>{try{localStorage.setItem("japa_nostats",statsOn()?"1":"0")}catch(e){}toast(statsOn()?"Usage stats on. Thank you!":"Usage stats off.");openPhone()};
   const rs=$("reset");if(rs)rs.onclick=()=>{if(confirm("Start over? This life will be gone.")){try{localStorage.removeItem(KEY)}catch(e){}location.reload()}};
@@ -2526,7 +2592,7 @@ const net={ws:null,zone:null,shard:1,id:null,players:new Map(),lastSend:0,last:"
 try{JSON.parse(localStorage.getItem("japa_muted")||"[]").forEach(n=>net.muted.add(n))}catch(e){}
 function netStatus(){const el=$("online");if(!REALTIME_URL){el.style.display="none";return}
   el.style.display="inline-block";const open=net.ws&&net.ws.readyState===1&&net.id;
-  el.className="online"+(open?"":" off");el.textContent=open?`👥 ${net.players.size+1} here`:"Connecting…"}
+  el.className="online"+(open?"":" off");el.textContent=open?`🟢 ${Math.max(LIVE.online||0,net.players.size+1)} online`:"Connecting…"}
 function netJoin(zone,shard){
   if(!REALTIME_URL)return;
   shard=shard||1;
@@ -2589,6 +2655,21 @@ function sendChat(text){
 }
 $("nChat").onclick=()=>{const bar=$("chatbar");const show=bar.style.display!=="flex";bar.style.display=show?"flex":"none";if(show)$("chatin").focus()};
 $("chatbar").addEventListener("submit",e=>{e.preventDefault();const i=$("chatin");sendChat(i.value);i.value="";$("chatbar").style.display="none";i.blur()});
+function openLook(){if(D.on){toast("Finish your delivery first");return}const L=Object.assign({},S.look);
+  const draw=()=>{openSheet(`<h2>✏️ Name and look</h2><p class="sub">Everyone on the street sees this.</p>
+    <div class="lbl">Nickname</div><input type="text" id="lkn" maxlength="16" value="${esc(S.name)}" autocomplete="off">
+    <div class="lbl">Skin tone</div><div class="sw">${SKINS.map((c,i)=>`<button data-sk="${i}" class="${L.skin===i?"on":""}" style="background:${c}" aria-label="Skin ${i+1}"></button>`).join("")}</div>
+    <div class="lbl">Outfit</div><div class="sw">${SHIRTS.map((c,i)=>`<button data-sh="${i}" class="${L.shirt===i?"on":""}" style="background:${c};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)" aria-label="Outfit ${i+1}"></button>`).join("")}</div>
+    <div class="lbl">Hair</div><div class="sw pills">${HAIRS.map((h,i)=>`<button data-hr="${i}" class="${L.hair===i?"on":""}">${h}</button>`).join("")}</div>
+    <button class="primary" id="lks" style="margin-top:14px">Save</button><button class="close" id="cl">Cancel</button>`);
+    const keepName=()=>{const v=$("lkn").value;return v};
+    $("sheetIn").querySelectorAll("[data-sk]").forEach(b=>b.onclick=()=>{const n=keepName();L.skin=+b.dataset.sk;draw();$("lkn").value=n});
+    $("sheetIn").querySelectorAll("[data-sh]").forEach(b=>b.onclick=()=>{const n=keepName();L.shirt=+b.dataset.sh;draw();$("lkn").value=n});
+    $("sheetIn").querySelectorAll("[data-hr]").forEach(b=>b.onclick=()=>{const n=keepName();L.hair=+b.dataset.hr;draw();$("lkn").value=n});
+    $("cl").onclick=closeSheet;
+    $("lks").onclick=()=>{const n=$("lkn").value.replace(/[<>]/g,"").trim().slice(0,16);if(!n){toast("Pick a nickname");return}S.name=n;S.look=L;
+      const old=player;player=makePerson(SKINS[L.skin],SHIRTS[L.shirt],"#1C1B3A",L.hair,scene);player.position.copy(old.position);player.position.y=.18;player.rotation.y=old.rotation.y;scene.remove(old);
+      save();closeSheet();netJoin(S.zone);toast("Looking fresh ✨")}};draw()}
 function openPlayer(id){
   const r=net.players.get(id);if(!r)return;const muted=net.muted.has(r.name);
   openSheet(`<h2>${esc(r.name)}</h2><p class="sub">On ${Z().name} with you right now.</p>
@@ -2608,7 +2689,7 @@ function tick(){
   const dt=Math.min(clock.getDelta(),.05);
   if(S&&player&&root){
     const L=Z().L;let mx=0,mz=0;
-    if(!uiOpen&&!busy){
+    if(!uiOpen&&!busy&&!PH.on){
       let fw=0,rt=0;
       if(keys["w"]||keys["arrowup"])fw+=1;if(keys["s"]||keys["arrowdown"])fw-=1;if(keys["a"]||keys["arrowleft"])rt-=1;if(keys["d"]||keys["arrowright"])rt+=1;
       if(Math.abs(joyV.x)+Math.abs(joyV.y)>.12){fw=-joyV.y;rt=joyV.x}
@@ -2623,7 +2704,9 @@ function tick(){
       const target=Math.atan2(mx,mz);let diff=target-player.rotation.y;diff=Math.atan2(Math.sin(diff),Math.cos(diff));player.rotation.y+=diff*Math.min(1,dt*12);
       let cd=target-camYaw;cd=Math.atan2(Math.sin(cd),Math.cos(cd));if(autoTarget||Math.abs(cd)<2.3)camYaw+=cd*Math.min(1,dt*(autoTarget?2.5:1.6));
     }
-    if(!D.on){if(P.on&&P.dancing&&speed===0)danceAnim(player,dt);else animatePerson(player,speed,dt)}
+    if(!D.on){if(((P.on&&P.dancing)||PH.dance)&&speed===0)danceAnim(player,dt);else if(PH.wave)wavePose(player,dt);else animatePerson(player,speed,dt)}
+    if(speed>0&&!D.on){SFX.stepT-=dt;if(SFX.stepT<=0){SFX.stepT=.34;sfx.step()}}
+    coinsTick(dt);
     if(P.on)partyTick(dt);
     netTick(dt,speed>0);
     deliveryTick(dt);
@@ -2634,11 +2717,13 @@ function tick(){
     if(np!==nearPlace){nearPlace=np;const a=$("act");
       if(np){a.innerHTML=np.type==="busstop"?`Catch a bus<small>£1.75 anywhere in London</small>`:np.kind==="exit"?`Walk to ${np.name}<small>${ZONES[np.to].area}</small>`:np.type==="station"?`Enter station<small>Trains across London</small>`:`Enter ${np.short}<small>${isOpen(np.type)?"Open now":"Closed now"}</small>`;a.style.display="block"}
       else a.style.display="none"}
+    if(PH.on){const a=player.rotation.y+PH.ang;camPos.set(Math.max(-6.4,Math.min(6.4,player.position.x+Math.sin(a)*5)),2.5,player.position.z+Math.cos(a)*5);camera.position.lerp(camPos,Math.min(1,dt*4));
+      camLook.set(player.position.x,1.7,player.position.z);camera.lookAt(camLook)}else{
     const fx=Math.sin(camYaw),fz=Math.cos(camYaw);
     camPos.set(Math.max(-3.8,Math.min(3.8,player.position.x-fx*8)),4.4,player.position.z-fz*8);camera.position.lerp(camPos,Math.min(1,dt*5));
-    camLook.set(player.position.x+fx*10,2.6,player.position.z+fz*10);camera.lookAt(camLook);
+    camLook.set(player.position.x+fx*10,2.6,player.position.z+fz*10);camera.lookAt(camLook)}
     sun.target.position.set(player.position.x,0,player.position.z+6);sun.position.copy(sun.target.position).addScaledVector(sunDir,70);
-    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus();adTick()}
+    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus();adTick();fetchLive()}
     if(GFX.auto&&GFX.shadows){GFX.n=(GFX.n||0)+1;GFX.t=(GFX.t||0)+dt;if(GFX.t>8){if(GFX.n/GFX.t<26){setShadows(false);toast("Graphics set to fast mode for your device")}GFX.auto=false}}
     saveT-=dt;if(saveT<=0){saveT=5;save()}
   } else if(root){
@@ -2672,6 +2757,23 @@ function showStart(){
       <button class="primary" id="cont">Continue</button><button class="close" id="nw">Start a new life</button></div></div>`;
     $("cont").onclick=()=>begin(saved);$("nw").onclick=()=>{draft.editing=true;showStart()};return;
   }
+  if(!draft.full){
+    st.innerHTML=`<div class="card"><div style="height:30px;background:var(--indigo)"></div><div style="padding:18px 18px 20px">
+      <h1>Abroad Life</h1><p class="sub">Life after you japa. Shifts, rent on Saturday, owambe, and Mum on WhatsApp. Play free with real people.</p><div class="sp" id="sp"></div>
+      <button class="primary big-play" id="play">▶ Play now</button>
+      <button class="close" id="playca">🇨🇦 Play in Toronto instead</button>
+      <button class="close" id="full">🎨 Create my own character</button>
+      <a class="close" href="/calculator/" style="box-sizing:border-box;display:block;text-align:center;text-decoration:none;color:inherit">🧮 Can I afford to japa? Real 2026 costs</a>
+      <button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
+    const fast=c=>{if(load()&&!confirm("This replaces your current life. Continue?"))return;sfx.arrive();draft.fast=true;draft.country=c;draft.origin="ng";
+      draft.name=pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo","Seun","Ifeoma"]);draft.migrate=null;
+      draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);
+      draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.home=c==="ca"?pick(["queen","brampton","scarborough"]):pick(["ryelane","ryelane","woolwich","barking","croydon","edmonton"]);
+      track("quick_play",{kind:c});showSetup(4)};
+    $("play").onclick=()=>fast("uk");$("playca").onclick=()=>fast("ca");$("full").onclick=()=>{draft.full=true;showStart()};
+    $("ins").onclick=()=>{$("start").style.display="none";installApp();const t=setInterval(()=>{if(!uiOpen){clearInterval(t);$("start").style.display="flex"}},300)};
+    fetchLive(true).then(L=>{const el=$("sp");if(!el)return;const bits=[];if(L.online>=3)bits.push(`🟢 ${L.online.toLocaleString()} online now`);if(L.total>=100)bits.push(`${L.total.toLocaleString()} people have played`);el.textContent=bits.join(" · ")});
+    previewPlayer();return}
   st.innerHTML=`<div class="card"><div style="height:30px;background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' fill='%232D3192'/%3E%3Ccircle cx='14' cy='14' r='9' fill='%23F4C430'/%3E%3Ccircle cx='14' cy='14' r='5' fill='%23E5487A'/%3E%3C/svg%3E&quot;)"></div>
     <div style="padding:16px 18px 18px"><h1>Abroad Life</h1><p class="sub">Life after you japa. Pick where you’re from and where you’re going. Work shifts, pay rent, keep Mum happy.</p><div class="jed">🇳🇬 Japa Life edition is live · 🗳️ vote for the next country</div>
     <div class="lbl">Nickname</div><input type="text" id="nm" maxlength="16" placeholder="e.g. Tobi" value="${esc(draft.name)}" autocomplete="off">
@@ -2748,7 +2850,7 @@ function showSetup(step){
     draft.route=res;
     setupCard(`<h2 style="text-align:center">The japa lottery</h2><p class="sub" style="text-align:center">You don’t choose how you land in London.</p>
       <div class="lot-e" id="le">✈️</div><div class="lot" id="lt">…</div><div id="after"></div>`);
-    const keys=Object.keys(ROUTES);let n=0;const total=step===4.5||matchMedia("(prefers-reduced-motion: reduce)").matches?0:16;
+    const keys=Object.keys(ROUTES);let n=0;const total=step===4.5||draft.fast||matchMedia("(prefers-reduced-motion: reduce)").matches?0:16;
     const tick=()=>{if(n<total){const k=keys[n%keys.length];const rk=routeFor(draft.country||"uk",k);$("le").textContent=rk.em;$("lt").textContent=rk.name;n++;setTimeout(tick,60+n*9);return}
       const R0=routeFor(draft.country||"uk",res);$("le").textContent=R0.em;$("lt").textContent=R0.name;
       const pnote=draft.rel&&draft.rel!=="single"?((res==="student"||res==="care")?`<br>💔 Your ${draft.rel} stays in Nigeria for now. Long distance it is.`:`<br>❤️ Your ${draft.rel} came with you to ${draft.country==="ca"?"Canada":"London"}.`):"";
@@ -2758,7 +2860,7 @@ function showSetup(step){
       $("go2").onclick=()=>{
         if(draft.migrate){const s=draft.migrate;if(!s.homeZone)s.homeZone="ryelane";s.country=s.country||"uk";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
         else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||(draft.country==="ca"?"brampton":"ryelane"));s.country=draft.country||"uk";s.origin=draft.origin||"ng";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0,s.country);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
-    tick();
+    tick();if(draft.fast&&$("go2")){const g=$("go2");draft.fastRoute=routeFor(draft.country||"uk",res);g.click()}
   }
 }
 function previewPlayer(){if(preview)preview.parent.remove(preview);const h=ZONES.ryelane.places.find(p=>p.type==="home");preview=makePerson(SKINS[draft.skin],SHIRTS[draft.shirt],"#1C1B3A",draft.hair,scene);preview.position.set(h.x,.18,h.z+1.5);preview.rotation.y=.4}
@@ -2770,6 +2872,9 @@ function begin(state,isNew){
   let zid=ZONES[S.zone]?S.zone:"ryelane";if(ZONES[zid].hall){zid=ZONES[S.owFrom]?S.owFrom:hz();S.pos=S.owPos||{x:0,z:0}}
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{kind:`${S.origin||"ng"}-${S.country||"uk"}`,route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
+  if(isNew&&draft.fast){draft.fast=false;const R0=draft.fastRoute||{};
+    [[2700,`🎲 Japa lottery: you landed as a ${R0.em||""} ${R0.name||"newcomer"}!`],[6100,"🕹️ Use the joystick or tap the street to walk. Yellow rings are doors."],[9500,"📋 Your goals are in the chapter bar up top. 📸 Try Photo mode too!"],[12900,`✏️ You’re “${S.name}”. Change your name in Phone → Settings.`]].forEach(([t,m])=>setTimeout(()=>toast(m),t));
+  } else
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} ${isCA()?"🇨🇦":"🇬🇧"}</h2><p class="sub">You just landed. Here’s how life works.</p>
     <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);
