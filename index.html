@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
-<title>Japa Life: Naija life in London</title>
+<title>Abroad Life: Japa Life edition</title>
 <meta name="description" content="Naija life in London, free in your browser. Work shifts, pay rent on Saturday, attend owambes, keep Mum happy and chase your japa dream with real players on Rye Lane.">
 <meta property="og:type" content="website">
-<meta property="og:title" content="Japa Life: Naija life in London">
-<meta property="og:description" content="Naija life in London or Toronto. Shifts, rent, owambe, Mum's calls. Play free with real people.">
+<meta property="og:title" content="Abroad Life: Japa Life edition">
+<meta property="og:description" content="Life after you japa. Pick where you're from and where you're going. Shifts, rent, owambe, Mum's calls. Play free with real people.">
 <meta property="og:image" content="https://japa-life.pages.dev/og.png">
 <meta property="og:url" content="https://japa-life.pages.dev/">
 <meta name="twitter:card" content="summary_large_image">
@@ -146,6 +146,13 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 .timer{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:22px}
 .lot{font-family:"Bricolage Grotesque",sans-serif;font-weight:800;font-size:34px;text-align:center;margin:14px 0 4px;min-height:1.2em}
 .lot-e{font-size:58px;text-align:center;line-height:1}
+.jgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:6px}
+.jchip{position:relative;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:2px solid var(--glass-line);border-radius:12px;font-size:12px;font-weight:700;line-height:1.15;text-align:center}
+.jchip .f{font-size:22px}.jchip.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
+.jchip .soon{position:absolute;top:3px;right:4px;font-size:9px;font-weight:800;text-transform:uppercase;opacity:.55}
+.jcard{border-radius:12px;padding:10px 12px;margin:10px 0;background:rgba(45,49,146,.08)}.jcard.ok{background:rgba(14,122,75,.12)}
+.jcard b{display:block;font-size:15px}.jcard span{font-size:13px;opacity:.85}
+.jed{display:inline-block;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;background:rgba(244,196,48,.25);margin:-2px 0 6px}
 .pickc{display:block;width:100%;text-align:left;border:2px solid var(--glass-line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
 .pickc.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
 .pickc b{display:block;font-size:15px}.pickc span{font-size:13px;opacity:.8}
@@ -167,7 +174,7 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 </head>
 <body>
 <canvas id="world"></canvas>
-<div id="loading">Loading London…</div>
+<div id="loading">Loading…</div>
 
 <div id="hud">
   <div class="topbar glass"><div class="clock" id="clock">Mon 8:00 AM<small>Week 1</small></div><span class="online" id="online"></span><div class="cash" id="cash">£0</div></div>
@@ -456,6 +463,34 @@ const ZONES={
   stalls:[[-6.2,-26],[-6.2,-34]],exits:[]
  }
 };
+/* ================= Abroad Life: origins x destinations =================
+   A "pack" = origin + destination. Ready packs are playable; the rest collect votes.
+   To launch a pack: add its content, then add "xx-yy" to PACKS_READY. */
+const ORIGINS={
+  ng:{name:"Nigeria",flag:"🇳🇬",cur:"₦",ed:"Japa Life",line:"Jollof, owambe, ‘have you eaten?’, and Mum on WhatsApp at 6am"},
+  gh:{name:"Ghana",flag:"🇬🇭",cur:"GH₵",line:"Kenkey, Sunday service, Mum asking when you’re coming home"},
+  ke:{name:"Kenya",flag:"🇰🇪",cur:"KSh",line:"Chai, M-Pesa home, and the group chat from Nairobi"},
+  za:{name:"South Africa",flag:"🇿🇦",cur:"R",line:"Braai withdrawal, load-shedding jokes, Ma on the phone"},
+  zw:{name:"Zimbabwe",flag:"🇿🇼",cur:"US$",line:"Sadza cravings, care-home shifts, sending money to Harare"},
+  in:{name:"India",flag:"🇮🇳",cur:"₹",line:"Student visa, chai breaks, and relatives asking about marriage"},
+  pk:{name:"Pakistan",flag:"🇵🇰",cur:"Rs",line:"Uni fees, family WhatsApp, and Eid away from home"},
+  ph:{name:"Philippines",flag:"🇵🇭",cur:"₱",line:"Nurse shifts, balikbayan boxes, and karaoke on days off"},
+  jm:{name:"Jamaica",flag:"🇯🇲",cur:"J$",line:"Patty runs, church on Sunday, and family back in Kingston"},
+  other:{name:"Somewhere else",flag:"🌍",cur:"",line:"Tell us where. The most-voted places get built next"}};
+const DESTS={
+  uk:{name:"United Kingdom",flag:"🇬🇧",city:"London",line:"Peckham, Woolwich, Barking, Croydon, Edmonton. Visa wahala, rent on Saturday."},
+  ca:{name:"Canada",flag:"🇨🇦",city:"Toronto",line:"Downtown, Brampton, Scarborough. Minus 20 winters and the CRS score."},
+  us:{name:"United States",flag:"🇺🇸",city:"Houston / New York",line:"Green card lottery, Uber nights, Thanksgiving with strangers."},
+  ie:{name:"Ireland",flag:"🇮🇪",city:"Dublin",line:"Critical Skills permit, rain, and rent you can’t believe."},
+  de:{name:"Germany",flag:"🇩🇪",city:"Berlin",line:"Blue Card, Anmeldung, and learning German at 30."},
+  au:{name:"Australia",flag:"🇦🇺",city:"Sydney",line:"PR points, beach on weekends, Mum calling at 3am her time."},
+  ae:{name:"UAE",flag:"🇦🇪",city:"Dubai",line:"Tax-free salary, 45°C, and visa tied to your job."},
+  nl:{name:"Netherlands",flag:"🇳🇱",city:"Amsterdam",line:"Bikes everywhere, tiny flats, and the 30% ruling."}};
+const PACKS_READY={"ng-uk":1,"ng-ca":1};
+function packReady(o,d){return !!PACKS_READY[`${o}-${d}`]}
+function myVotes(){try{return JSON.parse(localStorage.getItem("japa_votes")||"[]")}catch(e){return[]}}
+function castVote(o,d){const k=`${o}-${d}`,v=myVotes();if(v.includes(k))return false;v.push(k);try{localStorage.setItem("japa_votes",JSON.stringify(v))}catch(e){}track("vote",{what:k});return true}
+function origin(){return ORIGINS[(S&&S.origin)||draft.origin||"ng"]||ORIGINS.ng}
 const COMING=[["Manchester","Up north. Cheaper rent, more rain."],["Birmingham","The Midlands. Jollof is still jollof."]];
 const AREAS={queen:{area:"Downtown Toronto",mult:1.3,pos:[0,0],ca:1,blurb:"Condos, streetcars, the CN Tower. Rent will humble you."},brampton:{area:"Brampton",mult:.95,pos:[-9,6],ca:1,blurb:"Big Nigerian and South Asian community. Banquet halls every weekend."},scarborough:{area:"Scarborough",mult:.85,pos:[8,3],ca:1,blurb:"East Toronto. Warehouses, care homes and the best suya in the city."},ryelane:{area:"Peckham",mult:1,pos:[0,0],blurb:"Little Lagos. Busy, loud, everything Naija on one street."},woolwich:{area:"Woolwich",mult:.9,pos:[6,.5],blurb:"Big Nigerian community, market days, Elizabeth line."},
   barking:{area:"Barking",mult:.85,pos:[8,5],blurb:"East London. More space for your money, East Street Market."},croydon:{area:"Croydon",mult:.92,pos:[-1,-7],blurb:"South London. Trams, big churches, the Container Yard."},
@@ -517,7 +552,7 @@ const MUSA=[
 let S=null;
 function fresh(name,look,home){home=home||"ryelane";const h=ZONES[home].places.find(p=>p.type==="home");return{v:3,name,look,m:300,n:{h:80,e:85,y:80,f:70},T:8*60,xp:{retail:0,delivery:0,care:0,tech:0,warehouse:0},weekShifts:0,fund:0,dreamsDone:0,best:{},partner:null,visa:null,rep:4.5,booked:null,sent:0,hoursToday:0,burn:0,ticket:false,trips:0,seen:{},evq:[],chapter:1,goals:{},flags:{},jxp:0,respect:0,ajo:null,sendCount:0,skip:0,exams:{},study:0,credit:0,biz:null,car:false,papers:null,lessons:0,kids:[],parents:null,preg:null,zone:home,homeZone:home,groceries:0,
   pos:{x:h.x,z:h.z+1.5},msgs:[{t:"Mum",d:0,txt:"Welcome to London, my child. Call me when you land. Don’t talk to strangers."}],unread:1,tx:[]}}
-function migrate(s){if(!s.zone)s.zone="ryelane";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
+function migrate(s){if(!s.zone)s.zone="ryelane";if(!s.origin)s.origin="ng";if(s.groceries===undefined)s.groceries=0;if(!s.xp)s.xp={retail:s.shifts||0,delivery:0,care:0,tech:0};if(s.weekShifts===undefined)s.weekShifts=0;if(s.fund===undefined)s.fund=0;if(!s.dreamsDone)s.dreamsDone=0;if(!s.best)s.best={};["partner","visa","booked"].forEach(k=>{if(s[k]===undefined)s[k]=null});if(s.rep===undefined)s.rep=4.5;["sent","hoursToday","burn","trips"].forEach(k=>{if(s[k]===undefined)s[k]=0});if(s.ticket===undefined)s.ticket=false;if(!s.seen)s.seen={};if(!s.evq)s.evq=[];if(s.route&&!s.visa)s.visa=visaFor(s.route,s.T?Math.floor(s.T/1440):0);
   if(!s.chapter){s.chapter=1;s.goals={};s.flags={};s.jxp=0;s.respect=0;s.ajo=null;s.skip=0;s.sendCount=s.sent>0?1:0;
     if(s.xp&&Object.values(s.xp).some(v=>v>0))s.flags.firstWage=true;if(s.route==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true})}
   if(!s.homeZone)s.homeZone="ryelane";if(!s.exams)s.exams={};if(s.study===undefined)s.study=0;if(s.credit===undefined)s.credit=0;if(s.biz===undefined)s.biz=null;if(s.car===undefined)s.car=false;if(s.papers===undefined)s.papers=null;if(s.lessons===undefined)s.lessons=0;if(!s.kids)s.kids=[];if(s.parents===undefined)s.parents=null;if(s.preg===undefined)s.preg=null;if(!s.country)s.country="uk";if(s.xp&&s.xp.warehouse===undefined)s.xp.warehouse=0;s.v=9;return s}
@@ -531,7 +566,7 @@ const gbp=n=>{if(isCA()){const v=Math.abs(n)*FXR;return (n<0?"−$":"$")+(v>=100
 /* Naira: starts at official rates (7 Oct 2026: £1 ≈ ₦1,760, C$1 ≈ ₦990) and drifts daily. */
 const FX_BASE={uk:1760,ca:990};
 function fxRate(){const c=(S&&S.country)||"uk";return (S&&S.fx&&S.fx[c])||FX_BASE[c]}
-function fmtN(v){const a=Math.abs(v),s=v<0?"−₦":"₦";if(a>=1e9)return s+(a/1e9).toFixed(2).replace(/\.?0+$/,"")+"bn";if(a>=1e6)return s+(a/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,"")+"m";if(a>=1e4)return s+Math.round(a/1e3)+"k";return s+Math.round(a).toLocaleString()}
+function fmtN(v){const a=Math.abs(v),cs=(ORIGINS[(S&&S.origin)||"ng"]||ORIGINS.ng).cur||"₦",s=v<0?"−"+cs:cs;if(a>=1e9)return s+(a/1e9).toFixed(2).replace(/\.?0+$/,"")+"bn";if(a>=1e6)return s+(a/1e6).toFixed(a>=1e7?1:2).replace(/\.?0+$/,"")+"m";if(a>=1e4)return s+Math.round(a/1e3)+"k";return s+Math.round(a).toLocaleString()}
 function ngn(units){return units*(isCA()?FXR:1)*fxRate()}
 function nn(units){return fmtN(ngn(units))}
 function fxNewDay(d){if(!S)return;S.fx=S.fx||{};const c=S.country||"uk",b=FX_BASE[c];let r=S.fx[c]||b;const prev=r;
@@ -2452,17 +2487,17 @@ function showStart(){
   if(saved&&!draft.editing){
     const z=ZONES[saved.zone]||ZONES.ryelane;
     st.innerHTML=`<div class="card"><div class="band" style="height:30px;background:var(--indigo)"></div><div class="in" style="padding:18px">
-      <h1>Japa Life</h1><p class="sub">Welcome back, ${esc(saved.name)}. You’re on ${z.name}, ${z.area}.</p>
+      <h1>Abroad Life</h1><p class="sub">${origin().flag} ${esc(origin().ed||"")} · Welcome back, ${esc(saved.name)}. You’re on ${z.name}, ${z.area}.</p>
       <button class="primary" id="cont">Continue</button><button class="close" id="nw">Start a new life</button></div></div>`;
     $("cont").onclick=()=>begin(saved);$("nw").onclick=()=>{draft.editing=true;showStart()};return;
   }
   st.innerHTML=`<div class="card"><div style="height:30px;background:url(&quot;data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='28' height='28'%3E%3Crect width='28' height='28' fill='%232D3192'/%3E%3Ccircle cx='14' cy='14' r='9' fill='%23F4C430'/%3E%3Ccircle cx='14' cy='14' r='5' fill='%23E5487A'/%3E%3C/svg%3E&quot;)"></div>
-    <div style="padding:16px 18px 18px"><h1>Japa Life</h1><p class="sub">Naija life abroad. London or Toronto: work, eat suya, pay rent on Saturday, keep Mum happy.</p>
+    <div style="padding:16px 18px 18px"><h1>Abroad Life</h1><p class="sub">Life after you japa. Pick where you’re from and where you’re going. Work shifts, pay rent, keep Mum happy.</p><div class="jed">🇳🇬 Japa Life edition is live · 🗳️ vote for the next country</div>
     <div class="lbl">Nickname</div><input type="text" id="nm" maxlength="16" placeholder="e.g. Tobi" value="${esc(draft.name)}" autocomplete="off">
     <div class="lbl">Skin tone</div><div class="sw">${SKINS.map((c,i)=>`<button data-skin="${i}" class="${draft.skin===i?"on":""}" style="background:${c}" aria-label="Skin ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Outfit</div><div class="sw">${SHIRTS.map((c,i)=>`<button data-shirt="${i}" class="${draft.shirt===i?"on":""}" style="background:${c};box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)" aria-label="Outfit ${i+1}"></button>`).join("")}</div>
     <div class="lbl">Hair</div><div class="sw pills">${HAIRS.map((h,i)=>`<button data-hair="${i}" class="${draft.hair===i?"on":""}">${h}</button>`).join("")}</div>
-    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start: random life in 🇬🇧</button><button class="close" id="qsca">⚡ Quick start: random life in 🇨🇦</button><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
+    <button class="primary" id="go" style="margin-top:16px">Next</button><button class="close" id="qs">⚡ Quick start: 🇳🇬 → 🇬🇧 London</button><button class="close" id="qsca">⚡ Quick start: 🇳🇬 → 🇨🇦 Toronto</button><button class="close" id="ins" style="border:0;color:var(--muted);margin-top:4px">📲 Install as an app</button></div></div>`;
   const nm=$("nm");nm.oninput=()=>draft.name=nm.value;
   st.querySelectorAll("[data-skin]").forEach(b=>b.onclick=()=>{draft.skin=+b.dataset.skin;showStart()});
   st.querySelectorAll("[data-shirt]").forEach(b=>b.onclick=()=>{draft.shirt=+b.dataset.shirt;showStart()});
@@ -2471,7 +2506,7 @@ function showStart(){
     if(load()&&!confirm("This replaces your current life. Continue?"))return;
     draft.name=n;draft.migrate=null;showSetup(1.5)};
   $("qsca").onclick=()=>{draft.country="ca";$("qs").onclick(true)};
-  $("qs").onclick=(keep)=>{if(keep!==true)draft.country="uk";if(load()&&!confirm("This replaces your current life. Continue?"))return;
+  $("qs").onclick=(keep)=>{if(keep!==true)draft.country="uk";draft.origin="ng";if(load()&&!confirm("This replaces your current life. Continue?"))return;
     draft.name=nm.value.trim()||pick(["Tobi","Ada","Kemi","Emeka","Bisola","Tunde","Chioma","Femi","Ngozi","Dayo"]);draft.migrate=null;
     draft.skin=Math.floor(Math.random()*4);draft.shirt=Math.floor(Math.random()*6);draft.hair=Math.floor(Math.random()*3);
     draft.traits=shuffle(TRAITS.map(t=>t.id)).slice(0,2);draft.dream=pick(Object.keys(DREAMS));draft.rel=pick(["single","single","wife","husband"]);draft.country=draft.country||"uk";draft.home=draft.country==="ca"?pick(["queen","brampton","scarborough"]):pick(["ryelane","woolwich","barking","croydon","edmonton"]);showSetup(4)};
@@ -2482,13 +2517,22 @@ function setupCard(inner){$("start").style.display="flex";if(draft.country==="ca
 function showSetup(step){
   draft.traits=draft.traits||[];
   if(step===1.5){
-    draft.country=draft.country||"uk";
-    setupCard(`<h2>Where are you japa-ing to?</h2><p class="sub">Each country has its own streets, papers, jobs and wahala.</p>
-      <button class="pickc ${draft.country==="uk"?"on":""}" data-c="uk"><b>🇬🇧 United Kingdom</b><span>London: Peckham, Woolwich, Barking, Croydon, Edmonton. CoS wahala, rent on Saturday, owambe in Woolwich.</span></button>
-      <button class="pickc ${draft.country==="ca"?"on":""}" data-c="ca"><b>🇨🇦 Canada</b><span>Toronto: Downtown, Brampton, Scarborough. Minus 20 winters, ‘Canadian experience’, and the CRS score.</span></button>
-      <button class="primary" id="nx">Next</button>`);
+    draft.origin=draft.origin||"ng";draft.country=draft.country||"uk";
+    const o=draft.origin,d=draft.country,ok=packReady(o,d),voted=myVotes().includes(`${o}-${d}`),O=ORIGINS[o],Dd=DESTS[d];
+    const chip=(k,v,attr,on,ready)=>`<button class="jchip ${on?"on":""}" data-${attr}="${k}"><span class="f">${v.flag}</span><span class="n">${v.name}</span>${ready?"":`<span class="soon">soon</span>`}</button>`;
+    const readyFrom=k=>Object.keys(DESTS).some(dd=>packReady(k,dd)),readyTo=k=>packReady(o,k);
+    setupCard(`<h2>Your journey</h2><p class="sub">Where are you from, and where are you going?</p>
+      <div class="lbl">I’m from</div><div class="jgrid">${Object.entries(ORIGINS).map(([k,v])=>chip(k,v,"o",k===o,readyFrom(k))).join("")}</div>
+      <div class="lbl">Going to</div><div class="jgrid">${Object.entries(DESTS).map(([k,v])=>chip(k,v,"c",k===d,readyTo(k))).join("")}</div>
+      <div class="jcard ${ok?"ok":""}"><b>${O.flag} → ${Dd.flag} ${o==="other"?"":O.name+" to "}${Dd.city}</b><span>${ok?Dd.line:o==="other"?O.line:`${O.line}. Not built yet. Vote and we’ll build the most wanted next.`}</span></div>
+      ${o==="other"&&!ok?`<input type="text" id="oth" maxlength="24" placeholder="Which country are you from?" autocomplete="off" style="margin-bottom:8px">`:""}
+      ${ok?`<button class="primary" id="nx">Next</button>`:`<button class="primary" id="vote" ${voted?"disabled":""}>${voted?"✓ You voted for this one":"🗳️ Vote for this journey"}</button>
+      <button class="close" id="alt">Play 🇳🇬 → ${Dd.flag==="🇨🇦"?"🇨🇦":"🇬🇧"} while you wait</button>`}`);
+    $("start").querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{draft.origin=b.dataset.o;draft.home=null;showSetup(1.5)});
     $("start").querySelectorAll("[data-c]").forEach(b=>b.onclick=()=>{draft.country=b.dataset.c;draft.home=null;showSetup(1.5)});
-    $("nx").onclick=()=>showSetup(2);return;
+    if(ok){$("nx").onclick=()=>showSetup(2);return}
+    $("vote").onclick=()=>{let oo=o;if(o==="other"){const t=($("oth").value||"").toLowerCase().replace(/[^a-z ]/g,"").trim().replace(/ +/g,"_").slice(0,20);if(!t){toast("Type your country first");$("oth").focus();return}oo="other_"+t}castVote(oo,d);toast(`🗳️ Vote counted for ${O.flag} → ${Dd.flag}. Thank you!`);showSetup(1.5)};
+    $("alt").onclick=()=>{draft.origin="ng";draft.country=d==="ca"?"ca":"uk";draft.home=null;showSetup(1.5)};return;
   }
   if(step===2){
     setupCard(`<h2>Pick two traits</h2><p class="sub">${draft.migrate?"New in Japa Life: traits, dreams and the japa lottery. ":""}They change how you play.</p>
@@ -2532,7 +2576,7 @@ function showSetup(step){
       $("shl").onclick=()=>{const after=$("after"),keep=after.innerHTML;showCard(makeCard("lottery",{em:R0.em,name:R0.name,home:R0.home,player:draft.name||"I"}),`I took the japa lottery in Japa Life and got ${R0.em} ${R0.name} 😭 What did you get?`,after);$("cardBack").onclick=()=>{showSetup(4.5)}};
       $("go2").onclick=()=>{
         if(draft.migrate){const s=draft.migrate;if(!s.homeZone)s.homeZone="ryelane";s.country=s.country||"uk";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,Math.floor((s.T||0)/1440));draft.migrate=null;begin(s,false);toast(`You’re a ${R0.name}. Welcome back!`)}
-        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||(draft.country==="ca"?"brampton":"ryelane"));s.country=draft.country||"uk";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0,s.country);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
+        else{const s=fresh(draft.name,{skin:draft.skin,shirt:draft.shirt,hair:draft.hair},draft.home||(draft.country==="ca"?"brampton":"ryelane"));s.country=draft.country||"uk";s.origin=draft.origin||"ng";s.route=res;s.traits=draft.traits.slice();s.dream=draft.dream;s.m=R0.cash;s.partner=partnerFor(draft.rel,res);s.visa=visaFor(res,0,s.country);if(res==="born")Object.assign(s.flags,{ni:true,bank:true,gp:true});begin(s,true)}}};
     tick();
   }
 }
@@ -2544,7 +2588,7 @@ function begin(state,isNew){
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
   const zid=ZONES[S.zone]?S.zone:"ryelane";
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
-  track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
+  track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{kind:`${S.origin||"ng"}-${S.country||"uk"}`,route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} ${isCA()?"🇨🇦":"🇬🇧"}</h2><p class="sub">You just landed. Here’s how life works.</p>
     <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
     <button class="primary" id="ok">Oya, let’s go</button>`);$("ok").onclick=closeSheet},400);
