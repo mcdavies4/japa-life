@@ -157,6 +157,9 @@ input[type=text]{width:100%;font:inherit;font-size:17px;padding:11px 13px;border
 #party button{width:64px;height:64px;border-radius:20px;display:flex;flex-direction:column;align-items:center;justify-content:center;font-size:11px;font-weight:800;touch-action:manipulation;user-select:none;-webkit-user-select:none}
 #party button span{font-size:24px;line-height:1.1}#party button.on{background:var(--yellow);color:#1C1B3A}
 #pSpray{background:#0E7A4B!important;color:#fff!important}#pSpray:active{transform:scale(.94)}
+.chip.xmas{background:#B91C1C!important;color:#fff}
+.pk{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--glass-line);width:100%;text-align:left}.pk .t{flex:1;font-weight:700;font-size:14px}.pk .t small{display:block;font-weight:600;color:var(--muted);font-size:12px}.pk .ck{font-size:20px}
+.scale{height:14px;border-radius:7px;background:rgba(127,127,150,.25);overflow:hidden;margin:6px 0 2px}.scale i{display:block;height:100%;border-radius:7px;transition:width .3s}
 .chip.live{background:#E5487A!important;color:#fff;animation:livep 1.4s ease-in-out infinite}.chip.board{background:rgba(28,27,58,.82)!important;color:#fff}
 @keyframes livep{50%{box-shadow:0 0 0 6px rgba(229,72,122,.25)}}
 @media (prefers-reduced-motion: reduce){.chip.live{animation:none}}
@@ -174,6 +177,7 @@ body.photo #photobar{display:flex}
 #photobar button{flex:1;display:flex;flex-direction:column;align-items:center;font-size:11px;font-weight:800;padding:6px 2px;border-radius:14px}
 #photobar button span{font-size:22px}#photobar button.on{background:var(--yellow);color:#1C1B3A}
 #photobar #phSnap{flex:none;width:68px;height:68px;border-radius:50%;background:#fff;border:5px solid var(--pink);font-size:26px;color:#1C1B3A}
+#photobar #phClip.rec{background:#C2304F;color:#fff}body.rec #phSnap,body.rec #phTurn,body.rec #phX{opacity:.35;pointer-events:none}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7;transition:opacity .35s}
 .big-play{font-size:22px!important;padding:18px!important;box-shadow:0 6px 0 #0A5A37}
 .sp{font-size:13px;font-weight:700;color:var(--green);margin:-2px 0 10px}
@@ -216,7 +220,7 @@ body.photo #photobar{display:flex}
 </div>
 <div id="joy" class="glass" aria-label="Movement joystick"><div class="knob" id="knob"></div></div>
 <button id="act"></button>
-<div id="photobar" class="glass"><button id="phPose"><span>💃🏾</span>Dance</button><button id="phWave"><span>👋🏾</span>Wave</button><button id="phSnap" aria-label="Take photo">📸</button><button id="phTurn"><span>🔄</span>Angle</button><button id="phX"><span>✕</span>Close</button></div>
+<div id="photobar" class="glass"><button id="phPose"><span>💃🏾</span>Dance</button><button id="phWave"><span>👋🏾</span>Wave</button><button id="phSnap" aria-label="Take photo">📸</button><button id="phClip"><span>🎥</span>Clip</button><button id="phTurn"><span>🔄</span>Angle</button><button id="phX"><span>✕</span>Close</button></div>
 <div id="float" aria-hidden="true"></div><div id="arrive" aria-hidden="true"></div><div id="flash"></div>
 <div id="party"><button class="glass" id="pDance"><span>💃🏾</span>Dance</button><button class="glass" id="pSpray"><span>💸</span>Spray</button><button class="glass" id="pMusic"><span>🔊</span>Music</button></div>
 <nav id="nav" class="glass">
@@ -548,6 +552,10 @@ function trip2(a,b,mode){const A=(AREAS[a]||AREAS.ryelane).pos,B=(AREAS[b]||AREA
 function slotZ(zone,i){return -zone.L+6+i*10}
 ZONES.owambe={name:"Royal Owambe Hall",area:"Owambe Night",L:13,traffic:false,road:"#5A3E2B",npcs:0,code:"",hall:true,places:[],left:[],right:[],stalls:[],
   exits:[{id:"exit-owambe",to:"woolwich",name:"Back outside",end:-1}]};
+ZONES.airport={name:"Heathrow Terminal 4",area:"Departures",L:13,traffic:false,road:"#B9BEC6",npcs:0,code:"",hall:true,kind:"airport",left:[],right:[],stalls:[],
+  places:[{id:"checkin",type:"checkin",name:"Check-in · Lagos (LOS)",short:"Check-in",emoji:"🧳",x:-4.4,z:1},{id:"gate",type:"gate",name:"Gate B32 · Lagos",short:"Gate B32",emoji:"🛫",x:0,z:9.5}],
+  exits:[{id:"exit-airport",to:"ryelane",name:"Back to London",end:-1}]};
+AREAS.airport=Object.assign({},AREAS.woolwich,{area:"Departures",blurb:"Heathrow. The Ghana Must Go bags are ready."});
 AREAS.owambe=Object.assign({},AREAS.woolwich,{area:"Owambe Night",blurb:"The party. Every night at 8 PM UK time."});
 Object.entries(ZONES).forEach(([zid,z])=>{
   z.id=zid;
@@ -769,6 +777,8 @@ function flatText(text,w,h,x,z,ry,color){const t=textTex(text,"rgba(0,0,0,0)",co
    Real time: 8:00-8:20 PM UK (Europe/London). Everyone online lands in the same hall (room "owambe-1").
    Outside that window the hall is open for practice with NPC guests. Add ?owambe=live to the URL to test live mode. */
 const OWAMBE={hour:20,mins:20};
+// Owambe Night sponsor (sold via /advertise). Set to e.g. {name:"Brand Name", line:"Short tagline"} for the nights it's booked; null = no sponsor.
+const OWAMBE_SPONSOR=null;
 const CELEBS=[["Mr & Mrs Adeyemi","Wedding reception"],["Aunty Ngozi","ILR party 🇬🇧"],["Baby Tolu","Naming ceremony"],["Chief Okafor","70th birthday"],["Dr Funmi","Graduation party"],["The Bello family","House warming"],["Uncle Segun","Retirement party"],["Kemi & Tunde","Engagement party"]];
 const ASOEBI=[["#C9A227","#6B2D8C"],["#0E7A4B","#F4C430"],["#C2304F","#F2EEE4"],["#2D3192","#E85A1A"],["#E5487A","#1C1B3A"],["#3BA3D9","#C9A227"],["#7A1F2B","#E8C46A"]];
 const BIGMEN=[["Chief Adewale",.3],["Aunty Bisi",.22],["Alhaji Musa",.15]];
@@ -780,7 +790,8 @@ function ukParts(){try{const f=new Intl.DateTimeFormat("en-GB",{timeZone:"Europe
 function partyPhase(){if(FORCE_LIVE)return{live:true,left:OWAMBE.mins,el:(Date.now()-(P.t0||Date.now()))/1000};const u=ukParts(),t=u.h*60+u.m-OWAMBE.hour*60+u.s/60;
   if(t>=0&&t<OWAMBE.mins)return{live:true,left:OWAMBE.mins-t,el:t*60};if(t>=-15&&t<0)return{soon:true,in:Math.ceil(-t)};return{next:t<0?-t:24*60-t}}
 function nightIdx(){const u=ukParts();return Math.floor(Date.UTC(u.y,u.mo-1,u.d)/864e5)}
-function tonight(){const i=nightIdx();return{celeb:CELEBS[i%CELEBS.length],colors:ASOEBI[i%ASOEBI.length]}}
+const CELEBS_XMAS=[["Detty December Owambe","Christmas party"],["The Okafors","End-of-year party"],["Aunty Bisi","Christmas Day owambe"],["The Diaspora Crew","IJGB welcome party"]];
+function tonight(){const i=nightIdx();if(dettyState()==="on"){const u=ukParts();return{celeb:u.mo===12&&u.d===31?["Crossover Night","31 December · Happy New Year!"]:CELEBS_XMAS[i%CELEBS_XMAS.length],colors:[["#B91C1C","#C9A227"],["#0E7A4B","#B91C1C"],["#C9A227","#F7F3EA"]][i%3]}}return{celeb:CELEBS[i%CELEBS.length],colors:ASOEBI[i%ASOEBI.length]}}
 function boardRows(){const ph=partyPhase(),el=ph.live?ph.el:(Date.now()-P.t0)/1000;
   const rows=BIGMEN.map(([n,r])=>[n,Math.floor(el*r/5)*5]);
   const real=ph.live&&net.id?P.board.slice():[];if(!real.some(r=>r[0]===S.name)&&P.mine>0)real.push([S.name,P.mine]);
@@ -852,7 +863,7 @@ function buildHall(zone,rnd){const T=tonight(),[c1,c2]=T.colors,L=zone.L;P.tiles
   // stage, banner, thrones, DJ, MC
   box(13,1,4.4,"#3A2A1F",0,.5,14);box(13,.04,4.4,"#8E1B2E",0,1.02,14);for(let x=-6;x<=6;x+=.6)box(.06,1,.06,gold,x,.5,11.8);
   const banner=new THREE.Mesh(new THREE.PlaneGeometry(10,2.2),own(new THREE.MeshBasicMaterial({map:(()=>{const[c,x]=cvs(1024,224);x.fillStyle="#1C1B3A";x.fillRect(0,0,1024,224);x.strokeStyle=c2;x.lineWidth=10;x.strokeRect(8,8,1008,208);
-    x.fillStyle="#F4D27A";x.textAlign="center";x.font='800 76px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.fillText(T.celeb[0],512,104,960);x.font='600 46px "Figtree",system-ui,sans-serif';x.fillStyle="#FFFFFF";x.fillText(`${T.celeb[1]} · Owambe Night`,512,172,960);return new THREE.CanvasTexture(c)})()})));
+    x.fillStyle="#F4D27A";x.textAlign="center";x.font='800 76px "Bricolage Grotesque","Figtree",system-ui,sans-serif';x.fillText(T.celeb[0],512,104,960);x.font='600 46px "Figtree",system-ui,sans-serif';x.fillStyle="#FFFFFF";x.fillText(OWAMBE_SPONSOR?`${T.celeb[1]} · powered by ${OWAMBE_SPONSOR.name}`:`${T.celeb[1]} · Owambe Night`,512,172,960);return new THREE.CanvasTexture(c)})()})));
   banner.position.set(0,4.6,15.9);banner.rotation.y=Math.PI;root.add(banner);
   for(const q of[-1,1]){box(1.1,1.6,.9,gold,q*1.3,1.8,14.8);box(1,.2,.9,"#8E1B2E",q*1.3,1.5,14.7)}
   box(2.4,1,1,"#1C1B3A",4.2,1.5,13.6);box(.8,.05,.5,"#B9BCC4",4.2,2.03,13.5);
@@ -883,7 +894,7 @@ function partyTick(dt){const b=beatNow(),beat=Math.floor(b),f=b-beat;
   const pulse=1+Math.max(0,1-f*4)*.18;P.spk.forEach(s=>s.scale.setScalar((s.userData.base||(s.userData.base=s.scale.x))*pulse));
   P.cones.forEach((c,i)=>{const t=performance.now()/1000+i*1.7;c.rotation.z=Math.sin(t*.8)*.5;c.rotation.x=Math.cos(t*.6)*.4});
   notesTick(dt);
-  if((P.mcT-=dt)<=0){P.mcT=9+Math.random()*6;const br=boardRows(),top=br[0]?br[0][0].replace(" (you)",""):"Chief";mcSay(pick(MC_LINES).replace("{top}",top).replace("{me}",S.name))}
+  if((P.mcT-=dt)<=0){P.mcT=9+Math.random()*6;const br=boardRows(),top=br[0]?br[0][0].replace(" (you)",""):"Chief";mcSay(OWAMBE_SPONSOR&&Math.random()<.3?`This Owambe is powered by ${OWAMBE_SPONSOR.name}! ${OWAMBE_SPONSOR.line||""}`:pick(MC_LINES).replace("{top}",top).replace("{me}",S.name))}
   if(P.mcH.bubble&&(P.mcH.bubbleT-=dt)<=0){P.mc.remove(P.mcH.bubble);P.mcH.bubble.material.map.dispose();P.mcH.bubble.material.dispose();P.mcH.bubble=null}
   P.funT+=dt;if(P.funT>8){P.funT=0;add("f",P.dancing?3:1);if(P.dancing)add("e",-1)}
   if(P.unlogged>=50){addTx("Spraying at Owambe Night",-P.unlogged);P.unlogged=0}
@@ -938,8 +949,33 @@ function fetchLive(force){if(!STATS_URL||(!force&&Date.now()-LIVE.at<60000))retu
 /* photo mode */
 const PH={on:false,ang:0,dance:false,wave:false};
 function photoOn(){if(!S||uiOpen||busy)return;if(D.on){toast("Finish your delivery first");return}PH.on=true;PH.ang=0;document.body.classList.add("photo");autoTarget=null;track("photo",{k:"open"})}
-function photoOff(){PH.on=false;PH.dance=PH.wave=false;$("phPose").classList.remove("on");$("phWave").classList.remove("on");document.body.classList.remove("photo");animatePerson(player,0,0)}
+function photoOff(){if(REC.on){stopClip();return}PH.on=false;PH.dance=PH.wave=false;$("phPose").classList.remove("on");$("phWave").classList.remove("on");document.body.classList.remove("photo");animatePerson(player,0,0)}
 function wavePose(p,dt){const u=p.userData;u.phase+=dt*8;u.armR.rotation.x=-2.7;u.armR.rotation.z=.35+Math.sin(u.phase)*.35;u.armL.rotation.x=0;u.dz=1}
+/* 8-second video clips for TikTok, Reels and WhatsApp status (9:16, with the game's sound) */
+const REC={on:false,mr:null,chunks:[],c:null,x:null,t0:0,dur:8,adest:null,mime:""};
+function clipMime(){if(!window.MediaRecorder||!MediaRecorder.isTypeSupported)return "";for(const m of["video/mp4;codecs=avc1","video/mp4","video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"])if(MediaRecorder.isTypeSupported(m))return m;return ""}
+function startClip(){if(REC.on)return;if(!window.MediaRecorder||!HTMLCanvasElement.prototype.captureStream){toast("Video clips need a newer browser. Photos still work!");return}
+  const c=document.createElement("canvas");c.width=720;c.height=1280;REC.c=c;REC.x=c.getContext("2d");const stream=c.captureStream(30);
+  try{const ac=actx();if(ac){REC.adest=ac.createMediaStreamDestination();if(SFX.g)SFX.g.connect(REC.adest);if(AU.master)AU.master.connect(REC.adest);REC.adest.stream.getAudioTracks().forEach(t=>stream.addTrack(t))}}catch(e){}
+  REC.mime=clipMime();try{REC.mr=new MediaRecorder(stream,REC.mime?{mimeType:REC.mime,videoBitsPerSecond:3000000}:{})}catch(e){toast("Couldn’t record on this device. Try a photo instead.");return}
+  REC.chunks=[];REC.mr.ondataavailable=e=>{if(e.data&&e.data.size)REC.chunks.push(e.data)};REC.mr.onstop=finishClip;REC.mr.start(250);
+  REC.on=true;REC.t0=performance.now();document.body.classList.add("rec");$("phClip").classList.add("rec");buzz(20);track("photo",{k:"clip"})}
+function clipFrame(){const src=renderer.domElement,x=REC.x,W=720,H=1280,band=110,h=H-band,sr=src.width/src.height,dr=W/h;let sw=src.width,sh=src.height,sx=0,sy=0;
+  if(sr>dr){sw=sh*dr;sx=(src.width-sw)/2}else{sh=sw/dr;sy=(src.height-sh)/2}x.drawImage(src,sx,sy,sw,sh,0,0,W,h);
+  x.fillStyle="#1C1B3A";x.fillRect(0,h,W,band);x.fillStyle="#F4C430";x.fillRect(0,h,W,6);x.fillStyle="#FFFFFF";x.font='800 40px "Bricolage Grotesque",Figtree,sans-serif';x.textAlign="left";x.fillText("Abroad Life",30,h+62);
+  x.font='600 20px Figtree,sans-serif';x.fillStyle="#C9CBEF";x.fillText(`${S.name} · ${Z().name}`,30,h+92);x.textAlign="right";x.fillStyle="#F4C430";x.font='800 24px Figtree,sans-serif';x.fillText("japa-life.pages.dev",W-30,h+70);x.textAlign="left";
+  const t=(performance.now()-REC.t0)/1000,left=Math.max(0,Math.ceil(REC.dur-t));$("phClip").innerHTML=`<span>⏺</span>${left}s`;if(t>=REC.dur)stopClip()}
+function stopClip(){if(!REC.on)return;REC.on=false;try{REC.mr.stop()}catch(e){finishClip()}}
+function finishClip(){document.body.classList.remove("rec");const b=$("phClip");b.classList.remove("rec");b.innerHTML="<span>🎥</span>Clip";
+  try{if(REC.adest){if(SFX.g)SFX.g.disconnect(REC.adest);if(AU.master)AU.master.disconnect(REC.adest)}}catch(e){}REC.adest=null;
+  if(!REC.chunks.length){toast("The clip didn’t record. Try again.");return}
+  const type=(REC.mr&&REC.mr.mimeType)||REC.mime||"video/webm",ext=/mp4/.test(type)?"mp4":"webm",blob=new Blob(REC.chunks,{type}),url=URL.createObjectURL(blob),file=new File([blob],`abroad-life-${Date.now()}.${ext}`,{type});
+  const text=`${S.name} on ${Z().name}, ${Z().area} 🎥 Play Abroad Life free: https://japa-life.pages.dev`;track("card",{kind:"clip"});photoOff();
+  openSheet(`<h2>🎥 Your clip</h2><video src="${url}" controls playsinline autoplay muted loop style="width:100%;max-height:52vh;border-radius:14px;background:#000;display:block;margin:4px 0 12px"></video>
+    <button class="primary" id="csh">Share to TikTok, Reels or WhatsApp</button><a class="close" id="cdl" href="${url}" download="${file.name}" style="box-sizing:border-box;display:block;text-align:center;text-decoration:none;color:inherit">Save video</a><button class="close" id="cl">Close</button>`);
+  $("cl").onclick=()=>{closeSheet();setTimeout(()=>URL.revokeObjectURL(url),1000)};
+  $("csh").onclick=async()=>{try{if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text});return}}catch(e){if(e&&e.name==="AbortError")return}
+    $("cdl").click();try{await navigator.clipboard.writeText(text);toast("Saved. Caption copied, paste it when you post.")}catch(e){toast("Saved to your downloads.")}}}
 function snapPhoto(){sfx.snap();buzz(20);const fl=$("flash");fl.style.transition="none";fl.style.opacity=".9";requestAnimationFrame(()=>{fl.style.transition="opacity .45s";fl.style.opacity="0"});
   renderer.render(scene,camera);const src=renderer.domElement,c=document.createElement("canvas");c.width=1080;c.height=1350;const x=c.getContext("2d");
   const H=1350-150,sr=src.width/src.height,dr=1080/H;let sw=src.width,sh=src.height,sx=0,sy=0;if(sr>dr){sw=sh*dr;sx=(src.width-sw)/2}else{sh=sw/dr;sy=(src.height-sh)/2}
@@ -949,7 +985,7 @@ function snapPhoto(){sfx.snap();buzz(20);const fl=$("flash");fl.style.transition
   x.textAlign="right";x.fillStyle="#F4C430";x.font='800 32px Figtree,sans-serif';x.fillText("japa-life.pages.dev",1030,H+94);x.textAlign="left";
   track("card",{kind:"photo"});setTimeout(()=>{photoOff();showCard(c,`${S.name} on ${Z().name}, ${Z().area} 📸 Play Abroad Life free:`)},380)}
 setTimeout(()=>{
-  $("nPhoto").onclick=photoOn;$("phX").onclick=photoOff;$("phSnap").onclick=snapPhoto;$("phTurn").onclick=()=>{PH.ang=(PH.ang+Math.PI/2)%(Math.PI*2)};
+  $("nPhoto").onclick=photoOn;$("phClip").onclick=()=>{if(REC.on)stopClip();else startClip()};$("phX").onclick=photoOff;$("phSnap").onclick=snapPhoto;$("phTurn").onclick=()=>{PH.ang=(PH.ang+Math.PI/2)%(Math.PI*2)};
   $("phPose").onclick=()=>{PH.dance=!PH.dance;PH.wave=false;$("phPose").classList.toggle("on",PH.dance);$("phWave").classList.remove("on");if(!PH.dance)animatePerson(player,0,0)};
   $("phWave").onclick=()=>{PH.wave=!PH.wave;PH.dance=false;$("phWave").classList.toggle("on",PH.wave);$("phPose").classList.remove("on");if(!PH.wave)animatePerson(player,0,0)};
   $("streak").onclick=e=>{e.stopPropagation();openDaily()};
@@ -965,8 +1001,8 @@ const TASKS=[
   {id:"send",t:"Send money home to Mum",k:"send",n:1},{id:"dream",t:"Put money in your dream fund",k:"dream",n:1},{id:"eat",t:"Eat Naija food (suya, puff-puff, jollof…)",k:"eat",n:1},
   {id:"church",t:"Give an offering at church",k:"church",n:1},{id:"owambe",t:"Go to Owambe Night",k:"owambe",n:1},{id:"spray",t:"Spray £20 at Owambe Night",k:"spray",n:20},
   {id:"photo",t:"Take a photo-mode picture",k:"photo",n:1},{id:"chat",t:"Say hi to someone in chat",k:"chat",n:1},{id:"travel",t:"Take a train, bus or Uber",k:"travel",n:1},
-  {id:"streets",t:"Visit 3 different streets",k:"streets",n:3}];
-function pickTasks(date){const r=seeded(hash("tasks"+date+((S&&S.country)||"uk"))),pool=TASKS.filter(t=>!(t.uk&&isCA())),out=[],keys=new Set();
+  {id:"streets",t:"Visit 3 different streets",k:"streets",n:3},{id:"checkin",t:"Pack and check in your bag for Lagos",k:"checkin",n:1,season:1}];
+function pickTasks(date){const r=seeded(hash("tasks"+date+((S&&S.country)||"uk"))),pool=TASKS.filter(t=>!(t.uk&&isCA())&&(!t.season||dettyState()==="on")),out=[],keys=new Set();
   while(out.length<3&&pool.length){const t=pool.splice(Math.floor(r()*pool.length),1)[0];if(keys.has(t.k))continue;keys.add(t.k);out.push(t.id)}return out}
 function daily(){const d=ukDate();if(!S.daily||S.daily.date!==d)S.daily={date:d,tasks:pickTasks(d),c:{},done:{},zs:[],claimed:false};return S.daily}
 function dtick(k,amt){if(!S||!player)return;const dl=daily();dl.c[k]=(dl.c[k]||0)+(amt||1);
@@ -1008,13 +1044,107 @@ function openDaily(){if(!S)return;const dl=daily(),st=S.streak||{n:0};
 function hallAd(){const L=LEAD.data,last=L&&L.last,src=last&&(last.rich||last.spray)?last:L;const r=src&&(src.rich&&src.rich[0]!==undefined?src.rich[0]:src.rich),sp=src&&(src.spray&&src.spray[0]!==undefined?src.spray[0]:src.spray);
   return{brand:"👑 Japa Hall of Fame",line:r||sp?`${last?"Last week":"This week"}: richest ${r?r.name:"-"} · top sprayer ${sp?sp.name:"-"}`:"This week’s winners go up here. Play to get on it!",bg:"#1C1B3A",fg:"#F4C430",em:"🏆",house:true}}
 function refreshHall(){boards.forEach(b=>{if(b.ad.id==="ryelane-1a"){const ad=Object.assign({id:b.ad.id},hallAd());const old=b.m.material.map;b.m.material.map=posterTex(ad);b.m.material.needsUpdate=true;if(old)old.dispose();b.ad=ad;b.m.userData.ad=ad}})}
+/* ================= Detty December (real-life 1 Dec to 6 Jan, UK date). Test any time with ?season=detty ================= */
+const FORCE_SEASON=/[?&]season=detty/.test(location.search);
+function dettyState(){if(FORCE_SEASON)return "on";const u=ukParts(),md=u.mo*100+u.d;if(md>=1201||md<=106)return "on";if(md>=1115)return "soon";return "off"}
+function dettyDays(){const u=ukParts();return Math.max(1,Math.round((Date.UTC(u.y,11,1)-Date.UTC(u.y,u.mo-1,u.d))/864e5))}
+function seasonYear(){const u=ukParts();return u.mo===1?u.y-1:u.y}
+const PACK=[
+  {id:"clothes",n:"Your own clothes",kg:6,p:0,fixed:1},{id:"qs",n:"Quality Street tins",kg:1.6,p:12},{id:"ribena",n:"Ribena multipack",kg:3,p:6},{id:"lipton",n:"Lipton tea, big box",kg:.6,p:5},
+  {id:"perfume",n:"Perfume for Aunty",kg:.5,p:38},{id:"sneakers",n:"Sneakers for cousin Tobi",kg:1.3,p:60},{id:"iphone",n:"Refurbished iPhone for Dad",kg:.4,p:250},
+  {id:"primark",n:"Primark clothes for everyone",kg:4.5,p:70},{id:"vitamins",n:"Vitamins and paracetamol",kg:1,p:15},{id:"baby",n:"Clothes for the new baby",kg:1.5,p:30},
+  {id:"airfryer",n:"Air fryer for Mum",kg:5,p:45},{id:"toiletries",n:"Dove, Nivea and Colgate",kg:3,p:20},{id:"choc",n:"Celebrations and Toblerone",kg:1.5,p:14}];
+const MUM_POOL=["qs","ribena","lipton","perfume","airfryer","vitamins","baby","toiletries","choc"];
+function dettyInit(){const y=seasonYear();if(!S.detty||S.detty.y!==y){const r=seeded(hash(S.name+y)),pool=MUM_POOL.slice(),list=[];while(list.length<4){list.push(pool.splice(Math.floor(r()*pool.length),1)[0])}
+  S.detty={y,list,bag:{clothes:true},bags:1,checked:false,flown:false,paid:{}};const names=list.map(id=>PACK.find(p=>p.id===id).n.replace(/ for (Mum|Aunty)$/,""));
+  setTimeout(()=>addMsg("Mum",`My Christmas list o: ${names.join(", ")}. And bring yourself! Detty December is here 🎄`),4000)}return S.detty}
+function dettyPrice(){const u=ukParts(),dd=u.mo===12?u.d:u.mo===1?0:0;const base=isCA()?1000:850;return Math.round(base*Math.min(2,1+(u.mo===12&&u.d<=25?dd*.035:0))/5)*5}
+function packKg(){const b=(S.detty&&S.detty.bag)||{clothes:true};return PACK.filter(p=>b[p.id]).reduce((a,p)=>a+p.kg,0)}
+function openDetty(){if(!S)return;const dt=dettyInit(),p=dettyPrice();
+  if(dt.flown){openSheet(`<h2>🛬 Official IJGB</h2><p class="sub">You’ve done Detty December this year. Lagos is still talking about you.</p><button class="primary" id="ij">🎫 Share my IJGB boarding pass</button><button class="close" id="cl">Close</button>`);
+    $("cl").onclick=closeSheet;$("ij").onclick=()=>showCard(makeCard("ijgb",{player:S.name,kind:dt.kind==="full"?"Full Detty December":"Family Christmas"}),`IJGB ✈️ I did Detty December in Abroad Life. Play free:`);return}
+  if(dt.ticket){openSheet(`<h2>✈️ You have your ticket</h2><p class="sub">Head to ${isCA()?"Pearson":"Heathrow"}, pack your bag at check-in, then go to Gate B32.</p><button class="primary" id="go">Go to the airport</button><button class="close" id="cl">Later</button>`);$("cl").onclick=closeSheet;$("go").onclick=()=>{closeSheet();goAirport()};return}
+  openSheet(`<h2>🎄 Detty December</h2><p class="sub">Everyone is going home for Christmas. Lagos flights get more expensive every day until Christmas.</p>
+    <div class="result">✈️ ${isCA()?"Toronto → Lagos":"London → Lagos"} today: <b>${gbp(p)}</b> return<br>📝 Mum’s list: ${dt.list.map(id=>PACK.find(x=>x.id===id).n).join(", ")}<br>🧳 One 23 kg bag included. Extra bag ${gbp(70)}. Overweight ${gbp(15)}/kg.</div>
+    <button class="primary" id="bk" ${S.m>=p?"":"disabled"}>${S.m>=p?`Book and go to ${isCA()?"Pearson":"Heathrow"} (${gbp(p)})`:"Not enough money yet. Keep saving!"}</button><button class="close" id="cl">Not yet</button>`);
+  $("cl").onclick=closeSheet;const b=$("bk");if(b)b.onclick=()=>{money(-p,"Lagos flight (Detty December)");dt.ticket=true;track("milestone",{what:"detty_ticket"});closeSheet();goAirport()}}
+function goAirport(){if(busy||D.on)return;const z=ZONES.airport;z.name=isCA()?"Toronto Pearson T3":"Heathrow Terminal 4";z.exits[0].to=hz();z.exits[0].name=isCA()?"Back to Toronto":"Back to London";z.country=S.country||"uk";
+  busy=true;const fade=$("fade");fade.innerHTML=`🚖<b>Off to ${isCA()?"Pearson":"Heathrow"}</b><small>Ghana Must Go bags in the boot. Mum is already cooking.</small>`;fade.classList.add("on");
+  setTimeout(()=>{enterZone("airport",{x:0,z:-7},0);setTimeout(()=>{fade.classList.remove("on");busy=false;toast("🧳 Check in on the left, then Gate B32 at the end.")},250)},1600)}
+function leaveAirport(){if(busy)return;busy=true;const fade=$("fade");fade.innerHTML=`🚖<b>Back home</b><small>Your ticket is still valid. Come back when you’re ready.</small>`;fade.classList.add("on");
+  setTimeout(()=>{const hp=homePlace();enterZone(hz(),{x:hp.x,z:hp.z+1.5},Math.PI);setTimeout(()=>{fade.classList.remove("on");busy=false},250)},900)}
+function openPack(){const dt=dettyInit(),kg=packKg(),cap=dt.bags*23,over=Math.max(0,Math.ceil(kg-cap)),buy=PACK.filter(p=>dt.bag[p.id]&&!dt.paid[p.id]).reduce((a,p)=>a+p.p,0),fee=over*15+(dt.bags-1)*70;
+  const pct=Math.min(100,kg/cap*100),col=kg>cap?"#C2304F":kg>cap*.85?"#E85A1A":"#0E7A4B";
+  openSheet(`<h2>🧳 Pack your Ghana Must Go</h2><p class="sub">⭐ = on Mum’s list. Tap to pack or unpack.</p>
+    <div style="display:flex;justify-content:space-between;font-weight:800"><span>${kg.toFixed(1)} kg</span><span>${cap} kg allowed</span></div><div class="scale"><i style="width:${pct}%;background:${col}"></i></div>
+    ${over?`<p class="sub" style="color:var(--bad);margin:2px 0 6px">${over} kg overweight: ${gbp(over*15)} fee. Unpack something or add a second bag.</p>`:`<p class="sub" style="margin:2px 0 6px">${(cap-kg).toFixed(1)} kg left</p>`}
+    ${PACK.map(p=>`<button class="pk" data-pk="${p.id}" ${p.fixed?"disabled":""}><span class="ck">${dt.bag[p.id]?"✅":"⬜"}</span><span class="t">${dt.list.includes(p.id)?"⭐ ":""}${p.n}<small>${p.kg} kg · ${p.p?(dt.paid[p.id]?"bought":gbp(p.p)):"free"}</small></span></button>`).join("")}
+    <button class="close" id="bag2">${dt.bags>1?"Remove the second bag":`Add a second bag (+${gbp(70)})`}</button>
+    <div class="result" style="margin-top:10px">Shopping ${gbp(buy)} + bag fees ${gbp(fee)} = <b>${gbp(buy+fee)}</b></div>
+    <button class="primary" id="chk" ${S.m>=buy+fee?"":"disabled"}>${S.m>=buy+fee?"Check in my bag":"Not enough money. Unpack something"}</button><button class="close" id="cl">Close</button>`);
+  $("cl").onclick=closeSheet;$("sheetIn").querySelectorAll("[data-pk]").forEach(b=>b.onclick=()=>{const id=b.dataset.pk;dt.bag[id]=!dt.bag[id];sfx.step();openPack()});
+  $("bag2").onclick=()=>{dt.bags=dt.bags>1?1:2;openPack()};
+  $("chk").onclick=()=>{const items=PACK.filter(p=>dt.bag[p.id]&&!dt.paid[p.id]);if(buy)money(-buy,"Christmas shopping for Lagos");items.forEach(p=>dt.paid[p.id]=true);if(fee)money(-fee,over?"Overweight baggage fee":"Extra bag");
+    dt.checked=true;dtick("checkin");closeSheet();sfx.pay();toast(over?`Checked in. The agent sighed at the ${over} kg extra. Gate B32!`:"Bag checked in ✅ Head to Gate B32 at the end of the hall.")}}
+function boardFlight(){const dt=S.detty;busy=true;const fade=$("fade");fade.innerHTML=`✈️<b>${isCA()?"YYZ":"LHR"} → LOS</b><small>Jollof rice on board. The man next to you has already started clapping.</small>`;fade.classList.add("on");
+  setTimeout(()=>{fade.classList.remove("on");busy=false;
+    openSheet(`<h2>🇳🇬 Welcome to Lagos!</h2><p class="sub">32°C. The heat hugged you at the airport door. How detty are you going?</p>
+      <div class="list"><button class="opt" id="tc"><span class="e">🏡</span><div><b>Family Christmas</b><span>${gbp(150)} · rice, goat meat, church, 40 relatives</span></div></button>
+      <button class="opt" id="tf" ${S.m>=700?"":"disabled"}><span class="e">🎤</span><div><b>Full Detty December</b><span>${S.m>=700?`${gbp(700)} · concerts, beach clubs, owambes, traffic`:"You need "+gbp(700)}</span></div></button></div>`);
+    $("tc").onclick=()=>finishTrip("family",150);const tf=$("tf");if(tf)tf.onclick=()=>finishTrip("full",700)},2600)}
+function finishTrip(kind,cost){const dt=S.detty;money(-cost,kind==="full"?"Detty December in Lagos":"Christmas with family");advance(12*60);
+  const got=dt.list.filter(id=>dt.bag[id]),missed=dt.list.filter(id=>!dt.bag[id]),gifts=PACK.filter(p=>dt.bag[p.id]&&!p.fixed&&!dt.list.includes(p.id)).length;
+  S.n.f=100;S.n.h=95;S.n.e=Math.max(S.n.e,70);if(S.partner&&S.partner.where==="home")S.partner.love=100;resp(5+got.length*2+gifts);jxp(40+got.length*5);
+  dt.flown=true;dt.kind=kind;S.trips=(S.trips||0)+1;track("milestone",{what:"detty_"+kind});
+  const nm=id=>PACK.find(p=>p.id===id).n.replace(/ for (Mum|Aunty|Dad|everyone|cousin Tobi|the new baby)$/,"");
+  addMsg("Mum",missed.length?`Thank you for coming my child 🙏🏾 I got the ${got.map(nm).join(", ")||"hugs"}. But you forgot the ${nm(missed[0])}! 😒 Next year o.`:`You brought EVERYTHING on my list! The whole church has heard. God bless you my child 🙏🏾🎄`);
+  const hp=homePlace();enterZone(hz(),{x:hp.x,z:hp.z+1.5},Math.PI,true);
+  openSheet(`<h2>🛬 IJGB: I Just Got Back</h2><p class="sub">Back in ${AREAS[hz()].area}. ${kind==="full"?"Broke but glowing.":"Full of jollof and love."}</p>
+    <div class="result">${kind==="full"?"Two weeks of concerts, beach clubs and owambes. You sprayed naira like a governor. Your cousins now call you ‘Sir’.":"Rice, goat meat, a church service that lasted all of Christmas Day, and Grandma said you’ve got fat. Best two weeks of your year."}<br><br>📝 Mum’s list: ${got.length}/${dt.list.length} delivered${gifts?` · 🎁 ${gifts} extra gift${gifts>1?"s":""}`:""}<br>⭐ +${5+got.length*2+gifts} Respect · +${40+got.length*5} Japa XP</div>
+    <button class="primary" id="ij">🎫 Share my IJGB boarding pass</button><button class="close" id="cl">Back to life</button>`);
+  $("cl").onclick=closeSheet;$("ij").onclick=()=>showCard(makeCard("ijgb",{player:S.name,kind:kind==="full"?"Full Detty December":"Family Christmas"}),`IJGB ✈️ ${got.length}/${dt.list.length} items from Mum’s list delivered. Detty December in Abroad Life:`)}
+function xmasDecor(zone,L){const cols=["#FF3B30","#34C759","#FFCC00","#5AC8FA"].map(c=>{const m=new THREE.MeshLambertMaterial({color:c,emissive:new THREE.Color(c).multiplyScalar(.75)});m.userData.own=1;return m}),g=new THREE.SphereGeometry(.1,6,4);
+  for(let bz=-L+8;bz<L-4;bz+=12){if(boards.some(b=>Math.abs(bz-b.m.position.z)<5))continue;for(let k=0;k<30;k++){const t=k/29,x=-6.7+t*13.4,y=7.6-.6*(1-Math.pow(2*t-1,2));const m=new THREE.Mesh(g,cols[k%4]);m.position.set(x,y,bz);m.userData.st=1;root.add(m)}
+    for(let k=0;k<6;k++){const x0=-6.7+k*2.233,x1=x0+2.233,y0=7.65-.6*(1-Math.pow(x0/6.7,2)),y1=7.65-.6*(1-Math.pow(x1/6.7,2));const sg=box(2.3,.03,.03,"#222",(x0+x1)/2,(y0+y1)/2,bz);sg.rotation.z=Math.atan2(y1-y0,2.233)}}
+  const tz=-L*.25,tx=6.1;stmesh(new THREE.CylinderGeometry(.18,.22,1,8),"#5A3E2B",tx,.6,tz);
+  [[1.5,1.6,1.5],[1.15,1.4,2.5],[.8,1.2,3.4]].forEach(([r,h,y])=>stmesh(new THREE.ConeGeometry(r,h,9),"#1F6B3A",tx,y,tz));
+  stmesh(new THREE.OctahedronGeometry(.28,0),own(new THREE.MeshLambertMaterial({color:0xFFD700,emissive:0xC9A227})),tx,4.15,tz);
+  for(let i=0;i<14;i++){const a=i*2.4,y=1.6+i*.15,r=1.4-i*.075;const m=new THREE.Mesh(g,cols[i%4]);m.position.set(tx+Math.cos(a)*r,y,tz+Math.sin(a)*r);m.scale.setScalar(1.4);m.userData.st=1;root.add(m)}}
+function buildAirport(zone){
+  tbx(16,.1,42,texMat("apfloor",()=>{const[c,x]=cvs(256,256),r=seeded(5);for(let j=0;j<4;j++)for(let i=0;i<4;i++){x.fillStyle=shade("#D8DCE2",.94+r()*.1);x.fillRect(i*64,j*64,63,63)}noise(x,256,256,800,.05,true,r);return rtex(c)}),0,-.03,-5,4);
+  const wall=hallMat("#EEF1F5",1);tbx(.4,8,42,wall,-7.7,4,-5);tbx(.4,8,42,wall,7.7,4,-5);box(16,8,.4,wall,0,4,16.2);box(16,8,.4,wall,0,4,-26.2);box(16,.3,42,own(new THREE.MeshBasicMaterial({color:0xE9EDF2})),0,8.1,-5);
+  const strip=own(new THREE.MeshBasicMaterial({color:0xFFFFFF}));for(let z=-24;z<=14;z+=4)box(12,.08,.5,strip,0,7.9,z);
+  // windows with planes outside
+  const sky=own(new THREE.MeshBasicMaterial({map:(()=>{const[c,x]=cvs(512,128);const g=x.createLinearGradient(0,0,0,128);g.addColorStop(0,"#6FA8DC");g.addColorStop(1,"#DDEBF7");x.fillStyle=g;x.fillRect(0,0,512,128);x.fillStyle="#9AA3AD";x.fillRect(0,104,512,24);
+    x.fillStyle="#F2F4F7";[[60,78],[300,84]].forEach(([px,py])=>{x.fillRect(px,py,150,16);x.beginPath();x.moveTo(px+60,py+4);x.lineTo(px+110,py-24);x.lineTo(px+120,py+4);x.fill();x.fillRect(px+128,py-18,12,22)});x.fillStyle="#B91C1C";x.fillRect(360,88,40,4);return new THREE.CanvasTexture(c)})()}));
+  for(const q of[-1,1])plane(36,4,sky,q*7.45,4.2,-6,q<0?Math.PI/2:-Math.PI/2);
+  for(let z=-24;z<=12;z+=3)for(const q of[-1,1])box(.12,4.2,.12,"#7B8794",q*7.4,4.2,z);
+  // departures board
+  const db=new THREE.Mesh(new THREE.PlaneGeometry(9,3.2),own(new THREE.MeshBasicMaterial({map:(()=>{const[c,x]=cvs(1024,364);x.fillStyle="#0E1726";x.fillRect(0,0,1024,364);x.fillStyle="#F4C430";x.font='800 40px Figtree,sans-serif';x.fillText("DEPARTURES",30,52);
+    const rows=[["21:40","LAGOS","LOS","B32","BOARDING"],["21:55","ACCRA","ACC","B30","GO TO GATE"],["22:10","ABUJA","ABV","B36","CHECK-IN OPEN"],["22:30","NAIROBI","NBO","A14","ON TIME"],["23:05","JOHANNESBURG","JNB","C04","ON TIME"]];
+    rows.forEach((r,i)=>{const y=110+i*52;x.fillStyle=i===0?"#3DCB8A":"#E8ECF2";x.font='700 34px "Courier New",monospace';x.fillText(r[0],30,y);x.fillText(r[1],170,y);x.fillText(r[2],560,y);x.fillText(r[3],680,y);x.fillStyle=i===0?"#3DCB8A":"#F4C430";x.fillText(r[4],790,y)});return new THREE.CanvasTexture(c)})()})));
+  db.position.set(0,5.4,15.95);db.rotation.y=Math.PI;root.add(db);
+  // check-in desks on the left with LOS screens
+  for(let z=-4;z<=6;z+=3.4){box(1.2,1.1,2.6,"#2D3192",-6.2,.55,z);box(1.25,.08,2.65,"#D8DCE2",-6.2,1.12,z);const sc=new THREE.Mesh(new THREE.PlaneGeometry(2.2,.7),own(new THREE.MeshBasicMaterial({map:textTex("LOS · Lagos","#0E1726","#3DCB8A",512,160,64)})));sc.position.set(-7.4,3,z);sc.rotation.y=Math.PI/2;root.add(sc)}
+  // queue barriers
+  for(let z=-6;z<=6;z+=2)for(const x of[-3.4,-2]){box(.08,1,.08,"#9AA3AD",x,.5,z);box(.12,.05,.12,"#4A5568",x,.02,z)}for(let z=-6;z<6;z+=2)for(const x of[-3.4,-2])box(.03,.06,2,"#2D3192",x,.92,z+1);
+  // gate sign
+  plane(3.4,.8,own(new THREE.MeshBasicMaterial({map:textTex("🛫 Gate B32 · Lagos","#F4C430","#1C1B3A",640,150,58)})),0,3.6,12.5,Math.PI);
+  box(4.6,.9,.6,"#4A5568",0,.45,12.2);
+  plane(3.6,.8,own(new THREE.MeshBasicMaterial({map:textTex("EXIT  ➜  Taxis and trains","#1C1B3A","#F4C430",640,128,50)})),0,3.4,-21.55,0)}
+function gmgBag(){return texMat("gmg",()=>{const[c,x]=cvs(64,64);x.fillStyle="#F2F2F2";x.fillRect(0,0,64,64);x.fillStyle="#C2304F";for(let i=0;i<64;i+=16){x.fillRect(i,0,8,64)}x.fillStyle="rgba(45,49,146,.75)";for(let i=0;i<64;i+=16){x.fillRect(0,i,64,8)}return rtex(c)})}
+function spawnTravellers(zone){const P2=["#2D3192","#0E7A4B","#E5487A","#F4C430","#C2304F","#1C1B3A","#E8E8EE"];
+  const bagAt=(x,z,s)=>{const b=new THREE.Mesh(new THREE.BoxGeometry(.9*s,.7*s,.5*s),gmgBag());b.position.set(x,.35*s,z);b.castShadow=true;root.add(b)};
+  for(let i=0;i<7;i++){const z=-5+i*1.6,p=makePerson(pick(SKINS),pick(P2),pick(["#1C1B3A","#3B3F46","#5A4A3A"]),i%5===0?3:Math.floor(Math.random()*3),root);p.position.set(-2.7,.18,z);p.rotation.y=Math.PI;bagAt(-2.7+.6,z-.1,1);if(i%2)bagAt(-2.7-.6,z,.8)}
+  for(let i=0;i<8;i++){const x=1.5+Math.random()*4.5,z=-20+Math.random()*28,p=makePerson(pick(SKINS),pick(P2),"#1C1B3A",Math.floor(Math.random()*5),root);p.position.set(x,.18,z);p.rotation.y=Math.random()*6.28;bagAt(x+.6,z,.9)}
+  for(let i=0;i<4;i++){const z=-4+i*3.4,p=makePerson(SKINS[i%4],"#2D3192","#1C1B3A",i%2?3:0,root);p.position.set(-6.9,.18,z);p.rotation.y=Math.PI/2}}
 const FLAGM={};function flagMat(c){if(!FLAGM[c])FLAGM[c]=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});return FLAGM[c]}
 /* ================= billboards (sellable ad slots) =================
    Each zone has 2 rooftop billboards, each with 2 faces = 4 slots.
    Slot id = "<zone>-<board><face>", e.g. "ryelane-1a". To sell one, add it to ADS:
    ADS["ryelane-1a"]={brand:"Your Brand",line:"Short tagline",bg:"#0E7A4B",fg:"#FFFFFF",em:"🍛",img:"/ads/yourbrand.png",url:"https://yourbrand.com"}
    img is optional (1024x384 PNG/JPG in the site's /ads folder). Unsold slots show house ads. */
-const ADS_CONTACT=""; // where advertisers reach you, e.g. "https://x.com/yourhandle" or "mailto:ads@yourdomain.com"
+const ADS_CONTACT="/advertise/"; // media kit page with prices, live numbers and contact details
 const ADS={};
 const HOUSE_ADS=[
   {brand:"Mama Put Kitchen",line:"Smoky party jollof. Delivered hot.",bg:"#C2304F",em:"🍛"},
@@ -1023,9 +1153,15 @@ const HOUSE_ADS=[
   {brand:"Owambe Hall Hire",line:"Book your party. Aso-ebi ready.",bg:"#B5835A",em:"🎉"},
   {brand:"Sunrise Care",line:"Now hiring carers. Apply today.",bg:"#2D3192",em:"🩺"},
   {brand:"Ọ̀rẹ́ Phones",line:"Unlock, repair, top up. Same day.",bg:"#1C1B3A",em:"📱"}];
+const HOUSE_ADS_XMAS=[
+  {brand:"Naija Travels",line:"Lagos flights. Book before prices climb!",bg:"#B91C1C",em:"✈️"},
+  {brand:"Ghana Must Go Bags",line:"2 for £10. Pack everything. Pay overweight later.",bg:"#2D3192",em:"🧳"},
+  {brand:"Mama Put Kitchen",line:"Christmas jollof trays. Order now.",bg:"#0E7A4B",em:"🍛"},
+  {brand:"Naija Money Transfer",line:"Send Christmas money home. Zero fees.",bg:"#C9A227",fg:"#1C1B3A",em:"🎄"},
+  {brand:"Detty December Live",line:"Concerts in Lagos. Tickets selling fast.",bg:"#1C1B3A",em:"🎤"}];
 const AD_HERE={brand:"YOUR BRAND HERE",line:"Reach Nigerians abroad. Tap to advertise.",bg:"#F4C430",fg:"#1C1B3A",em:"📣",house:true};
 const boards=[];
-function adFor(id,k){if(ADS[id])return Object.assign({id},ADS[id]);if(id==="ryelane-1a")return Object.assign({id},hallAd());if(id.endsWith("0a"))return Object.assign({id},AD_HERE);return Object.assign({id,house:true},HOUSE_ADS[(hash(id)+k)%HOUSE_ADS.length])}
+function adFor(id,k){if(ADS[id])return Object.assign({id},ADS[id]);if(id==="ryelane-1a")return Object.assign({id},hallAd());if(id.endsWith("0a"))return Object.assign({id},AD_HERE);const pool=dettyState()==="on"?HOUSE_ADS_XMAS:HOUSE_ADS;return Object.assign({id,house:true},pool[(hash(id)+k)%pool.length])}
 function posterTex(ad){const[c,x]=cvs(1024,384);x.fillStyle=ad.bg||"#1C1B3A";x.fillRect(0,0,1024,384);const fg=ad.fg||"#FFFFFF";
   x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(880,40,240,0,7);x.fill();
   x.font='120px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textBaseline="middle";x.fillText(ad.em||"",36,140);
@@ -1046,7 +1182,7 @@ function buildBillboards(zid,zone,n){boards.length=0;const L=zone.L;
       m.userData.ad=ad;boards.push({m,ad,face,seen:false})})});
 }
 function openAd(ad){track("ad_click",{k:ad.id});
-  const contact=ADS_CONTACT?`<a class="primary" href="${esc(ADS_CONTACT)}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">Advertise on Japa Life</a>`:`<div class="result">Want this billboard? Message the Japa Life team on X. Every slot shows to real players walking these streets.</div>`;
+  const contact=ADS_CONTACT?`<a class="primary" href="${esc(ADS_CONTACT)}" target="_blank" rel="noopener" style="display:block;text-align:center;text-decoration:none">Advertise on this billboard</a>`:`<div class="result">Want this billboard? Message the Japa Life team on X. Every slot shows to real players walking these streets.</div>`;
   openSheet(`<h2>${esc(ad.em||"")} ${esc(ad.brand)}</h2><p class="sub">${esc(cur(ad.line))}</p>
     ${ad.url?`<a class="primary" id="adgo" href="${esc(ad.url)}" target="_blank" rel="noopener sponsored" style="display:block;text-align:center;text-decoration:none">Visit ${esc(ad.brand)}</a>`:""}
     ${ad.house||!ad.url?contact:""}<p class="sub" style="margin-top:10px">Billboard ${esc(ad.id)}</p><button class="close" id="cl">Close</button>`);
@@ -1061,7 +1197,7 @@ function buildZone(zid){
   const STOCK=["#C9B48A","#BFA77C","#B59B70","#D2C39E"],REDB=["#9A4A3A","#8C3F31","#A85A44"],STUCCO=["#EDE6D8","#E4DCCB","#F2EEE4"];
   const SIGN=["#2D3192","#0E7A4B","#E5487A","#1C1B3A","#C2304F","#B5835A"];
   const woolwich=zone.area==="Woolwich";
-  if(zone.hall){buildHall(zone,rnd)}else{
+  if(zone.kind==="airport"){buildAirport(zone)}else if(zone.hall){buildHall(zone,rnd)}else{
   // street, pavements, kerbs
   tbx(8,.04,2*L+240,roadMat(zone.road),0,.02,0,4);
   if(zone.traffic){if(zone.country==="ca"){for(const q of[-.12,.12])box(.1,.05,2*L+120,"#F2C81B",q,.05,0)}else{for(let z=-L;z<L;z+=6)box(.25,.05,2.5,"#E8E8EE",0,.05,z);
@@ -1195,6 +1331,7 @@ function buildZone(zid){
     if(s.k==="blocks"){for(let k=0;k<s.n;k++){const hh=20+((k*37)%40);const b=new THREE.Mesh(new THREE.BoxGeometry(12,hh,10),skyMat("#A3ADBB"));b.position.set(s.x+k*18,hh/2,s.z+((k*13)%30));root.add(b)}}
   });
   buildBillboards(zid,zone,n);
+  if(dettyState()==="on")xmasDecor(zone,L);
   // bunting over market streets (green-white-green in the mix)
   if(zone.stalls.length){const FL=["#0E7A4B","#F7F3EA","#0E7A4B","#F4C430","#E5487A","#2D3192"],tri=new THREE.BufferGeometry();
     tri.setAttribute("position",new THREE.Float32BufferAttribute([-.22,0,0,.22,0,0,0,-.5,0],3));tri.setAttribute("normal",new THREE.Float32BufferAttribute([0,0,1,0,0,1,0,0,1],3));tri.setAttribute("uv",new THREE.Float32BufferAttribute([0,0,1,0,.5,1],2));
@@ -1212,7 +1349,7 @@ function buildZone(zid){
     ring.rotation.x=-Math.PI/2;ring.position.set(p.x,.2,p.z);root.add(ring);p.ring=ring;
   });
   mergeStatic(root);
-  if(zone.hall){spawnGuests(zone)}else
+  if(zone.kind==="airport"){spawnTravellers(zone)}else if(zone.hall){spawnGuests(zone)}else
   spawnNPCs(zone);if(zone.traffic)spawnTraffic(zone);spawnPigeons(zone);
   if(zone.bridge!==undefined)spawnTrain(zone);
   if(zone.tram)spawnTram(zone);
@@ -1401,10 +1538,11 @@ function updateChips(){
   const px=player.position.x,pz=player.position.z;
   const list=spots().map(p=>({p,d:Math.hypot(p.x-px,p.z-pz)})).sort((a,b)=>a.d-b.d);
   const bk=S.booked?`<button class="chip glass" data-bk="1" style="border:2px solid var(--yellow)">📌 ${S.booked.c==="care"?"Care shift":S.booked.c==="warehouse"?"Warehouse shift":"Till shift"} ${timeStr(S.booked.start*60)}</button>`:"";
-  const ph=partyPhase(),pc=ph.live||ph.soon?`<button class="chip glass live" data-ow="1">🎉 ${ph.live?"Owambe Night LIVE":`Owambe in ${ph.in} min`}${P.liveN?` · ${P.liveN} there`:""} · Join</button>`:"";liveCount(ph);
-  if(setChips(pc+bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("")))return;
+  const ph=partyPhase(),pc=ph.live||ph.soon?`<button class="chip glass live" data-ow="1">🎉 ${ph.live?"Owambe Night LIVE":`Owambe in ${ph.in} min`}${P.liveN?` · ${P.liveN} there`:""} · Join</button>`:"";liveCount(ph);const dsn=S.zone==="airport"?"off":dettyState(),dch=dsn==="on"&&!(S.detty&&S.detty.flown)?`<button class="chip glass xmas" data-detty="1">🎄 Detty December · Fly to Lagos</button>`:dsn==="soon"?`<button class="chip glass xmas" data-detty="1">🎄 Detty December in ${dettyDays()} days</button>`:"";
+  if(setChips(pc+dch+bk+list.map(({p,d})=>`<button class="chip glass" data-go="${p.id}">${p.kind==="exit"?"→ "+p.name:p.emoji+" "+p.short} · ${Math.round(d)} m</button>`).join("")))return;
   $("chips").querySelectorAll("[data-go]").forEach(b=>b.onclick=()=>goTo(b.dataset.go));
   const ow=$("chips").querySelector("[data-ow]");if(ow)ow.onclick=joinOwambe;
+  const dc=$("chips").querySelector("[data-detty]");if(dc)dc.onclick=()=>dettyState()==="on"?openDetty():toast(`🎄 Detty December starts 1 December. Start saving for that flight!`);
   const bb=$("chips").querySelector("[data-bk]");if(bb)bb.onclick=()=>{const t=S.booked.c==="care"?"care":S.booked.c==="warehouse"?"warehouse":"work";const sp=spots().find(p=>p.type===t);if(sp)goTo(sp.id);else toast("Your booked shift is in another area. Take the train or bus.")};
 }
 function goTo(id){const p=spots().find(x=>x.id===id);if(!p)return;autoTarget={x:p.x,z:p.z+.01};toast(`Walking to ${p.kind==="exit"?p.name:p.short}…`)}
@@ -1489,7 +1627,7 @@ function enterZone(zid,pos,yaw,instant){
   updateHUD();updateChips();save();netJoin(zid);if(S.daily||player){const dl=daily();if(!dl.zs.includes(zid)&&!ZONES[zid].hall){dl.zs.push(zid);if(dl.zs.length>1)dtick("streets",dl.zs.length===2?2:1)}}if(zid==="ryelane")fetchLeaders();if(!instant)setTimeout(()=>arriveCard(ZONES[zid]),300);
 }
 function travel(to,how,fromId){
-  if(busy)return;if(ZONES[S.zone]&&ZONES[S.zone].hall&&how==="walk")return leaveOwambe();busy=true;closeSheet();track("travel",{how});
+  if(busy)return;if(ZONES[S.zone]&&ZONES[S.zone].kind==="airport"&&how==="walk")return leaveAirport();if(ZONES[S.zone]&&ZONES[S.zone].hall&&how==="walk")return leaveOwambe();busy=true;closeSheet();track("travel",{how});
   const fade=$("fade");const z=ZONES[to];
   const line=how==="bus"?pick(BUS_LINES):how==="uber"?pick(UBER_LINES):"";
   fade.innerHTML=how==="train"?`🚆<b>Train to ${z.area}</b><small>${z.name}</small>`:how==="bus"?`🚌<b>Bus to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="uber"?`🚖<b>Uber to ${z.area}</b><small style="max-width:80vw;text-align:center">${line}</small>`:how==="drive"?`🚗<b>Driving to ${z.area}</b><small style="max-width:80vw;text-align:center">${pick(["Someone cut you up on the South Circular. You said nothing. Growth.","Afrobeats on full, windows down, in October. Brave.","You found a parking space first time. Miracle."])}</small>`:`🚶🏾<b>${z.name}</b><small>${z.area}</small>`;
@@ -1564,7 +1702,7 @@ function isOpen(type){const h=hour();
 function hoursText(type){if(isCA()){if(type==="jobcentre")return "Open 8:30 AM to 4 PM, weekdays. SIN numbers and job help.";if(type==="gp")return "Open 8:30 AM to 5 PM, weekdays. Health cards and licences.";if(type==="clothes")return "Open 9 AM to 8 PM. Coats rated to minus 30.";if(type==="work")return "Open 7 AM to 10 PM. £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".";if(type==="care")return "Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+".";if(type==="hall")return "Owambe every Saturday from 6 PM. Heated, thank God."}
   return{warehouse:"Shifts around the clock. Warehouse work, no experience needed.",estate:"Open 9 AM to 6 PM. Shared ownership specialists.",exams:"Open 8 AM to 6 PM, Monday to Saturday. SIA, driving and NMC tests.",commission:"Open 9 AM to 1 PM, weekdays. Passports.",security:"Night shifts start 7 PM to 2 AM. SIA licence required.",hospital:"Shifts 7 AM to 8 PM. NMC registration required.",cars:"Open 9 AM to 6 PM. Quality used cars (allegedly).",library:"Open 9 AM to 8 PM. Free WiFi, quiet, warm.",gym:"Open 6 AM to 10 PM. Swim or gym, £5.",fabrics:"Open 10 AM to 7 PM. Lace, ankara, gele, aso ebi.",bukka:"Open 11 AM to 10 PM. Proper Naija food.",foodpark:"Open midday to 1 AM. Busy Thursday to Sunday nights.",jobcentre:"Open 9 AM to 5 PM, Monday to Friday.",bank:"Open 9 AM to 5 PM, Monday to Friday.",gp:"Open 8 AM to 6 PM, Monday to Friday.",clothes:"Open 9 AM to 8 PM. Coats, jumpers, bargains.",agency:"Open 9 AM to 5 PM. Legit sponsorship help, never a fee.",travel:"Open 9 AM to 6 PM. Flights to Lagos.",home:"Always open. It’s your home.",work:"Open 7 AM to 10 PM. You earn £"+wage("retail").toFixed(2)+"/hour as "+title("retail")+".",transfer:"Open 9 AM to 7 PM. Send money home or save for your dream.",riders:"Rider shifts 8 AM to 11 PM. Paid per delivery plus tips.",care:"Shifts 7 AM to 7 PM. £"+wage("care").toFixed(2)+"/hour as "+title("care")+"."+(S.route==="care"&&S.visa?` Your sponsor: ${S.visa.revoked?"none (licence revoked)":S.visa.sponsor}.`:""),suya:"Open 11 AM to 2 AM.",
   church:"Open 8 AM to 9 PM. Sunday service 9 AM to 1 PM.",market:"Open 8 AM to 6 PM. Cheapest foodstuff in Peckham.",wmarket:"Open 8 AM to 6 PM.",
-  barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]}
+  barber:"Open 9 AM to 8 PM.",salon:"Open 9 AM to 8 PM.",foodstore:"Open 9 AM to 8 PM.",hall:"Owambe every Saturday from 6 PM."}[type]||({checkin:"Bag drop closes 60 minutes before departure.",gate:"Boarding starts 45 minutes before departure."})[type]||""}
 const add=(k,v)=>{if(v>0&&k==="f"&&has("owambe"))v*=1.25;if(v>0&&k==="h"&&has("foodie"))v*=1.25;if(v<0&&k==="e"&&has("iron"))v*=.75;S.n[k]=clamp(S.n[k]+v)};
 function closedWhy(type,other){return !isOpen(type)?"Closed":other}
 function actionsFor(type){
@@ -1733,7 +1871,12 @@ function actionsFor(type){
         return pick(["“We’ll call you.” They did not call you.","Three interviews, no offer yet. Keep trying.","The manager liked you but needs approval from head office. Try again tomorrow."])}},
     {e:"⚠️",n:"Read: how CoS scams work",s:"Free advice, 5 min",ok:true,run:()=>{advance(5);return "A real sponsor never charges you for a Certificate of Sponsorship. Charging candidates for jobs is illegal in the UK. If an ‘agent’ asks for thousands, walk away and report it."}}
   ];
+  if(type==="checkin"){const dt=S.detty||{};return [
+    {e:"🧳",n:dt.checked?"Bag checked in ✅":"Pack your Ghana Must Go",s:dt.checked?"Head to Gate B32":`${packKg().toFixed(1)} kg packed · 23 kg per bag`,ok:!dt.checked,why:"Already checked in. Go to the gate!",run:()=>{setTimeout(openPack,60);return null}}]}
+  if(type==="gate"){const dt=S.detty||{};return [
+    {e:"🛫",n:"Board your flight to Lagos",s:"6 hours 25 minutes. Lagos is waiting.",ok:!!dt.checked,why:"Check in your bag first (left side)",run:()=>{setTimeout(boardFlight,60);return null}}]}
   if(type==="travel"){const p0=ticketPrice();return [
+    ...(dettyState()==="on"&&!(S.detty&&S.detty.flown)?[{e:"🎄",n:"Detty December: fly to Lagos now",s:`Real-life December special · ${gbp(dettyPrice())}`,ok:true,run:()=>{setTimeout(openDetty,60);return null}}]:[]),
     ...(S.biz&&S.biz.type==="cargo"?[{e:"🚢",n:"Ship your cargo to Lagos",s:`${S.biz.load}kg · £${Math.round(S.biz.load*1.2)} freight · arrives in 6 days`,ok:S.biz.load>=20&&S.m>=S.biz.load*1.2,why:S.biz.load<20?"Collect at least 20kg first":"Not enough money for freight",
       run:()=>{const f=Math.round(S.biz.load*1.2);money(-f,"Cargo freight");S.biz.earned-=f;S.biz.ships.push({kg:S.biz.load,arrive:day()+6});const kg=S.biz.load;S.biz.load=0;advance(40);jxp(10);return `${kg}kg sealed in blue barrels and on its way to Apapa. Customers are already asking ‘Has it landed?’`}}]:[]),
     {e:"✈️",n:S.ticket?"You have your December ticket":"Buy a December ticket to Lagos",s:S.ticket?"You fly on 19 Dec. Lagos is waiting.":`£${p0} return. Prices climb as December gets closer.`,ok:!S.ticket&&S.m>=p0&&dateOf(day()).m!=="Jan",why:S.ticket?"Already booked":"Not enough money",
@@ -2666,7 +2809,8 @@ function lighting(){
    sun.color.setHex(0xFFF1DC);if(t<1)sun.color.lerp(tmpC.setHex(0xFFB27A),1-t);if(t<.3)sun.color.setHex(0x9FB4FF)}
   skyMats.forEach(m=>m.color.copy(m.userData.base).lerp(skyC,.55).multiplyScalar(.35+.65*Math.max(t,.15)));
   setRain(!!wet,snowy);if(snowy)skyC.lerp(tmpC.set(0xE8ECF2),.35),scene.background=skyC,scene.fog.color.copy(skyC);
-  if(S&&ZONES[S.zone]&&ZONES[S.zone].hall){scene.background=tmpC.setHex(0x1A1030);scene.fog.color.setHex(0x1A1030);document.body.style.background="#1A1030";sun.intensity=.22;hemi.intensity=.95}
+  if(S&&ZONES[S.zone]&&ZONES[S.zone].kind==="airport"){scene.background=tmpC.setHex(0xCFD8E3);scene.fog.color.setHex(0xCFD8E3);document.body.style.background="#CFD8E3";sun.intensity=.25;hemi.intensity=1.05}
+  else if(S&&ZONES[S.zone]&&ZONES[S.zone].hall){scene.background=tmpC.setHex(0x1A1030);scene.fog.color.setHex(0x1A1030);document.body.style.background="#1A1030";sun.intensity=.22;hemi.intensity=.95}
   const night=t<.45;if(night!==lastNight){lastNight=night;winMat.emissive.setHex(night?0x6a5420:0);lampMat.emissive.setHex(night?0xffd27a:0)}
 }
 
@@ -2801,7 +2945,7 @@ function tick(){
     deliveryTick(dt);
     alertTick(dt);eventTick(dt);goalTick(dt);
     if(!uiOpen&&!busy){advance(dt*2);if(S.n.e<=0)collapse()}
-    let np=null,best=99;spots().forEach(p=>{const d=Math.hypot(p.x-player.position.x,p.z-player.position.z);if(p.label)p.label.visible=d>5;if(d<(p.kind==="exit"?3.2:2.6)&&d<best){best=d;np=p}});
+    let np=null,best=99;spots().forEach(p=>{const d=Math.hypot(p.x-player.position.x,p.z-player.position.z);if(p.label)p.label.visible=d>5&&!PH.on;if(d<(p.kind==="exit"?3.2:2.6)&&d<best){best=d;np=p}});
     if(D.on)np=null;
     if(np!==nearPlace){nearPlace=np;const a=$("act");
       if(np){a.innerHTML=np.type==="busstop"?`Catch a bus<small>£1.75 anywhere in London</small>`:np.kind==="exit"?`Walk to ${np.name}<small>${ZONES[np.to].area}</small>`:np.type==="station"?`Enter station<small>Trains across London</small>`:`Enter ${np.short}<small>${isOpen(np.type)?"Open now":"Closed now"}</small>`;a.style.display="block"}
@@ -2830,7 +2974,7 @@ function tick(){
     if(c.position.z>u.lim)c.position.z=-u.lim;if(c.position.z<-u.lim)c.position.z=u.lim});
   if(root){const s=1+Math.sin(performance.now()/300)*.08;spots().forEach(p=>{if(p.ring)p.ring.scale.setScalar(s)});animZone(dt);rainTick(dt)}
   lighting();
-  renderer.render(scene,camera);
+  renderer.render(scene,camera);if(REC.on)clipFrame();
 }
 function resize(){renderer.setSize(innerWidth,innerHeight,false);camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix()}
 addEventListener("resize",resize);
@@ -2849,7 +2993,7 @@ function showStart(){
   }
   if(!draft.full){
     st.innerHTML=`<div class="card"><div style="height:30px;background:var(--indigo)"></div><div style="padding:18px 18px 20px">
-      <h1>Abroad Life</h1><p class="sub">Life after you japa. Shifts, rent on Saturday, owambe, and Mum on WhatsApp. Play free with real people.</p><div class="sp" id="sp"></div>
+      <h1>Abroad Life</h1><p class="sub">Life after you japa. Shifts, rent on Saturday, owambe, and Mum on WhatsApp. Play free with real people.</p>${dettyState()==="on"?`<div class="sp" style="color:#B91C1C">🎄 Detty December is on: fly to Lagos in the game!</div>`:""}<div class="sp" id="sp"></div>
       <button class="primary big-play" id="play">▶ Play now</button>
       <button class="close" id="playca">🇨🇦 Play in Toronto instead</button>
       <button class="close" id="full">🎨 Create my own character</button>
@@ -2960,11 +3104,11 @@ function begin(state,isNew){
   if(!state.route){draft.migrate=state;draft.name=state.name;draft.traits=[];draft.dream=null;draft.rel=null;$("start").style.display="flex";showSetup(2);return}
   S=state;$("start").style.display="none";if(preview){preview.parent.remove(preview);preview=null}
   if(!S.cloud)S.cloud={code:""};setTimeout(()=>cloudSave(true),15000);
-  daily();streakCheck(isNew);setTimeout(()=>fetchLeaders(true),16500);
+  daily();streakCheck(isNew);if(dettyState()==="on")dettyInit();setTimeout(()=>fetchLeaders(true),16500);
   if(STATS_URL&&!S.flags.cloudTip)setTimeout(()=>{if(!S.flags.cloudTip&&S.cloud.code){S.flags.cloudTip=true;toast("☁️ Your life is backed up. Get your save code in Phone → Settings.")}},10*60000);
   player=makePerson(SKINS[S.look.skin],SHIRTS[S.look.shirt],"#1C1B3A",S.look.hair,scene);
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
-  let zid=ZONES[S.zone]?S.zone:"ryelane";if(ZONES[zid].hall){zid=ZONES[S.owFrom]?S.owFrom:hz();S.pos=S.owPos||{x:0,z:0}}
+  let zid=ZONES[S.zone]?S.zone:"ryelane";if(ZONES[zid].kind==="airport"){zid=hz();S.pos={x:homePlace().x,z:homePlace().z+1.5}}else if(ZONES[zid].hall){zid=ZONES[S.owFrom]?S.owFrom:hz();S.pos=S.owPos||{x:0,z:0}}
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{kind:`${S.origin||"ng"}-${S.country||"uk"}`,route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
   if(isNew&&draft.fast){draft.fast=false;const R0=draft.fastRoute||{};
@@ -2985,7 +3129,7 @@ function boot(){
 const fontReady=document.fonts&&document.fonts.ready?Promise.race([document.fonts.ready,new Promise(r=>setTimeout(r,1500))]):Promise.resolve();
 fontReady.then(boot);
 addEventListener("visibilitychange",()=>{if(document.hidden)save()});
-if(location.search.includes("debug"))window.__jl={yaw:(v)=>{camYaw=v},tp:(z,x)=>{player.position.x=x;player.position.z=z},get S(){return S},get player(){return player},D,lvl,progress,checkDream,forceAlert:()=>{alertT=0},enter:(z)=>enterZone(z,{x:0,z:0},Math.PI),zones:()=>Object.keys(ZONES),P,joinOwambe,leaveOwambe,spray,info:()=>({calls:renderer.info.render.calls,tris:renderer.info.render.triangles,npcs:npcs.length}),advance:(m)=>advance(m)};
+if(location.search.includes("debug"))window.__jl={yaw:(v)=>{camYaw=v},tp:(z,x)=>{player.position.x=x;player.position.z=z},get S(){return S},get player(){return player},D,lvl,progress,checkDream,forceAlert:()=>{alertT=0},enter:(z)=>enterZone(z,{x:0,z:0},Math.PI),zones:()=>Object.keys(ZONES),openDetty,goAirport,P,joinOwambe,leaveOwambe,spray,info:()=>({calls:renderer.info.render.calls,tris:renderer.info.render.triangles,npcs:npcs.length}),advance:(m)=>advance(m)};
 })();
 </script>
 
