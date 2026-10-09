@@ -177,6 +177,14 @@ body.photo #photobar{display:flex}
 #flash{position:fixed;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:7;transition:opacity .35s}
 .big-play{font-size:22px!important;padding:18px!important;box-shadow:0 6px 0 #0A5A37}
 .sp{font-size:13px;font-weight:700;color:var(--green);margin:-2px 0 10px}
+.topbar .online{padding:3px 8px!important;font-size:12px!important}.streak{border-radius:999px;padding:3px 8px;font-weight:800;font-size:12px;background:rgba(232,90,26,.14);color:#C2410C;white-space:nowrap;pointer-events:auto}
+.streak.done{background:#0E7A4B;color:#fff}
+.days{display:flex;gap:6px;justify-content:space-between;margin:8px 0 12px}.days div{flex:1;text-align:center;font-size:11px;font-weight:700;color:var(--muted)}
+.days div b{display:flex;align-items:center;justify-content:center;height:38px;border-radius:12px;border:2px solid var(--glass-line);font-size:17px;margin-bottom:3px;color:var(--ink)}
+.days div.on b{background:#E85A1A;border-color:#E85A1A;color:#fff}.days div.today b{border-color:var(--ink)}
+.task{display:flex;align-items:center;gap:10px;padding:9px 0;border-bottom:1px solid var(--glass-line)}.task .t{flex:1;font-weight:700;font-size:14px}.task .p{font-size:12px;font-weight:800;color:var(--muted)}.task.ok .t{text-decoration:line-through;opacity:.6}
+.lbt{display:flex;gap:6px;margin:6px 0 8px}.lbt button{flex:1;border:2px solid var(--glass-line);border-radius:12px;padding:7px 4px;font-weight:800;font-size:12.5px}.lbt button.on{background:var(--yellow);border-color:var(--ink);color:#1C1B3A}
+.lrow{display:flex;gap:8px;padding:6px 0;font-size:14px;border-bottom:1px solid var(--glass-line)}.lrow .r{width:28px;font-weight:800}.lrow .n{flex:1;font-weight:700}.lrow .v{font-weight:800;font-variant-numeric:tabular-nums}.lrow.me{background:rgba(244,196,48,.25);border-radius:8px;padding-left:6px}
 .pickc{display:block;width:100%;text-align:left;border:2px solid var(--glass-line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
 .pickc.on{border-color:var(--ink);background:var(--yellow);color:#1C1B3A}
 .pickc b{display:block;font-size:15px}.pickc span{font-size:13px;opacity:.8}
@@ -201,7 +209,7 @@ body.photo #photobar{display:flex}
 <div id="loading">Loading…</div>
 
 <div id="hud">
-  <div class="topbar glass"><div class="clock" id="clock">Mon 8:00 AM<small>Week 1</small></div><span class="online" id="online"></span><div class="cash" id="cash">£0</div></div>
+  <div class="topbar glass"><div class="clock" id="clock">Mon 8:00 AM<small>Week 1</small></div><button class="streak" id="streak" aria-label="Daily streak and tasks">🔥 0</button><span class="online" id="online"></span><div class="cash" id="cash">£0</div></div>
   <div class="needs glass" id="needs"></div>
   <div class="hrow"><div class="glass" id="dreambar"></div><button class="glass" id="chapbar"></button></div>
   <div class="chips" id="chips"></div>
@@ -253,7 +261,7 @@ const REALTIME_URL="wss://japa-life-realtime.azubuikedavies.workers.dev";
 const STATS_URL=REALTIME_URL?REALTIME_URL.replace(/^ws/,"http"):"";
 function anonId(){try{let u=localStorage.getItem("japa_uid");if(!u){u=Math.random().toString(36).slice(2,12);localStorage.setItem("japa_uid",u)}return u}catch(e){return ""}}
 function statsOn(){try{return localStorage.getItem("japa_nostats")!=="1"}catch(e){return true}}
-function track(name,props){if(!STATS_URL||!statsOn())return;const body=JSON.stringify({uid:anonId(),name,props:props||{}});
+function track(name,props){try{dailyHook(name,props||{})}catch(e){}if(!STATS_URL||!statsOn())return;const body=JSON.stringify({uid:anonId(),name,props:props||{}});
   try{if(navigator.sendBeacon)navigator.sendBeacon(STATS_URL+"/e",new Blob([body],{type:"text/plain"}));else fetch(STATS_URL+"/e",{method:"POST",body,keepalive:true,headers:{"Content-Type":"text/plain"}}).catch(()=>{})}catch(e){}}
 setInterval(()=>{if(typeof S!=="undefined"&&S&&!document.hidden)track("minute")},60000);
 const XPL=[0,5,12,22,35];
@@ -590,7 +598,7 @@ function migrate(s){if(!s.zone)s.zone="ryelane";if(!s.origin)s.origin="ng";if(s.
 const CLOUD={busy:false,last:0};
 function cloudSave(force){if(!STATS_URL||!S||!S.cloud||CLOUD.busy)return;if(!force&&Date.now()-CLOUD.last<120000)return;CLOUD.busy=true;CLOUD.last=Date.now();
   try{S.pos={x:player.position.x,z:player.position.z}}catch(e){}
-  fetch(STATS_URL+"/save",{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({code:S.cloud.code||"",data:JSON.stringify(S)})}).then(r=>r.json()).then(j=>{
+  fetch(STATS_URL+"/save",{method:"POST",headers:{"Content-Type":"text/plain"},body:JSON.stringify({code:S.cloud.code||"",data:JSON.stringify(S),meta:boardMeta()})}).then(r=>r.json()).then(j=>{
     if(j.code&&S.cloud.code!==j.code){const first=!S.cloud.code;S.cloud.code=j.code;save();if(first)track("cloud",{k:"new"})}S.cloud.at=Date.now()}).catch(()=>{}).finally(()=>{CLOUD.busy=false})}
 addEventListener("visibilitychange",()=>{if(document.hidden&&S&&S.cloud&&S.cloud.code&&STATS_URL&&navigator.sendBeacon){try{navigator.sendBeacon(STATS_URL+"/save",new Blob([JSON.stringify({code:S.cloud.code,data:JSON.stringify(S)})],{type:"text/plain"}))}catch(e){}}});
 function showCode(){const c=S.cloud&&S.cloud.code;openSheet(`<h2>☁️ Your save code</h2><p class="sub">Your life is backed up. Use this code to carry on from any phone or computer.</p>
@@ -818,7 +826,7 @@ function sprayFx(mesh,count){if(!root)return;const M=noteMats();for(let i=0;i<co
 function notesTick(dt){for(const n of notes){const u=n.userData;if(u.g)continue;u.v.y-=dt*5;u.v.multiplyScalar(1-dt*1.6);n.position.addScaledVector(u.v,dt);n.rotation.x+=u.sp.x*dt;n.rotation.y+=u.sp.y*dt;
   if(n.position.y<.24){n.position.y=.2+Math.random()*.03;n.rotation.set(-Math.PI/2,0,Math.random()*6);u.g=true}}}
 function spray(){if(!P.on)return;if(S.m<5){toast("You don broke 😭 Nothing left to spray");stopSpray();return}
-  const ph=partyPhase();S.m=Math.round((S.m-5)*100)/100;P.mine+=5;P.unlogged+=5;sprayFx(player,6);netSend({t:"fx",k:"spray",n:5,live:ph.live?1:0});
+  const ph=partyPhase();S.m=Math.round((S.m-5)*100)/100;P.mine+=5;P.unlogged+=5;const wk=isoWeek();if(!S.wk||S.wk.id!==wk)S.wk={id:wk,spray:0};S.wk.spray+=5;dtick("spray",5);sprayFx(player,6);netSend({t:"fx",k:"spray",n:5,live:ph.live?1:0});
   if(P.mine%50===0){add("f",4);resp(1)}if(P.mine===100)mcSay(`${S.name}, you don show us money! 🙌🏾`);P.funT=0;updateHUD()}
 function startSpray(e){if(e)e.preventDefault();spray();clearInterval(P.sprayT);P.sprayT=setInterval(spray,220)}
 function stopSpray(){clearInterval(P.sprayT);P.sprayT=null}
@@ -944,9 +952,62 @@ setTimeout(()=>{
   $("nPhoto").onclick=photoOn;$("phX").onclick=photoOff;$("phSnap").onclick=snapPhoto;$("phTurn").onclick=()=>{PH.ang=(PH.ang+Math.PI/2)%(Math.PI*2)};
   $("phPose").onclick=()=>{PH.dance=!PH.dance;PH.wave=false;$("phPose").classList.toggle("on",PH.dance);$("phWave").classList.remove("on");if(!PH.dance)animatePerson(player,0,0)};
   $("phWave").onclick=()=>{PH.wave=!PH.wave;PH.dance=false;$("phWave").classList.toggle("on",PH.wave);$("phPose").classList.remove("on");if(!PH.wave)animatePerson(player,0,0)};
-  document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("#online"))return;const on=!document.body.classList.contains("hmin");document.body.classList.toggle("hmin",on);if(on)toast("Stats hidden. Tap the top bar to show them again.");try{localStorage.setItem("japa_hmin",on?"1":"0")}catch(x){}});
+  $("streak").onclick=e=>{e.stopPropagation();openDaily()};
+  document.querySelector(".topbar").addEventListener("click",e=>{if(e.target.closest("#online")||e.target.closest("#streak"))return;const on=!document.body.classList.contains("hmin");document.body.classList.toggle("hmin",on);if(on)toast("Stats hidden. Tap the top bar to show them again.");try{localStorage.setItem("japa_hmin",on?"1":"0")}catch(x){}});
   try{if(localStorage.getItem("japa_hmin")==="1")document.body.classList.add("hmin")}catch(e){}
 },0);
+/* ================= daily streak, daily tasks, weekly leaderboards ================= */
+function ukDate(off){const u=ukParts(),d=new Date(Date.UTC(u.y,u.mo-1,u.d+(off||0)));return d.toISOString().slice(0,10)}
+function isoWeek(){const u=ukParts(),d=new Date(Date.UTC(u.y,u.mo-1,u.d)),day=d.getUTCDay()||7;d.setUTCDate(d.getUTCDate()+4-day);const y=d.getUTCFullYear();return `${y}-W${String(Math.ceil(((d-Date.UTC(y,0,1))/864e5+1)/7)).padStart(2,"0")}`}
+const STREAK_R=[{m:10},{m:15},{food:1,t:"A free plate of party jollof"},{m:25},{m:30},{m:40},{m:100,asoebi:1,t:"plus aso-ebi for Owambe Night"}];
+const TASKS=[
+  {id:"shift",t:"Work a shift",k:"shift",n:1},{id:"shift2",t:"Work 2 shifts",k:"shift",n:2},{id:"deliver",t:"Do a Chop Express delivery run",k:"deliver",n:1,uk:1},
+  {id:"send",t:"Send money home to Mum",k:"send",n:1},{id:"dream",t:"Put money in your dream fund",k:"dream",n:1},{id:"eat",t:"Eat Naija food (suya, puff-puff, jollof…)",k:"eat",n:1},
+  {id:"church",t:"Give an offering at church",k:"church",n:1},{id:"owambe",t:"Go to Owambe Night",k:"owambe",n:1},{id:"spray",t:"Spray £20 at Owambe Night",k:"spray",n:20},
+  {id:"photo",t:"Take a photo-mode picture",k:"photo",n:1},{id:"chat",t:"Say hi to someone in chat",k:"chat",n:1},{id:"travel",t:"Take a train, bus or Uber",k:"travel",n:1},
+  {id:"streets",t:"Visit 3 different streets",k:"streets",n:3}];
+function pickTasks(date){const r=seeded(hash("tasks"+date+((S&&S.country)||"uk"))),pool=TASKS.filter(t=>!(t.uk&&isCA())),out=[],keys=new Set();
+  while(out.length<3&&pool.length){const t=pool.splice(Math.floor(r()*pool.length),1)[0];if(keys.has(t.k))continue;keys.add(t.k);out.push(t.id)}return out}
+function daily(){const d=ukDate();if(!S.daily||S.daily.date!==d)S.daily={date:d,tasks:pickTasks(d),c:{},done:{},zs:[],claimed:false};return S.daily}
+function dtick(k,amt){if(!S||!player)return;const dl=daily();dl.c[k]=(dl.c[k]||0)+(amt||1);
+  dl.tasks.forEach(id=>{const t=TASKS.find(x=>x.id===id);if(t&&!dl.done[id]&&(dl.c[t.k]||0)>=t.n){dl.done[id]=true;sfx.coin();buzz(30);toast(`✅ Daily task done: ${t.t}`)}});
+  if(!dl.claimed&&dl.tasks.every(id=>dl.done[id])){dl.claimed=true;setTimeout(()=>{money(50,"Daily tasks bonus");resp(3);jxp(20);
+    const go=()=>{if(uiOpen){setTimeout(go,2000);return}openSheet(`<h2>✅ All 3 daily tasks done!</h2><p class="sub">+£50, +20 Japa XP, +3 Respect. New tasks tomorrow morning.</p><div class="result">${dl.tasks.map(id=>"✅ "+TASKS.find(x=>x.id===id).t).join("<br>")}</div><button class="primary" id="dsh">Share</button><button class="close" id="cl">Nice one</button>`);
+      $("cl").onclick=closeSheet;$("dsh").onclick=()=>showCard(makeCard("daily",{player:S.name,tasks:dl.tasks.map(id=>TASKS.find(x=>x.id===id).t),streak:S.streak.n}),`Today’s japa tasks: done ✅ 🔥 ${S.streak.n}-day streak in Abroad Life.`)};go()},1200)}}
+function dailyHook(name,p){if(name==="shift")dtick("shift");else if(name==="delivery")dtick("deliver");else if(name==="owambe"&&/join/.test(p.k||""))dtick("owambe");
+  else if(name==="card"&&p.kind==="photo")dtick("photo");else if(name==="travel"&&p.how&&p.how!=="walk")dtick("travel")}
+function moneyHook(amt,label){if(amt>=0||!label)return;const l=String(label);if(/^Sent to Mum/.test(l))dtick("send");else if(/^Dream fund/.test(l))dtick("dream");
+  else if(/Suya|Puff-puff|Jollof|Indomie|Malt|Naija Food|Small chops/i.test(l))dtick("eat");else if(/^Offering/.test(l))dtick("church")}
+function streakCheck(isNew){if(!S)return;const today=ukDate();S.streak=S.streak||{n:0,last:"",saveWeek:""};const st=S.streak;if(st.last===today)return;
+  let note="";if(st.last===ukDate(-1))st.n++;else if(st.last===ukDate(-2)&&st.saveWeek!==isoWeek()){st.n++;st.saveWeek=isoWeek();note="Mum: “I prayed for your streak. Don’t miss again o!” 🙏🏾"}else st.n=1;
+  st.last=today;const R=STREAK_R[(st.n-1)%7];
+  const give=()=>{if(R.m)money(R.m,`Day ${st.n} streak reward`);if(R.food){add("h",40);add("f",10)}if(R.asoebi)F().asoebi=true;jxp(5);save()};
+  if(isNew||st.n===1&&!st.ever){st.ever=true;give();return}st.ever=true;
+  const show=()=>{if(uiOpen||busy){setTimeout(show,2500);return}openSheet(`<h2>🔥 ${st.n}-day streak!</h2><p class="sub">Come back every day. Day 7 pays £100 and aso-ebi for Owambe.</p>${daysRow()}
+    <div class="result">Today’s reward: <b>${R.m?gbp(R.m):""}${R.t?(R.m?" ":"")+R.t:""}</b>${note?`<br><br>${note}`:""}</div><button class="primary" id="col">Collect</button>`);
+    $("col").onclick=()=>{give();closeSheet();openDaily()}};setTimeout(show,2200)}
+function daysRow(){const n=S.streak.n,pos=(n-1)%7;return `<div class="days">${STREAK_R.map((r,i)=>`<div class="${i<=pos?"on":""} ${i===pos?"today":""}"><b>${i===6?"🎁":i===2?"🍛":i<=pos?"🔥":""}</b>Day ${i+1}</div>`).join("")}</div>`}
+const LEAD={data:null,at:0};
+function fetchLeaders(force){if(!STATS_URL||(!force&&Date.now()-LEAD.at<90000))return Promise.resolve(LEAD.data);LEAD.at=Date.now();
+  return fetch(`${STATS_URL}/leaders?code=${encodeURIComponent((S&&S.cloud&&S.cloud.code)||"")}`).then(r=>r.json()).then(j=>{LEAD.data=j;refreshHall();return j}).catch(()=>LEAD.data)}
+function boardMeta(){return{name:S.name,country:S.country||"uk",money:Math.round(S.m+(S.fund||0)),spray:S.wk&&S.wk.id===isoWeek()?S.wk.spray:0,level:lvInfo().L}}
+let lbTab="rich";
+function openDaily(){if(!S)return;const dl=daily(),st=S.streak||{n:0};
+  const tasks=dl.tasks.map(id=>{const t=TASKS.find(x=>x.id===id),c=Math.min(t.n,dl.c[t.k]||0);return `<div class="task ${dl.done[id]?"ok":""}"><span>${dl.done[id]?"✅":"⬜"}</span><span class="t">${cur(t.t)}</span><span class="p">${c}/${t.n}</span></div>`}).join("");
+  const L=LEAD.data,rows=L&&L[lbTab]||[],me=L&&L.me&&L.me[lbTab];
+  const fmt=v=>lbTab==="level"?`⭐ ${v}`:gbp(v);
+  const lb=!STATS_URL?`<p class="sub">Leaderboards work on the live game.</p>`:!L?`<p class="sub">Loading…</p>`:rows.length?rows.map((r,i)=>`<div class="lrow ${r.name===S.name&&me===i+1?"me":""}"><span class="r">${["🥇","🥈","🥉"][i]||i+1}</span><span class="n">${esc(r.name)} ${r.country==="ca"?"🇨🇦":"🇬🇧"}</span><span class="v">${fmt(r.v)}</span></div>`).join(""):`<p class="sub">Nobody yet this week. Be first!</p>`;
+  openSheet(`<h2>🔥 ${st.n}-day streak</h2>${daysRow()}
+    <div class="lbl">Today’s tasks <span style="font-weight:600;color:var(--muted)">· all 3 = £50 bonus</span></div>${tasks}
+    <div class="lbl" style="margin-top:14px">This week’s leaderboard <span style="font-weight:600;color:var(--muted)">· resets Monday</span></div>
+    <div class="lbt">${[["rich","💰 Richest"],["spray","💸 Top sprayer"],["level","⭐ Japa level"]].map(([k,t])=>`<button data-lb="${k}" class="${lbTab===k?"on":""}">${t}</button>`).join("")}</div>${lb}
+    ${L?`<p class="sub" style="margin-top:8px">${me?`You’re <b>#${me}</b> of ${L.players} this week.`:`${L.players} players this week. Play to get on the board.`} Weekly winners go on the Rye Lane billboard 👑</p>`:""}
+    <button class="close" id="cl">Close</button>`);
+  $("cl").onclick=closeSheet;$("sheetIn").querySelectorAll("[data-lb]").forEach(b=>b.onclick=()=>{lbTab=b.dataset.lb;openDaily()});
+  if(STATS_URL&&(!L||Date.now()-LEAD.at>30000)){cloudSave(true);setTimeout(()=>fetchLeaders(true).then(()=>{if(uiOpen&&$("sheetIn").querySelector("[data-lb]"))openDaily()}),1200)}}
+function hallAd(){const L=LEAD.data,last=L&&L.last,src=last&&(last.rich||last.spray)?last:L;const r=src&&(src.rich&&src.rich[0]!==undefined?src.rich[0]:src.rich),sp=src&&(src.spray&&src.spray[0]!==undefined?src.spray[0]:src.spray);
+  return{brand:"👑 Japa Hall of Fame",line:r||sp?`${last?"Last week":"This week"}: richest ${r?r.name:"-"} · top sprayer ${sp?sp.name:"-"}`:"This week’s winners go up here. Play to get on it!",bg:"#1C1B3A",fg:"#F4C430",em:"🏆",house:true}}
+function refreshHall(){boards.forEach(b=>{if(b.ad.id==="ryelane-1a"){const ad=Object.assign({id:b.ad.id},hallAd());const old=b.m.material.map;b.m.material.map=posterTex(ad);b.m.material.needsUpdate=true;if(old)old.dispose();b.ad=ad;b.m.userData.ad=ad}})}
 const FLAGM={};function flagMat(c){if(!FLAGM[c])FLAGM[c]=new THREE.MeshLambertMaterial({color:c,side:THREE.DoubleSide});return FLAGM[c]}
 /* ================= billboards (sellable ad slots) =================
    Each zone has 2 rooftop billboards, each with 2 faces = 4 slots.
@@ -964,7 +1025,7 @@ const HOUSE_ADS=[
   {brand:"Ọ̀rẹ́ Phones",line:"Unlock, repair, top up. Same day.",bg:"#1C1B3A",em:"📱"}];
 const AD_HERE={brand:"YOUR BRAND HERE",line:"Reach Nigerians abroad. Tap to advertise.",bg:"#F4C430",fg:"#1C1B3A",em:"📣",house:true};
 const boards=[];
-function adFor(id,k){if(ADS[id])return Object.assign({id},ADS[id]);if(id.endsWith("0a"))return Object.assign({id},AD_HERE);return Object.assign({id,house:true},HOUSE_ADS[(hash(id)+k)%HOUSE_ADS.length])}
+function adFor(id,k){if(ADS[id])return Object.assign({id},ADS[id]);if(id==="ryelane-1a")return Object.assign({id},hallAd());if(id.endsWith("0a"))return Object.assign({id},AD_HERE);return Object.assign({id,house:true},HOUSE_ADS[(hash(id)+k)%HOUSE_ADS.length])}
 function posterTex(ad){const[c,x]=cvs(1024,384);x.fillStyle=ad.bg||"#1C1B3A";x.fillRect(0,0,1024,384);const fg=ad.fg||"#FFFFFF";
   x.fillStyle="rgba(255,255,255,.08)";x.beginPath();x.arc(880,40,240,0,7);x.fill();
   x.font='120px "Apple Color Emoji","Segoe UI Emoji","Noto Color Emoji",sans-serif';x.textBaseline="middle";x.fillText(ad.em||"",36,140);
@@ -1327,6 +1388,7 @@ function updateHUD(){
   const hasP=!!S.partner;$("needs").style.gridTemplateColumns=`repeat(${hasP?5:4},1fr)`;$("nb_love").parentNode.parentNode.style.display=hasP?"":"none";
   NEEDS.forEach(([k,,c])=>{const el=$("nb_"+k);const v=k==="love"?(S.partner?S.partner.love:0):S.n[k];el.style.width=v+"%";el.style.background=v<20?"#C2304F":c});
   const b=$("badge");b.style.display=S.unread?"flex":"none";b.textContent=S.unread;
+  {const sk=$("streak"),dl=S.daily,all=dl&&dl.tasks.every(id=>dl.done[id]);sk.textContent=`🔥 ${(S.streak&&S.streak.n)||0}${dl?` · ${dl.tasks.filter(id=>dl.done[id]).length}/3`:""}`;sk.classList.toggle("done",!!all)}
   {const ch=curChapter(),li=lvInfo(),dn=ch.goals.filter(g=>S.goals[g.id]).length;$("chapbar").innerHTML=`<span class="ct">📋 Ch ${S.chapter}${ch.soon?"":` · ${dn}/${ch.goals.length}`}</span><span class="lv">⭐ ${li.L}</span>`}
   const D=DREAMS[S.dream];if(D){const pr=progress();$("dreambar").innerHTML=`<span>${D.em}</span><div class="b"><i style="width:${pr*100}%"></i></div><span>${Math.floor(pr*100)}%</span>`}
 }
@@ -1368,7 +1430,7 @@ $("nPhone").onclick=()=>{phoneTab=S.unread?"msgs":phoneTab==="map"?"msgs":phoneT
 /* ================= time & needs ================= */
 function addMsg(t,txt){S.msgs.unshift({t,d:day(),txt:cur(txt)});S.msgs=S.msgs.slice(0,40);S.unread++;if(player){sfx.ping();buzz(15)}}
 function addTx(label,amt){S.tx.unshift({label,amt,d:day()});S.tx=S.tx.slice(0,20)}
-function money(amt,label){S.m=Math.round((S.m+amt)*100)/100;addTx(label,amt);
+function money(amt,label){S.m=Math.round((S.m+amt)*100)/100;addTx(label,amt);try{moneyHook(amt,label)}catch(e){}
   if(amt>=1){sfx.pay();floatText("+"+gbp(amt));coinBurst(Math.min(14,4+Math.floor(amt/20)));buzz(25)}else if(amt<=-20)floatText(gbp(amt),true)}
 function decay(mins,mode){
   const k=mode==="sleep"?.3:1,starving=S.n.h<=0?2.5:1;
@@ -1424,7 +1486,7 @@ function enterZone(zid,pos,yaw,instant){
   player.parent&&player.parent.remove(player);scene.add(player);
   player.position.set(pos.x,.18,pos.z);player.rotation.y=yaw;camYaw=yaw;autoTarget=null;
   const fx=Math.sin(yaw),fz=Math.cos(yaw);camera.position.set(pos.x-fx*9,6.4,pos.z-fz*9);
-  updateHUD();updateChips();save();netJoin(zid);if(!instant)setTimeout(()=>arriveCard(ZONES[zid]),300);
+  updateHUD();updateChips();save();netJoin(zid);if(S.daily||player){const dl=daily();if(!dl.zs.includes(zid)&&!ZONES[zid].hall){dl.zs.push(zid);if(dl.zs.length>1)dtick("streets",dl.zs.length===2?2:1)}}if(zid==="ryelane")fetchLeaders();if(!instant)setTimeout(()=>arriveCard(ZONES[zid]),300);
 }
 function travel(to,how,fromId){
   if(busy)return;if(ZONES[S.zone]&&ZONES[S.zone].hall&&how==="walk")return leaveOwambe();busy=true;closeSheet();track("travel",{how});
@@ -2221,6 +2283,9 @@ function makeCard(kind,d){track("card",{kind});
     x.textAlign="left";x.font='600 34px Figtree, sans-serif';let y=780;d.goals.slice(0,8).forEach(g=>{x.fillText("✅ "+g,140,y);y+=46});x.textAlign="left";return c}
   if(kind==="ilr"||kind==="home"){const{c,x}=cardBase(kind==="ilr"?"SETTLED":"NEW HOMEOWNER",kind==="ilr"?"Indefinite Leave to Remain":`${d.area}, London`);
     x.font="200px sans-serif";x.textAlign="center";x.fillText(kind==="ilr"?"🇬🇧":"🏡",540,500);stamp(x,540,850,260,kind==="ilr"?"UK VISAS":"KEYS COLLECTED",kind==="ilr"?"SETTLED":"HOME",d.player.toUpperCase().slice(0,16),kind==="ilr"?"#0E7A4B":"#E5487A");x.textAlign="left";return c}
+  if(kind==="daily"){const{c,x}=cardBase("DAILY JAPA TASKS",dateStr(day()));x.font="170px sans-serif";x.textAlign="center";x.fillText("🔥",540,450);
+    x.fillStyle="#F4C430";x.font='800 80px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(`${d.streak}-day streak`,540,600);x.textAlign="left";x.fillStyle="#FFFFFF";x.font='700 46px Figtree, sans-serif';
+    d.tasks.forEach((t,i)=>x.fillText("✅ "+cur(t).slice(0,30),110,760+i*90));x.font='600 34px Figtree, sans-serif';x.fillText(`${d.player} · New tasks every morning`,110,1100);return c}
   if(kind==="owambe"){const{c,x}=cardBase("OWAMBE NIGHT",`${tonight().celeb[0]} · ${tonight().celeb[1]}`);
     x.font="190px sans-serif";x.textAlign="center";x.fillText("💃🏾",540,470);x.fillStyle="#FFFFFF";x.fillRect(90,560,900,420);x.textAlign="left";
     d.rows.forEach((r,i)=>{x.fillStyle="#1C1B3A";x.font='800 54px "Bricolage Grotesque", Figtree, sans-serif';x.fillText(`${["👑","🥈","🥉"][i]} ${r[0]}`.slice(0,26),130,660+i*110);x.fillStyle="#0E7A4B";x.textAlign="right";x.fillText(gbp(r[1]),950,660+i*110);x.textAlign="left"});
@@ -2610,7 +2675,7 @@ const net={ws:null,zone:null,shard:1,id:null,players:new Map(),lastSend:0,last:"
 try{JSON.parse(localStorage.getItem("japa_muted")||"[]").forEach(n=>net.muted.add(n))}catch(e){}
 function netStatus(){const el=$("online");if(!REALTIME_URL){el.style.display="none";return}
   el.style.display="inline-block";const open=net.ws&&net.ws.readyState===1&&net.id;
-  el.className="online"+(open?"":" off");el.textContent=open?`🟢 ${Math.max(LIVE.online||0,net.players.size+1)} online`:"Connecting…"}
+  el.className="online"+(open?"":" off");el.textContent=open?`🟢 ${Math.max(LIVE.online||0,net.players.size+1)}`:"…";el.title="Players online"}
 function netJoin(zone,shard){
   if(!REALTIME_URL)return;
   shard=shard||1;
@@ -2672,7 +2737,7 @@ function netTick(dt,moving){
 function sendChat(text){
   text=text.trim().slice(0,120);if(!text)return;
   if(!REALTIME_URL||!net.id){toast(REALTIME_URL?"Not connected yet. Try again in a moment.":"Chat works once the game is online.");return}
-  netSend({t:"chat",text});bubble(player,text,selfBubble);chatLog(S.name+" (you)",text);
+  netSend({t:"chat",text});dtick("chat");bubble(player,text,selfBubble);chatLog(S.name+" (you)",text);
 }
 $("nChat").onclick=()=>{const bar=$("chatbar");const show=bar.style.display!=="flex";bar.style.display=show?"flex":"none";if(show)$("chatin").focus()};
 $("chatbar").addEventListener("submit",e=>{e.preventDefault();const i=$("chatin");sendChat(i.value);i.value="";$("chatbar").style.display="none";i.blur()});
@@ -2747,7 +2812,7 @@ function tick(){
     camPos.set(Math.max(-3.8,Math.min(3.8,player.position.x-fx*8)),4.4,player.position.z-fz*8);camera.position.lerp(camPos,Math.min(1,dt*5));
     camLook.set(player.position.x+fx*10,2.6,player.position.z+fz*10);camera.lookAt(camLook)}
     sun.target.position.set(player.position.x,0,player.position.z+6);sun.position.copy(sun.target.position).addScaledVector(sunDir,70);
-    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus();adTick();fetchLive()}
+    chipT-=dt;if(chipT<=0){chipT=.4;updateHUD();updateChips();netStatus();adTick();fetchLive();if(S.daily&&S.daily.date!==ukDate()){daily();streakCheck(false)}}
     if(GFX.auto&&GFX.shadows){GFX.n=(GFX.n||0)+1;GFX.t=(GFX.t||0)+dt;if(GFX.t>8){if(GFX.n/GFX.t<26){setShadows(false);toast("Graphics set to fast mode for your device")}GFX.auto=false}}
     saveT-=dt;if(saveT<=0){saveT=5;save();cloudSave()}
   } else if(root){
@@ -2895,6 +2960,7 @@ function begin(state,isNew){
   if(!state.route){draft.migrate=state;draft.name=state.name;draft.traits=[];draft.dream=null;draft.rel=null;$("start").style.display="flex";showSetup(2);return}
   S=state;$("start").style.display="none";if(preview){preview.parent.remove(preview);preview=null}
   if(!S.cloud)S.cloud={code:""};setTimeout(()=>cloudSave(true),15000);
+  daily();streakCheck(isNew);setTimeout(()=>fetchLeaders(true),16500);
   if(STATS_URL&&!S.flags.cloudTip)setTimeout(()=>{if(!S.flags.cloudTip&&S.cloud.code){S.flags.cloudTip=true;toast("☁️ Your life is backed up. Get your save code in Phone → Settings.")}},10*60000);
   player=makePerson(SKINS[S.look.skin],SHIRTS[S.look.shirt],"#1C1B3A",S.look.hair,scene);
   ["hud","joy","nav"].forEach(id=>$(id).style.display="");
@@ -2902,7 +2968,7 @@ function begin(state,isNew){
   enterZone(zid,{x:S.pos.x,z:S.pos.z},Math.PI);
   track("session_start",{route:S.route,home:hz(),returning:!isNew,n:S.chapter});if(isNew)track("new_player",{kind:`${S.origin||"ng"}-${S.country||"uk"}`,route:S.route,home:hz(),dream:S.dream,rel:S.partner?S.partner.kind:"single"});
   if(isNew&&draft.fast){draft.fast=false;const R0=draft.fastRoute||{};
-    [[2700,`🎲 Japa lottery: you landed as a ${R0.em||""} ${R0.name||"newcomer"}!`],[6100,"🕹️ Use the joystick or tap the street to walk. Yellow rings are doors."],[9500,"📋 Your goals are in the chapter bar up top. 📸 Try Photo mode too!"],[12900,`✏️ You’re “${S.name}”. Change your name in Phone → Settings.`]].forEach(([t,m])=>setTimeout(()=>toast(m),t));
+    [[2700,`🎲 Japa lottery: you landed as a ${R0.em||""} ${R0.name||"newcomer"}!`],[6100,"🕹️ Use the joystick or tap the street to walk. Yellow rings are doors."],[9500,"🔥 Tap the flame at the top for today’s 3 tasks and the weekly leaderboard."],[12900,`✏️ You’re “${S.name}”. Change your name in Phone → Settings.`]].forEach(([t,m])=>setTimeout(()=>toast(m),t));
   } else
   if(isNew)setTimeout(()=>{openSheet(`<h2>Welcome to ${AREAS[hz()].area} ${isCA()?"🇨🇦":"🇬🇧"}</h2><p class="sub">You just landed. Here’s how life works.</p>
     <div class="result">${S.partner?`❤️ ${S.partner.name} ${S.partner.where==="home"?"is back in Nigeria. Video call often.":"is here with you. Keep the Love bar up."}<br>`:""}📲 Grab shift alerts fast for extra pay, but don’t burn out.<br>${DREAMS[S.dream].em} Your dream: <b>${DREAMS[S.dream].name}</b>. Track it at the top of the screen.<br>🕹️ Move with the joystick, arrow keys, or tap the ground.<br>🛵 Earn fast at the Chop Express rider hub on Rye Lane.<br>💸 Save for your dream at Naija Money Transfer.<br>🟡 Walk onto a yellow ring to enter a place.<br>⚪ White rings lead to the next street. Choumert Market is past the end of Rye Lane.<br>🚉 Peckham Rye Station has trains to Woolwich.<br>💼 Shifts at Kwik Cash &amp; Carry, or the care home in Woolwich.<br>🏠 ${rentNow()?`Rent is £${rentNow()}`:`You pay Mum £${houseFee()}`}, every Saturday.<br>🍲 Keep your needs up, or you’ll collapse.<br>📱 Check your phone. Mum has already texted.</div>
