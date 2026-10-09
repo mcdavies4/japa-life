@@ -552,6 +552,8 @@ function trip2(a,b,mode){const A=(AREAS[a]||AREAS.ryelane).pos,B=(AREAS[b]||AREA
 function slotZ(zone,i){return -zone.L+6+i*10}
 ZONES.owambe={name:"Royal Owambe Hall",area:"Owambe Night",L:13,traffic:false,road:"#5A3E2B",npcs:0,code:"",hall:true,places:[],left:[],right:[],stalls:[],
   exits:[{id:"exit-owambe",to:"woolwich",name:"Back outside",end:-1}]};
+if(ZONES.croydon)ZONES.croydon.skyline=(ZONES.croydon.skyline||[]).concat([{k:"fiftyp",x:-48,z:-80}]);
+if(ZONES.central)ZONES.central.skyline=(ZONES.central.skyline||[]).concat([{k:"nelson",x:0,z:-ZONES.central.L-48}]);
 ZONES.airport={name:"Heathrow Terminal 4",area:"Departures",L:13,traffic:false,road:"#B9BEC6",npcs:0,code:"",hall:true,kind:"airport",left:[],right:[],stalls:[],
   places:[{id:"checkin",type:"checkin",name:"Check-in · Lagos (LOS)",short:"Check-in",emoji:"🧳",x:-4.4,z:1},{id:"gate",type:"gate",name:"Gate B32 · Lagos",short:"Gate B32",emoji:"🛫",x:0,z:9.5}],
   exits:[{id:"exit-airport",to:"ryelane",name:"Back to London",end:-1}]};
@@ -693,6 +695,61 @@ function own(m){m.userData.own=true;return m}
 function seeded(s){return()=>{s=(s*16807)%2147483647;return(s-1)/2147483646}}
 function hash(str){let h=7;for(const c of str)h=(h*31+c.charCodeAt(0))%2147483647;return h||1}
 
+/* ================= real landmarks (public buildings and places, no shop brands) ================= */
+const LANDMARKS={ryelane:[{k:"rooftop",side:-1,slot:6}],highst:[{k:"library",side:1,slot:2}],woolwich:[{k:"townhall",end:1,name:"WOOLWICH TOWN HALL",col:"#D8CDB2",cupola:1}],
+  barking:[{k:"townhall",end:1,name:"BARKING TOWN HALL",col:"#9A4A3A"}],croydon:[{k:"containers",end:-1}],edmonton:[{k:"green",end:1}],
+  queen:[{k:"cityhall",end:1}],brampton:[{k:"townhall",end:1,name:"PEEL ART GALLERY",col:"#B5835A",cupola:1}],scarborough:[{k:"civic",end:1}]};
+function clockMat(){return texMat("clock",()=>{const[c,x]=cvs(128,128);x.fillStyle="#F4F1E6";x.beginPath();x.arc(64,64,60,0,7);x.fill();x.strokeStyle="#1C1B3A";x.lineWidth=6;x.stroke();x.fillStyle="#1C1B3A";
+  for(let i=0;i<12;i++){const a=i/12*Math.PI*2;x.fillRect(64+Math.sin(a)*48-3,64-Math.cos(a)*48-3,6,6)}x.lineWidth=6;x.beginPath();x.moveTo(64,64);x.lineTo(64,26);x.moveTo(64,64);x.lineTo(92,70);x.stroke();return new THREE.CanvasTexture(c)})}
+function buildLandmark(l,side,z,zone){const cx=side*12,fx=side*6.92,ry=side<0?Math.PI/2:-Math.PI/2,bm=t=>own(new THREE.MeshBasicMaterial({map:t,transparent:true}));
+  if(l.k==="library"){ // Peckham Library: copper-green block on stilts, the red "beret" on the roof, LIBRARY letters
+    const cop=texMat("copper",()=>{const[c,x]=cvs(128,128),r=seeded(31);x.fillStyle="#4F8C72";x.fillRect(0,0,128,128);for(let j=0;j<8;j++)for(let i=0;i<8;i++){x.fillStyle=shade("#4F8C72",.85+r()*.3);x.fillRect(i*16+1,j*16+1,14,14)}return rtex(c)});
+    box(5,7,8,"#2E3440",side*14.5,3.5,z);tbx(9,6,10,cop,cx+side*.5,10,z,3);box(9.2,.3,10.2,"#3E4A44",cx+side*.5,13.15,z);
+    for(const q of[-1,1])for(const p of[-1,1]){const col=box(.25,7.2,.25,"#2A2A2A",side*8.2+q*.6,3.6,z+p*3.8);col.rotation.z=q*.12;col.rotation.x=p*.1}
+    const beret=stmesh(new THREE.SphereGeometry(2.2,16,8,0,Math.PI*2,0,Math.PI/2),"#C0442D",cx+side*1.8,13.3,z-2);beret.scale.set(1.3,.45,1);
+    const lt=textTex("LIBRARY","rgba(0,0,0,0)","#F4F1E6",1024,200,170);const lp=plane(9,1.8,bm(lt),side*7.6,14.4,z,ry);
+    plane(5.5,3,winMat,fx,1.6,z,ry);plane(8,.9,signMat("PECKHAM LIBRARY","#1C1B3A",56),side*6.95,7.4,z,ry);return}
+  if(l.k==="rooftop"){ // rooftop bar on a Rye Lane building
+    const h=10,col="#B59B70";tbx(10,h,9.6,wallMat(col),cx,h/2,z);box(.3,.35,9.8,"#EDE6D8",side*7.1,h-.3,z);plane(8.4,2.6,shopMat("rt"),fx,1.5,z,ry);plane(9,1.05,signMat("ROOFTOP BAR ↑ OPEN TILL LATE","#E5487A",50),side*6.97,3.4,z,ry);
+    for(let f=0;f<2;f++)for(let k=-1;k<=1;k++){plane(1.35,1.95,mat("#F2EEE4"),side*6.93,5.6+f*3,z+k*3,ry);plane(1.1,1.7,winMat,side*6.945,5.6+f*3,z+k*3,ry)}
+    box(10,.15,9.6,"#6B5A48",cx,h+.07,z);for(let q=-4;q<=4;q+=.8)box(.06,1,.06,"#222",side*7.3,h+.6,z+q);box(.06,.06,9.4,"#222",side*7.3,h+1.1,z);
+    const bulbs=own(new THREE.MeshLambertMaterial({color:0xFFE9A8,emissive:0xFFC24A}));for(let k=0;k<14;k++){const t=k/13;box(.14,.14,.14,bulbs,side*(7.4+t*4),h+2.6-Math.sin(t*Math.PI)*.5,z-3.5+t*7)}
+    for(const q of[-2.5,0,2.5]){box(.08,1.9,.08,"#444",side*10.5,h+1,z+q);stmesh(new THREE.CylinderGeometry(.05,1.3,.45,10,1,true),stripeMat("#E5487A","#F7F3EA",10,true),side*10.5,h+2,z+q);box(.9,.08,.9,"#7A5A3A",side*10.5,h+.75,z+q)}return}
+  if(l.k==="townhall"){ // civic building with a clock tower
+    const h=8;tbx(10,h,9.6,wallMat(l.col),cx,h/2,z);box(.4,.5,9.8,"#EDE6D8",side*7.12,h-.3,z);box(.4,.4,9.8,"#EDE6D8",side*7.12,4.2,z);
+    for(let k=-1;k<=1;k++){plane(1.3,2.3,mat("#F2EEE4"),side*6.93,5.9,z+k*3,ry);plane(1.05,2.05,winMat,side*6.945,5.9,z+k*3,ry)}
+    plane(2.4,3.2,mat("#4A3426"),side*6.93,1.6,z,ry);stmesh(new THREE.CircleGeometry(1.2,16,0,Math.PI),mat("#EDE6D8"),side*6.94,3.2,z).rotation.y=ry;for(const q of[-1,1])box(.5,3.6,.5,"#EDE6D8",side*7.2,1.8,z+q*1.6);
+    for(let st=0;st<3;st++)box(.5,.18,3.6,"#C9C2B2",side*(6.8-st*.45),.09+st*.18,z);
+    plane(8.5,.9,signMat(l.name,"#1C1B3A",50),side*6.96,4.9,z,ry);
+    const tx=cx+side*2.6,tz=z;tbx(3.4,7,3.4,wallMat(l.col),tx,h+3.5,tz);box(3.8,.4,3.8,"#EDE6D8",tx,h+7.2,tz);
+    for(const[dx,dz,r]of[[side*-1.62,0,ry],[side*1.62,0,-ry],[0,1.62,0],[0,-1.62,Math.PI]]){const cf=new THREE.Mesh(new THREE.CircleGeometry(1.25,24),clockMat());cf.position.set(tx+dx*1.08,h+5.4,tz+dz*1.08);cf.rotation.y=dz?(dz>0?0:Math.PI):(dx<0?-Math.PI/2:Math.PI/2);cf.userData.st=1;root.add(cf)}
+    if(l.cupola){stmesh(new THREE.CylinderGeometry(1.1,1.3,2,10),"#EDE6D8",tx,h+8.4,tz);stmesh(new THREE.SphereGeometry(1.2,12,8,0,Math.PI*2,0,Math.PI/2),"#5E7D6A",tx,h+9.4,tz);box(.08,2,.08,"#333",tx,h+11.2,tz)}
+    else{const sp=stmesh(new THREE.ConeGeometry(2.6,3.6,4),"#4A4E57",tx,h+9.2,tz);sp.rotation.y=Math.PI/4}return}
+  if(l.k==="containers"){ // street-food container market
+    const C=["#1C1B3A","#2E3440","#0E7A4B","#1C1B3A"],cor=c=>texMat("cont"+c,()=>{const[cv,x]=cvs(64,64);x.fillStyle=c;x.fillRect(0,0,64,64);x.fillStyle="rgba(255,255,255,.08)";for(let i=0;i<64;i+=6)x.fillRect(i,0,3,64);return rtex(cv)});
+    for(let lv=0;lv<2;lv++)for(const q of[-1,1]){const col=C[(lv*2+(q>0?1:0))%4];tbx(4.2,2.8,4.6,cor(col),side*(9.5+lv*0)+side*lv*1.2,1.4+lv*2.8,z+q*2.4,2)}
+    for(const q of[-1,1]){plane(3.6,1.4,shopMat("ctr"+q),side*7.35,1.4,z+q*2.4,ry);plane(4,.6,signMat(q>0?"JOLLOF & GRILLS":"SUYA & SHAWARMA",q>0?"#E85A1A":"#C2304F",44),side*7.36,2.55,z+q*2.4,ry)}
+    plane(8.6,1.1,signMat("CONTAINER MARKET · EAT · DRINK","#F4C430",48),side*7.6,6.3,z,ry);
+    for(const q of[-2.5,2.5]){box(1.8,.1,.8,"#7A5A3A",side*6.2,.8,z+q);for(const p of[-1,1])box(1.8,.08,.3,"#7A5A3A",side*6.2,.45,z+q+p*.6)}return}
+  if(l.k==="green"){ // Edmonton Green: shopping centre entrance with tower block behind
+    box(10,5,9.6,"#C9CED6",cx,2.5,z);plane(7,3.2,shopMat("eg"),fx,1.7,z,ry);box(2.2,.25,10,"#2D3192",side*6.2,4,z);plane(9,1.1,signMat("EDMONTON GREEN","#0E7A4B",60),side*6.96,4.6,z,ry);
+    const t=own(new THREE.MeshLambertMaterial({map:towerTex()}));const tw=new THREE.Mesh(new THREE.BoxGeometry(9,40,9),t);tw.position.set(side*20,20,z);tw.userData.st=1;root.add(tw);
+    const cl=new THREE.Mesh(new THREE.CircleGeometry(.9,24),clockMat());cl.position.set(side*6.98,6.2,z);cl.rotation.y=ry;cl.userData.st=1;root.add(cl);box(.4,2.4,2.4,"#C9CED6",side*6.95,6.2,z);return}
+  if(l.k==="cityhall"){ // Nathan Phillips Square: TORONTO sign, reflecting pool, arches, the curved towers
+    box(10,.12,9.6,"#D9D6CF",cx,.08,z);box(4,.05,7,"#5EA8D8",cx+side*1.5,.16,z);
+    for(const q of[-2.4,0,2.4]){const a=stmesh(new THREE.TorusGeometry(1.8,.18,6,16,Math.PI),"#F2F2F2",cx+side*1.5,.15,z+q);a.rotation.y=Math.PI/2}
+    const[c,x]=cvs(1024,220);const letters="TORONTO".split(""),cols=["#E5487A","#F4C430","#3BA3D9","#0E7A4B","#E85A1A","#7B4FA0","#E5487A"];x.font='900 190px "Bricolage Grotesque",Arial Black,sans-serif';x.textBaseline="middle";let px=40;
+    letters.forEach((ch,i)=>{x.fillStyle=cols[i];x.fillText(ch,px,118);px+=x.measureText(ch).width+6});
+    const sign=plane(9.4,2,bm(new THREE.CanvasTexture(c)),side*6.6,1.3,z,ry);sign.material.side=THREE.DoubleSide;
+    const wt=own(new THREE.MeshLambertMaterial({color:0xEDEDED,side:THREE.DoubleSide}));
+    for(const[q,hh,rot]of[[-1,26,0],[1,19,Math.PI]]){const tw=new THREE.Mesh(new THREE.CylinderGeometry(6,6,hh,20,1,true,rot+Math.PI*.15,Math.PI*.7),wt);tw.position.set(side*40,hh/2,z+q*7);tw.userData.st=1;root.add(tw)}
+    const sauc=stmesh(new THREE.SphereGeometry(4.5,16,8),"#E6E6E6",side*36,3,z);sauc.scale.set(1,.35,1);
+    plane(9,1,signMat("NATHAN PHILLIPS SQUARE","#1C1B3A",50),side*12,.6,z+4.6,0).position.x=cx;return}
+  if(l.k==="civic"){ // Scarborough Civic Centre: white curved building and flags
+    const wt=own(new THREE.MeshLambertMaterial({color:0xF2F2F2,side:THREE.DoubleSide}));const b=new THREE.Mesh(new THREE.CylinderGeometry(9,9,9,24,1,false,side<0?Math.PI*1.25:Math.PI*.25,Math.PI*.5),wt);b.position.set(side*16,4.5,z);b.userData.st=1;root.add(b);
+    box(10,.12,9.6,"#D9D6CF",cx,.08,z);plane(9,1,signMat("SCARBOROUGH CIVIC CENTRE","#2D3192",46),side*7.4,2.2,z,ry);
+    for(const[q,fc]of[[-3,"#D52B1E"],[0,"#D52B1E"],[3,"#2D3192"]]){box(.1,6,.1,"#AAA",side*8,3,z+q);box(.05,.9,1.5,fc,side*8,5.4,z+q+.75)}return}
+}
 /* ---------- art: procedural textures (no downloads, light on phones) ---------- */
 function cvs(w,h){const c=document.createElement("canvas");c.width=w;c.height=h;return[c,c.getContext("2d")]}
 function rtex(c){const t=new THREE.CanvasTexture(c);t.wrapS=t.wrapT=THREE.RepeatWrapping;t.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());return t}
@@ -1231,6 +1288,7 @@ function buildZone(zid){
     const names=side<0?zone.left:zone.right;
     for(let i=0;i<n;i++){
       const z=slotZ(zone,i),place=activePlaces(zone).find(p=>p.side===side&&p.slot===i);
+      const lmk=(LANDMARKS[zid]||[]).find(l=>!l.end&&l.side===side&&l.slot===i);if(lmk){buildLandmark(lmk,side,z,zone);continue}
       const type=place?place.type:null,name=place?place.name:names[i];
       const nearBridge=zone.bridge!==undefined&&Math.abs(z-zone.bridge)<8;
       const floors=type==="church"||type==="hall"?2:nearBridge?1:1+Math.floor(rnd()*3);
@@ -1256,6 +1314,8 @@ function buildZone(zid){
         for(const k of[-1,1]){plane(2.4,1.9,mat("#F2EEE4"),side*7.03,1.7,z+k*3,ry);plane(2.2,1.7,winMat,side*7.04,1.7,z+k*3,ry)}
         box(.6,.25,1.8,"#8E929C",side*6.8,.12,z);
       } else if(type==="station"){
+        if(zid==="ryelane"){for(let k=-1;k<=1;k++){const wz=z+k*3;plane(1.6,2.6,winMat,side*7.03,6.6,wz,ry);stmesh(new THREE.CircleGeometry(.8,16,0,Math.PI),winMat,side*7.035,7.9,wz).rotation.y=ry;box(.2,.25,1.9,"#EDE6D8",side*7.08,5.25,wz)}
+          box(.3,.3,w+.2,"#EDE6D8",side*7.1,8.9,z);box(.3,.9,2.4,"#EDE6D8",side*7.1,9.6,z);}
         plane(5,3.2,mat("#1E2633"),fx,1.6,z,ry);plane(5.6,.5,mat("#F2EEE4"),side*7.04,3.4,z,ry);
         plane(9,1.2,signMat(name.toUpperCase(),"#1C1B3A",56),side*7.06,4.4,z,ry);
         plane(1.4,1.4,own(new THREE.MeshBasicMaterial({map:textTex("🕒","#FFFFFF","#1C1B3A",128,128,90)})),side*7.06,6.2,z+3.2,ry);
@@ -1276,6 +1336,9 @@ function buildZone(zid){
       }
     }
   });
+  // end-of-street landmarks: face the player walking down the street
+  (LANDMARKS[zid]||[]).filter(l=>l.end).forEach(l=>{const e=l.end,g=new THREE.Group();g.position.set(0,0,e*(L+12));g.rotation.y=e>0?Math.PI/2:-Math.PI/2;root.add(g);g.updateMatrixWorld(true);
+    const keep=root;root=g;try{buildLandmark(l,-1,0,zone)}finally{root=keep}});
   // street furniture
   for(let z=-L+4;z<=L-4;z+=12)[-1,1].forEach(s=>{const zz=z+(s>0?6:0);if(zz>L-2)return;const x=s*4.5;box(.16,4.6,.16,"#1E2228",x,2.3,zz);box(.9,.12,.2,"#1E2228",x-s*.35,4.6,zz);box(.5,.18,.35,lampMat,x-s*.75,4.5,zz)});
   for(let z=-L+11;z<=L-11;z+=22)[-1,1].forEach(s=>{const zz=z+(s>0?11:0);if(zone.places.some(p=>Math.abs(p.z-zz)<4&&p.side===s)||zz>L-6)return;
@@ -1327,6 +1390,10 @@ function buildZone(zid){
     if(s.k==="eye"){const r=new THREE.Mesh(new THREE.TorusGeometry(55,1.4,6,48),skyMat("#C9CED6"));r.position.set(s.x,62,s.z);r.rotation.y=.5;root.add(r);
       for(let a=0;a<8;a++){const sp=new THREE.Mesh(new THREE.BoxGeometry(.6,110,.6),skyMat("#C9CED6"));sp.position.set(s.x,62,s.z);sp.rotation.y=.5;sp.rotateZ(a*Math.PI/8);root.add(sp)}
       for(let a=0;a<16;a++){const pod=new THREE.Mesh(new THREE.SphereGeometry(2,8,6),skyMat("#E6EBF0"));const ang=a/16*Math.PI*2;pod.position.set(s.x+Math.cos(ang)*55*Math.cos(.5),62+Math.sin(ang)*55,s.z-Math.cos(ang)*55*Math.sin(.5));root.add(pod)}}
+    if(s.k==="fiftyp"){for(let k=0;k<11;k++){const seg=new THREE.Mesh(new THREE.CylinderGeometry(8-k*.12,8-k*.12,7,7),skyMat(k%2?"#B7BEC8":"#9EA7B3"));seg.position.set(s.x,3.5+k*7,s.z);seg.rotation.y=k%2?Math.PI/7:0;root.add(seg)}}
+    if(s.k==="nelson"){const c=new THREE.Mesh(new THREE.CylinderGeometry(1.1,1.3,38,12),skyMat("#C9C2B2"));c.position.set(s.x,24,s.z);root.add(c);const pl=new THREE.Mesh(new THREE.BoxGeometry(6,5,6),skyMat("#B9B2A2"));pl.position.set(s.x,2.5,s.z);root.add(pl);
+      const cap=new THREE.Mesh(new THREE.BoxGeometry(2.8,1.4,2.8),skyMat("#8A9A84"));cap.position.set(s.x,43.6,s.z);root.add(cap);const st=new THREE.Mesh(new THREE.CylinderGeometry(.45,.6,3.2,8),skyMat("#6E7A6A"));st.position.set(s.x,46,s.z);root.add(st);
+      for(const[dx,dz]of[[-5,-5],[5,-5],[-5,5],[5,5]]){const l=new THREE.Mesh(new THREE.BoxGeometry(1.4,1.6,3.2),skyMat("#3E4448"));l.position.set(s.x+dx,.8,s.z+dz);root.add(l)}}
     if(s.k==="stack"){for(let k=0;k<9;k++){const b=new THREE.Mesh(new THREE.CylinderGeometry(9-k*.6,9-k*.6,8,8),skyMat(k%2?"#8F99A8":"#A3ADBB"));b.position.set(s.x+(k%2)*1.5,4+k*8,s.z);root.add(b)}}
     if(s.k==="blocks"){for(let k=0;k<s.n;k++){const hh=20+((k*37)%40);const b=new THREE.Mesh(new THREE.BoxGeometry(12,hh,10),skyMat("#A3ADBB"));b.position.set(s.x+k*18,hh/2,s.z+((k*13)%30));root.add(b)}}
   });
